@@ -333,6 +333,8 @@ MonoBehaviour:
   maxHeight: 15
   seed: 69
   Chunck: {fileID: 8451236987504973569, guid: 320c3e7c5fc352247932ecdea37a94a4, type: 3}
+  renderDistance: 6
+  Player: {fileID: 1743702924}
 --- !u!4 &1731320883
 Transform:
   m_ObjectHideFlags: 0
@@ -358,9 +360,9 @@ GameObject:
   - component: {fileID: 1743702928}
   - component: {fileID: 1743702927}
   - component: {fileID: 1743702926}
-  - component: {fileID: 1743702925}
   - component: {fileID: 1743702929}
   - component: {fileID: 1743702930}
+  - component: {fileID: 1743702925}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -368,19 +370,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!136 &1743702925
-CapsuleCollider:
+--- !u!65 &1743702925
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1743702924}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 54b0ea5ba996ad447b7c81656f7a508c, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1743702926
 MeshRenderer:
@@ -475,7 +476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74bd70de0451f3c41bcc93f80c2062ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 4
   _camera: {fileID: 963194227}
   speedH: 2
   speedV: 2

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class world_creation : MonoBehaviour
@@ -8,24 +10,31 @@ public class world_creation : MonoBehaviour
     //base code: https://github.com/Absurdponcho/BlockGame/blob/master/Assets/VoxelChunk.cs
     [SerializeField] int Size = 16;
     [SerializeField] private int maxHeight;
-    public short[,,] BlockIDs;
-    private bool RequiresMeshGeneration = false;
+    private short[,,] BlockIDs;
+    
     [SerializeField] private int seed;
     [SerializeField] private GameObject Chunck;
 
-
-    private void Update()
-    {
-        if (RequiresMeshGeneration)
-        {
-            GenerateChunck();
-        }
-    }
+    [SerializeField] private float renderDistance;
+    [SerializeField] private GameObject Player;
+    private List<GameObject> chuncks = new List<GameObject>();
+    private int _lastChunck = 0;
 
     private void Start()
     {
-        
-        RequiresMeshGeneration = true;
+        GenerateChunck();
+    }
+    
+    private void Update()
+    {
+        var position = Vector3Int.FloorToInt(Player.transform.position);
+        var currentChunck = (position.x - (position.x % 8) + position.z - (position.z % 8));
+        if (currentChunck != _lastChunck)
+        {
+            GenerateChunck();
+        }
+
+        _lastChunck = currentChunck;
     }
 
     void GenerateBlocks(Vector2 offset)
@@ -35,7 +44,7 @@ public class world_creation : MonoBehaviour
         {
             for (var z = 0; z < Size; z++)
             {
-                var height = (int)(Mathf.PerlinNoise((x  + offset.x * 2) * 0.05f + seed, (z + offset.y * 2) * 0.05f  + seed) * (maxHeight));
+                var height = (int)(Mathf.PerlinNoise((x  + offset.x) * 0.05f + seed, (z + offset.y) * 0.05f  + seed) * (maxHeight));
                 for(var y = height; y >= 0; y--){
                     BlockIDs[x, y, z] = 1;
                 }
@@ -44,20 +53,49 @@ public class world_creation : MonoBehaviour
         }
     }
 
-    void GenerateChunck()
+    private void GenerateChunck()
     {
-        for (var x = 0; x < 3; x++)
+        var position = Player.transform.position;
+        var playerX = position.x - (position.x % 16);
+        var playerZ = position.z - (position.z % 16);
+        
+        var minX = Convert.ToInt32(playerX - Size * renderDistance);
+        var maxX = Convert.ToInt32(playerX + Size * renderDistance);
+        var minZ = Convert.ToInt32(playerZ - Size * renderDistance);
+        var maxZ = Convert.ToInt32(playerZ + Size * renderDistance);
+
+        for (var x = minX; x <= maxX; x += Size)
         {
-            for (var z = 0; z < 3; z++)
+            for (var z = minZ; z <= maxZ; z += Size)
             {
-                var chunck = Instantiate(Chunck, new Vector3(x * Size * 0.5f, 0, z * Size * 0.5f), Quaternion.identity);
-                GenerateMesh(chunck);
+                var exists = chuncks.Any(chunck =>
+                {
+                    Vector3 position1;
+                    return Math.Abs((float) ((position1 = chunck.transform.position).x - x)) < 0.1f && Math.Abs((float) (position1.z - z)) < 0.1f;
+                });
+
+                if (exists) continue;
+                var newChunck = Instantiate(Chunck, new Vector3(x, 0, z), Quaternion.identity);
+                GenerateMesh(newChunck);
+                chuncks.Add(newChunck);
             }
+        }
+
+        if(chuncks.Count == 0)
+            return;
+        
+        for(var i = chuncks.Count - 1; i >= 0; i--)
+        {
+            var chunck = chuncks[i];
+            if (!(chunck.transform.position.x < minX) && !(chunck.transform.position.x > maxX) &&
+                !(chunck.transform.position.z < minZ) && !(chunck.transform.position.z > maxZ)) continue;
+            chuncks.Remove(chunck);
+            Destroy(chunck);
         }
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
-    void GenerateMesh(GameObject chunck)
+    private void GenerateMesh(GameObject chunck)
     {
         var position = chunck.transform.position;
         GenerateBlocks(new Vector2(position.x, position.z));
@@ -75,7 +113,7 @@ public class world_creation : MonoBehaviour
             {
                 for (var z = 0; z < Size; z++)
                 {
-                    var offset = new Vector3Int(x, y, z) + Vector3Int.FloorToInt(chunck.transform.position);
+                    var offset = new Vector3Int(x, y, z);
                     if (BlockIDs[x, y, z] == 0) continue;
                     else
                     {
@@ -163,9 +201,6 @@ public class world_creation : MonoBehaviour
         newMesh.RecalculateTangents();
         chunck.GetComponent<MeshFilter>().mesh = newMesh;
         chunck.GetComponent<MeshCollider>().sharedMesh = newMesh;
-        // Set texture
-
-        RequiresMeshGeneration = false;
     }
 
     void GenerateBlock_Top(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)

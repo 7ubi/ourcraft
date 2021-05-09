@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private  float speedV = 2.0f;
     [SerializeField] private float jumpForce;
 
+    private float forward;
+    private float right;
+    
     private float _yaw = 0.0f;
     private float _pitch = 0.0f;
     
@@ -24,9 +28,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        var forward = Input.GetAxis("Vertical") * moveSpeed;
-        var right = Input.GetAxis("Horizontal") * moveSpeed;
-        transform.position += transform.forward * (forward * Time.deltaTime) + transform.right * (right * Time.deltaTime);
+        forward = Input.GetAxis("Vertical") * moveSpeed;
+        right = Input.GetAxis("Horizontal") * moveSpeed;
 
         var mouseRight = Input.GetAxis("Mouse X");
         var mouseUp = Input.GetAxis("Mouse Y");
@@ -45,5 +48,14 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space) && _rb.velocity.y == 0)
             _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, _rb.velocity.z);
+    }
+
+    private void LateUpdate()
+    {
+        var velocity = _rb.velocity;
+        var yVel = velocity.y;
+        velocity = transform.forward * forward + transform.right * right;
+        velocity = new Vector3(velocity.x, yVel, velocity.z);
+        _rb.velocity = velocity;
     }
 }
