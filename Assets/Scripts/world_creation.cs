@@ -83,72 +83,72 @@ public class world_creation : MonoBehaviour
                         {
                             if (BlockIDs[x, y + 1, z] == 0)
                                 GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect());
+                                    new Rect(0, 0, 1, 1));
                         }
                         else
                         {
                             GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect());
+                                new Rect(0, 0, 1, 1));
                         }
 
                         if (x < Size - 1)
                         {
                             if (BlockIDs[x + 1, y, z] == 0)
                                 GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect());
+                                    new Rect(0, 0, 1, 1));
                         }
                         else
                         {
                             GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect());
+                                new Rect(0, 0, 1, 1));
                         }
 
                         if (x >= 1)
                         {
                             if (BlockIDs[x - 1, y, z] == 0)
                                 GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect());
+                                    new Rect(0, 0, 1, 1));
                         }
                         else
                         {
                             GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect());
+                                new Rect(0, 0, 1, 1));
                         }
 
                         if (z < Size - 1)
                         {
                             if (BlockIDs[x, y, z + 1] == 0)
                                 GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect());
+                                    new Rect(0, 0, 1, 1));
                         }
                         else
                         {
                             GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect());
+                                new Rect(0, 0, 1, 1));
                         }
 
                         if (z >= 1)
                         {
                             if (BlockIDs[x, y, z - 1] == 0)
                                 GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect());
+                                    new Rect(0, 0, 1, 1));
                         }
                         else
                         {
                             GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect());
+                                new Rect(0, 0, 1, 1));
                         }
 
                         if (y >= 1)
                         {
                             if (BlockIDs[x, y - 1, z] == 0)
                                 GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect());
+                                    new Rect(0, 0, 1, 1));
                         }
                         else
                         {
                             GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect());
+                                new Rect(0, 0, 1, 1));
                         }
                     }
                 }
