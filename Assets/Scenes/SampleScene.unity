@@ -254,7 +254,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.06786222, g: 0.26526588, b: 0.5754717, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -420,7 +420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Size: 16
-  maxHeight: 15
+  maxHeight: 16
   seed: 69
   Chunck: {fileID: 8451236987504973569, guid: 320c3e7c5fc352247932ecdea37a94a4, type: 3}
   renderDistance: 6
