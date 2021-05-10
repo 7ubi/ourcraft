@@ -49,7 +49,10 @@ public class worldCreation : MonoBehaviour
             for (var z = 0; z < Size; z++)
             {
                 var height = (int)(Mathf.PerlinNoise((x  + offset.x) * 0.05f + seed, (z + offset.y) * 0.05f  + seed) * (maxHeight - 1));
+                if (height <= 1)
+                    height = 1;
                 BlockIDs[x, height, z] = 2;
+
                 for(var y = height - 1; y >= 0; y--)
                 {
                     if (y <= height - 4)

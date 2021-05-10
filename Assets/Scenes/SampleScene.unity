@@ -580,7 +580,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1743702924}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 54b0ea5ba996ad447b7c81656f7a508c, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
@@ -684,7 +684,7 @@ MonoBehaviour:
   _camera: {fileID: 963194227}
   speedH: 2
   speedV: 2
-  jumpForce: 7
+  jumpForce: 4.75
 --- !u!1 &2003967306
 GameObject:
   m_ObjectHideFlags: 0
