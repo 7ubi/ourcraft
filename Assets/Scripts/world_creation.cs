@@ -94,11 +94,37 @@ public class world_creation : MonoBehaviour
         }
     }
 
+    public void DestroyBlock(Vector3 block, Vector3 PlayerPos)
+    {
+        var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
+        var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
+
+        foreach (var chunck in chuncks.Where(chunck => Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
+                                                       Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
+        {
+            var bix = Mathf.FloorToInt(block.x) - chunkPosX;
+            var biy = Mathf.FloorToInt(block.y);
+            var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
+            chunck.GetComponent<Chunck>().BlockIDs[bix, biy, biz] = 0;
+            GenerateMesh(chunck);
+        }
+    }
+
     // ReSharper disable Unity.PerformanceAnalysis
     private void GenerateMesh(GameObject chunck)
     {
         var position = chunck.transform.position;
-        GenerateBlocks(new Vector2(position.x, position.z));
+        var c = chunck.GetComponent<Chunck>();
+        if (c.BlockIDs == null)
+        {
+            GenerateBlocks(new Vector2(position.x, position.z));
+            chunck.GetComponent<Chunck>().BlockIDs = BlockIDs;
+        }
+        else
+        {
+            BlockIDs = c.BlockIDs;
+        }
+
         var newMesh = new Mesh();
         var vertices = new List<Vector3>();
         var normals = new List<Vector3>();
@@ -205,10 +231,10 @@ public class world_creation : MonoBehaviour
 
     void GenerateBlock_Top(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
     {
-        vertices.Add(new Vector3(-0.5f, 0.5f, 0.5f) + offset);
-        vertices.Add(new Vector3(0.5f, 0.5f, 0.5f) + offset);
-        vertices.Add(new Vector3(0.5f, 0.5f, -0.5f) + offset);
-        vertices.Add(new Vector3(-0.5f, 0.5f, -0.5f) + offset);
+        vertices.Add(new Vector3(0f, 1f, 1f) + offset);
+        vertices.Add(new Vector3(1f, 1f, 1f) + offset);
+        vertices.Add(new Vector3(1f, 1f, 0f) + offset);
+        vertices.Add(new Vector3(0f, 1f, 0f) + offset);
 
         normals.Add(Vector3.up);
         normals.Add(Vector3.up);
@@ -231,10 +257,10 @@ public class world_creation : MonoBehaviour
 
     void GenerateBlock_Right(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
     {
-        vertices.Add(new Vector3(0.5f, 0.5f, -0.5f) + offset);
-        vertices.Add(new Vector3(0.5f, 0.5f, 0.5f) + offset);
-        vertices.Add(new Vector3(0.5f, -0.5f, 0.5f) + offset);
-        vertices.Add(new Vector3(0.5f, -0.5f, -0.5f) + offset);
+        vertices.Add(new Vector3(1f, 1f, 0f) + offset);
+        vertices.Add(new Vector3(1f, 1f, 1f) + offset);
+        vertices.Add(new Vector3(1f, 0f, 1f) + offset);
+        vertices.Add(new Vector3(1f, 0f, 0f) + offset);
 
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
@@ -257,10 +283,10 @@ public class world_creation : MonoBehaviour
 
     void GenerateBlock_Left(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
     {
-        vertices.Add(new Vector3(-0.5f, 0.5f, 0.5f) + offset);
-        vertices.Add(new Vector3(-0.5f, 0.5f, -0.5f) + offset);
-        vertices.Add(new Vector3(-0.5f, -0.5f, -0.5f) + offset);
-        vertices.Add(new Vector3(-0.5f, -0.5f, 0.5f) + offset);
+        vertices.Add(new Vector3(0f, 1f, 1f) + offset);
+        vertices.Add(new Vector3(0f, 1f, 0f) + offset);
+        vertices.Add(new Vector3(0f, 0f, 0f) + offset);
+        vertices.Add(new Vector3(0f, 0f, 1f) + offset);
 
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
@@ -283,10 +309,10 @@ public class world_creation : MonoBehaviour
 
     void GenerateBlock_Forward(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
     {
-        vertices.Add(new Vector3(0.5f, 0.5f, 0.5f) + offset);
-        vertices.Add(new Vector3(-0.5f, 0.5f, 0.5f) + offset);
-        vertices.Add(new Vector3(-0.5f, -0.5f, 0.5f) + offset);
-        vertices.Add(new Vector3(0.5f, -0.5f, 0.5f) + offset);
+        vertices.Add(new Vector3(1f, 1f, 1f) + offset);
+        vertices.Add(new Vector3(0f, 1f, 1f) + offset);
+        vertices.Add(new Vector3(0f, 0f, 1f) + offset);
+        vertices.Add(new Vector3(1f, 0f, 1f) + offset);
 
         normals.Add(Vector3.forward);
         normals.Add(Vector3.forward);
@@ -309,10 +335,10 @@ public class world_creation : MonoBehaviour
 
     void GenerateBlock_Back(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
     {
-        vertices.Add(new Vector3(-0.5f, 0.5f, -0.5f) + offset);
-        vertices.Add(new Vector3(0.5f, 0.5f, -0.5f) + offset);
-        vertices.Add(new Vector3(0.5f, -0.5f, -0.5f) + offset);
-        vertices.Add(new Vector3(-0.5f, -0.5f, -0.5f) + offset);
+        vertices.Add(new Vector3(0f, 1f, 0f) + offset);
+        vertices.Add(new Vector3(1f, 1f, 0f) + offset);
+        vertices.Add(new Vector3(1f, 0f, 0f) + offset);
+        vertices.Add(new Vector3(0f, 0f, -0) + offset);
 
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
@@ -335,10 +361,10 @@ public class world_creation : MonoBehaviour
 
     void GenerateBlock_Bottom(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
     {
-        vertices.Add(new Vector3(-0.5f, -0.5f, -0.5f) + offset);
-        vertices.Add(new Vector3(0.5f, -0.5f, -0.5f) + offset);
-        vertices.Add(new Vector3(0.5f, -0.5f, 0.5f) + offset);
-        vertices.Add(new Vector3(-0.5f, -0.5f, 0.5f) + offset);
+        vertices.Add(new Vector3(0f, 0f, 0f) + offset);
+        vertices.Add(new Vector3(1f, 0f, 0f) + offset);
+        vertices.Add(new Vector3(1f, 0f, 1f) + offset);
+        vertices.Add(new Vector3(0f, 0f, 1f) + offset);
 
         normals.Add(Vector3.down);
         normals.Add(Vector3.down);
