@@ -20,9 +20,13 @@ public class worldCreation : MonoBehaviour
     private List<GameObject> chuncks = new List<GameObject>();
     private int _lastChunck = 0;
 
+    private Blocks _blocks;
+
     private void Start()
     {
+        _blocks = GetComponent<Blocks>();
         GenerateChunck();
+        
     }
     
     private void Update()
@@ -45,8 +49,13 @@ public class worldCreation : MonoBehaviour
             for (var z = 0; z < Size; z++)
             {
                 var height = (int)(Mathf.PerlinNoise((x  + offset.x) * 0.05f + seed, (z + offset.y) * 0.05f  + seed) * (maxHeight - 1));
-                for(var y = height; y >= 0; y--){
-                    BlockIDs[x, y, z] = 1;
+                BlockIDs[x, height, z] = 2;
+                for(var y = height - 1; y >= 0; y--)
+                {
+                    if (y <= height - 4)
+                        BlockIDs[x, y, z] = 3;
+                    else
+                        BlockIDs[x, y, z] = 1;
                 }
             }
             
@@ -167,73 +176,61 @@ public class worldCreation : MonoBehaviour
                         if (y < Size - 1)
                         {
                             if (BlockIDs[x, y + 1, z] == 0)
-                                GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect(0, 0, 1, 1));
+                                GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
                         else
                         {
-                            GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect(0, 0, 1, 1));
+                            GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
 
                         if (x < Size - 1)
                         {
                             if (BlockIDs[x + 1, y, z] == 0)
-                                GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect(0, 0, 1, 1));
+                                GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
                         else
                         {
-                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect(0, 0, 1, 1));
+                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
 
                         if (x >= 1)
                         {
                             if (BlockIDs[x - 1, y, z] == 0)
-                                GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect(0, 0, 1, 1));
+                                GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
                         else
                         {
-                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect(0, 0, 1, 1));
+                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
 
                         if (z < Size - 1)
                         {
                             if (BlockIDs[x, y, z + 1] == 0)
-                                GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect(0, 0, 1, 1));
+                                GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
                         else
                         {
-                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect(0, 0, 1, 1));
+                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
 
                         if (z >= 1)
                         {
                             if (BlockIDs[x, y, z - 1] == 0)
-                                GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect(0, 0, 1, 1));
+                                GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
                         else
                         {
-                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect(0, 0, 1, 1));
+                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
 
                         if (y >= 1)
                         {
                             if (BlockIDs[x, y - 1, z] == 0)
-                                GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    new Rect(0, 0, 1, 1));
+                                GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
                         else
                         {
-                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                new Rect(0, 0, 1, 1));
+                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
                     }
                 }
@@ -250,7 +247,7 @@ public class worldCreation : MonoBehaviour
         chunck.GetComponent<MeshCollider>().sharedMesh = newMesh;
     }
 
-    void GenerateBlock_Top(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
+    void GenerateBlock_Top(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
     {
         vertices.Add(new Vector3(0f, 1f, 1f) + offset);
         vertices.Add(new Vector3(1f, 1f, 1f) + offset);
@@ -262,10 +259,14 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.up);
         normals.Add(Vector3.up);
 
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMin));
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMin));
+        if (ID != 2)
+        {
+            uvs.AddRange(_blocks.GetBlockUV(ID));
+        }
+        else
+        {
+            uvs.AddRange(_blocks.GrassTop());
+        }
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -276,7 +277,7 @@ public class worldCreation : MonoBehaviour
         currentIndex += 4;
     }
 
-    void GenerateBlock_Right(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
+    void GenerateBlock_Right(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
     {
         vertices.Add(new Vector3(1f, 1f, 0f) + offset);
         vertices.Add(new Vector3(1f, 1f, 1f) + offset);
@@ -287,11 +288,15 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
-
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMin));
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMin));
+        
+        if (ID != 2)
+        {
+            uvs.AddRange(_blocks.GetBlockUV(ID));
+        }
+        else
+        {
+            uvs.AddRange(_blocks.GrassSide());
+        }
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -302,7 +307,7 @@ public class worldCreation : MonoBehaviour
         currentIndex += 4;
     }
 
-    void GenerateBlock_Left(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
+    void GenerateBlock_Left(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
     {
         vertices.Add(new Vector3(0f, 1f, 1f) + offset);
         vertices.Add(new Vector3(0f, 1f, 0f) + offset);
@@ -313,11 +318,15 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
-
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMin));
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMin));
+        
+        if (ID != 2)
+        {
+            uvs.AddRange(_blocks.GetBlockUV(ID));
+        }
+        else
+        {
+            uvs.AddRange(_blocks.GrassSide());
+        }
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -328,7 +337,7 @@ public class worldCreation : MonoBehaviour
         currentIndex += 4;
     }
 
-    void GenerateBlock_Forward(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
+    void GenerateBlock_Forward(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
     {
         vertices.Add(new Vector3(1f, 1f, 1f) + offset);
         vertices.Add(new Vector3(0f, 1f, 1f) + offset);
@@ -340,10 +349,14 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.forward);
         normals.Add(Vector3.forward);
 
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMin));
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMin));
+        if (ID != 2)
+        {
+            uvs.AddRange(_blocks.GetBlockUV(ID));
+        }
+        else
+        {
+            uvs.AddRange(_blocks.GrassSide());
+        }
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -354,7 +367,7 @@ public class worldCreation : MonoBehaviour
         currentIndex += 4;
     }
 
-    void GenerateBlock_Back(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
+    void GenerateBlock_Back(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
     {
         vertices.Add(new Vector3(0f, 1f, 0f) + offset);
         vertices.Add(new Vector3(1f, 1f, 0f) + offset);
@@ -366,10 +379,14 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
 
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMin));
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMin));
+        if (ID != 2)
+        {
+            uvs.AddRange(_blocks.GetBlockUV(ID));
+        }
+        else
+        {
+            uvs.AddRange(_blocks.GrassSide());
+        }
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -380,7 +397,7 @@ public class worldCreation : MonoBehaviour
         currentIndex += 4;
     }
 
-    void GenerateBlock_Bottom(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, Rect blockUVs)
+    void GenerateBlock_Bottom(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
     {
         vertices.Add(new Vector3(0f, 0f, 0f) + offset);
         vertices.Add(new Vector3(1f, 0f, 0f) + offset);
@@ -392,10 +409,14 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.down);
         normals.Add(Vector3.down);
 
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMax));
-        uvs.Add(new Vector2(blockUVs.xMax, blockUVs.yMin));
-        uvs.Add(new Vector2(blockUVs.xMin, blockUVs.yMin));
+        if (ID != 2)
+        {
+            uvs.AddRange(_blocks.GetBlockUV(ID));
+        }
+        else
+        {
+            uvs.AddRange(_blocks.GrassBot());
+        }
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
