@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
+using UnityEngine.Serialization;
 
 public class worldCreation : MonoBehaviour
 {
@@ -11,6 +13,7 @@ public class worldCreation : MonoBehaviour
     [SerializeField] int Size = 16;
     [SerializeField] private int maxHeight;
     private short[,,] BlockIDs;
+    [SerializeField] private float noiseThreshold;
     
     [SerializeField] private int seed;
     [SerializeField] private GameObject Chunck;
@@ -48,18 +51,40 @@ public class worldCreation : MonoBehaviour
         {
             for (var z = 0; z < Size; z++)
             {
-                var height = (int)(Mathf.PerlinNoise((x  + offset.x) * 0.05f + seed, (z + offset.y) * 0.05f  + seed) * (maxHeight - 1));
+                var height0 = Mathf.PerlinNoise((x + offset.x) * 0.1f + seed, (z + offset.y) * 0.1f + seed);
+                var height1 = Mathf.PerlinNoise((x  + offset.x) * 0.05f + seed, (z + offset.y) * 0.05f  + seed);
+                var height2 = Mathf.PerlinNoise((x + offset.x) * 0.001f + seed, (z + offset.y) * 0.001f + seed);
+
+                var height = (int)(height0 * height1 * height2 * (maxHeight - 5));
+                
                 if (height <= 1)
                     height = 1;
-                BlockIDs[x, height, z] = 2;
 
-                for(var y = height - 1; y >= 0; y--)
+                if (Perlin3D((x + offset.x) * 0.05f + seed, (float) height * 0.05f + seed,
+                    (z + offset.y) * 0.05f + seed) >= noiseThreshold)
                 {
+                    try
+                    {
+                        BlockIDs[x, height, z] = 2;
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log(height);
+                        Debug.Log(Mathf.PerlinNoise((x  + offset.x) * 0.05f + seed, (z + offset.y) * 0.05f  + seed) * (maxHeight - 2));
+                    }
+                }
+
+                for(var y = height - 1; y >= 1; y--)
+                {
+                    if(Perlin3D((x  + offset.x) * 0.05f + seed, (float)y * 0.05f + seed, (z + offset.y) * 0.05f  + seed) < noiseThreshold)
+                        continue;
+                    
                     if (y <= height - 4)
                         BlockIDs[x, y, z] = 3;
                     else
                         BlockIDs[x, y, z] = 1;
                 }
+                BlockIDs[x, 0, z] = 3;
             }
             
         }
@@ -428,6 +453,21 @@ public class worldCreation : MonoBehaviour
         indices.Add(currentIndex + 2);
         indices.Add(currentIndex + 3);
         currentIndex += 4;
+    }
+
+    public float Perlin3D(float x, float y, float z)
+    {
+        var ab = Mathf.PerlinNoise(x, y);
+        var bc = Mathf.PerlinNoise(y, z);
+        var ac = Mathf.PerlinNoise(x, z);
+        
+        var ba = Mathf.PerlinNoise(y, x);
+        var cb = Mathf.PerlinNoise(z, y);
+        var ca = Mathf.PerlinNoise(z, x);
+
+        var abc = ab + bc + ac + ba + cb + ca;
+        
+        return abc / 6f;
     }
 }
 

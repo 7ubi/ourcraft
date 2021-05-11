@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class Blocks: MonoBehaviour
 {
+    // texture atlas from: https://github.com/mikolalysenko/tile-mip-map
+
+    private float _size = 0.0625f;
+    
     public List<Vector2> GetBlockUV(int BlockID)
     {
         return BlockID switch
@@ -16,14 +20,14 @@ public class Blocks: MonoBehaviour
         };
     }
 
-    private static List<Vector2> Dirt()
+    private List<Vector2> Dirt()
     {
         var uvs = new List<Vector2>();
 
-        const float xMin = 0.1f;
-        const float xMax = 0.4f;
-        const float yMin = 0.1f;
-        const float yMax = 0.4f;
+        var xMin = 2 * _size;
+        var xMax = 3 * _size;
+        var yMin = 1 - _size;
+        var yMax = 1;
         
         uvs.Add(new Vector2(xMin, yMax));
         uvs.Add(new Vector2(xMax, yMax));
@@ -32,14 +36,14 @@ public class Blocks: MonoBehaviour
 
         return uvs;
     }
-    private static List<Vector2> Stone()
+    private List<Vector2> Stone()
     {
         var uvs = new List<Vector2>();
 
-        const float xMin = 0.1f;
-        const float xMax = 0.4f;
-        const float yMin = 0.6f;
-        const float yMax = 0.9f;
+        var xMin = 1 * _size;
+        var xMax = 2 * _size;
+        var yMin = 1 - _size;
+        var yMax = 1;
         
         uvs.Add(new Vector2(xMin, yMax));
         uvs.Add(new Vector2(xMax, yMax));
@@ -53,10 +57,10 @@ public class Blocks: MonoBehaviour
     {
         var uvs = new List<Vector2>();
 
-        const float xMin = 0.6f;
-        const float xMax = 0.9f;
-        const float yMin = 0.6f;
-        const float yMax = 0.9f;
+        var xMin = 0 * _size;
+        var xMax = 1 * _size;
+        var yMin = 1 - _size;
+        var yMax = 1;
             
         uvs.Add(new Vector2(xMin, yMax));
         uvs.Add(new Vector2(xMax, yMax));
@@ -70,10 +74,10 @@ public class Blocks: MonoBehaviour
     {
         var uvs = new List<Vector2>();
 
-        const float xMin = 0.6f;
-        const float xMax = 0.9f;
-        const float yMin = 0.1f;
-        const float yMax = 0.4f;
+        var xMin = 3 * _size;
+        var xMax = 4 * _size;
+        var yMin = 1 - _size;
+        var yMax = 1;
             
         uvs.Add(new Vector2(xMin, yMax));
         uvs.Add(new Vector2(xMax, yMax));
@@ -87,10 +91,10 @@ public class Blocks: MonoBehaviour
     {
         var uvs = new List<Vector2>();
 
-        const float xMin = 0.1f;
-        const float xMax = 0.4f;
-        const float yMin = 0.1f;
-        const float yMax = 0.4f;
+        var xMin = 2 * _size;
+        var xMax = 3 * _size;
+        var yMin = 1 - _size;
+        var yMax = 1;
             
         uvs.Add(new Vector2(xMin, yMax));
         uvs.Add(new Vector2(xMax, yMax));

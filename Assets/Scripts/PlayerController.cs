@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
         transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
         _camera.transform.eulerAngles = new Vector3(_pitch, _yaw, 0.0f);
 
-        if (Input.GetKey(KeyCode.Space) && _rb.velocity.y == 0)
+        if (Input.GetKey(KeyCode.Space) && isGrounded())
             _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, _rb.velocity.z);
     }
 
@@ -57,5 +57,10 @@ public class PlayerController : MonoBehaviour
         velocity = transform.forward * forward + transform.right * right;
         velocity = new Vector3(velocity.x, yVel, velocity.z);
         _rb.velocity = velocity;
+    }
+
+    bool isGrounded()
+    {
+        return Physics.Raycast(transform.position, -Vector3.up, 1.25f + .1f);
     }
 }

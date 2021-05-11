@@ -313,7 +313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d47c02b564b7f5544b3222c59e582e1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Range: 10
+  Range: 7
   _worldCreation: {fileID: 1731320882}
 --- !u!1 &1129948191
 GameObject:
@@ -421,7 +421,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Size: 16
-  maxHeight: 16
+  maxHeight: 64
+  noiseThreshold: 0.3
   seed: 69
   Chunck: {fileID: 8451236987504973569, guid: 320c3e7c5fc352247932ecdea37a94a4, type: 3}
   renderDistance: 6
@@ -645,7 +646,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1743702924}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 6.5, z: 4.5}
+  m_LocalPosition: {x: 0.5, y: 20, z: 4.5}
   m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_Children:
   - {fileID: 963194228}
@@ -684,7 +685,7 @@ MonoBehaviour:
   _camera: {fileID: 963194227}
   speedH: 2
   speedV: 2
-  jumpForce: 4.75
+  jumpForce: 5
 --- !u!1 &2003967306
 GameObject:
   m_ObjectHideFlags: 0
