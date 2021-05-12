@@ -148,7 +148,6 @@ public class worldCreation : MonoBehaviour
                     !(chunck.transform.position.z < minZ) && !(chunck.transform.position.z > maxZ)) continue;
                 
                 chunck.SetActive(false);
-                yield return new WaitForSeconds(0.1f);
             }
         }
     }
