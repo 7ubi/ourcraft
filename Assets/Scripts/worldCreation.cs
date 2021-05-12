@@ -113,21 +113,32 @@ public class worldCreation : MonoBehaviour
         {
             for (var z = minZ; z <= maxZ; z += Size)
             {
-                var exists = chuncks.Any(chunck =>
+                GameObject c = null;
+                var exists = false;
+                foreach (var chunck in from chunck in chuncks let position1 = chunck.transform.position where Math.Abs(position1.x - x) < 0.1f && Math.Abs((float) (position1.z - z)) < 0.1f select chunck)
                 {
-                    Vector3 position1;
-                    return Math.Abs((float) ((position1 = chunck.transform.position).x - x)) < 0.1f && Math.Abs((float) (position1.z - z)) < 0.1f;
-                });
+                    c = chunck;
+                    exists = true;
+                }
 
-                if (exists) continue;
-                var newChunck = Instantiate(Chunck, new Vector3(x, 0, z), Quaternion.identity);
-                GenerateMesh(newChunck);
-                chuncks.Add(newChunck);
-                if(!firstGeneration)
-                    yield return new WaitForSeconds(0.1f);
+                if (!exists)
+                {
+                    var newChunck = Instantiate(Chunck, new Vector3(x, 0, z), Quaternion.identity);
+                    GenerateMesh(newChunck);
+                    chuncks.Add(newChunck);
+                    if(!firstGeneration)
+                        yield return new WaitForSeconds(0.1f);
+                }
+                else
+                {
+                    if (c != null)
+                    {
+                        c.SetActive(true);
+                    }
+                }
             }
         }
-
+        
         if (chuncks.Count < 0) yield break;
         {
             for (var i = chuncks.Count - 1; i >= 0; i--)
@@ -135,8 +146,8 @@ public class worldCreation : MonoBehaviour
                 var chunck = chuncks[i];
                 if (!(chunck.transform.position.x < minX) && !(chunck.transform.position.x > maxX) &&
                     !(chunck.transform.position.z < minZ) && !(chunck.transform.position.z > maxZ)) continue;
-                chuncks.Remove(chunck);
-                Destroy(chunck);
+                
+                chunck.SetActive(false);
                 yield return new WaitForSeconds(0.1f);
             }
         }
