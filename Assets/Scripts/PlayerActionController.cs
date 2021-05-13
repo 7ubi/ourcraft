@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,9 @@ public class PlayerActionController : MonoBehaviour
 {
     [SerializeField] private float Range;
     [SerializeField] private worldCreation _worldCreation;
-    
+    [SerializeField] private PlayerInventory _inventory;
+
+
     private void Update()
     {
         var leftClick = Input.GetMouseButtonDown(0);
@@ -25,7 +28,10 @@ public class PlayerActionController : MonoBehaviour
             }
             if(rightClick)
             {
-                _worldCreation.PlaceBlock(hit.point + transform.forward * -.01f);            
+                if (!_inventory.CanPlaceBlock(_inventory.Current + 1))
+                    return;
+                _worldCreation.PlaceBlock(hit.point + transform.forward * -.01f, _inventory.Current + 1);
+                _inventory.AddItem(_inventory.Current + 1, -1);
             }
         }
     }

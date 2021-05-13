@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float sprintMult;
     [SerializeField] private Camera _camera;
     [SerializeField] private float speedH = 2.0f;
     [SerializeField] private  float speedV = 2.0f;
@@ -22,7 +23,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
@@ -33,7 +34,12 @@ public class PlayerController : MonoBehaviour
 
         var mouseRight = Input.GetAxis("Mouse X");
         var mouseUp = Input.GetAxis("Mouse Y");
-        
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            forward *= sprintMult;
+            right *= sprintMult;
+        }
    
         _yaw += speedH * Input.GetAxis("Mouse X");
         _pitch -= speedV * Input.GetAxis("Mouse Y");

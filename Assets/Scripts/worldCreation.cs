@@ -22,6 +22,7 @@ public class worldCreation : MonoBehaviour
 
     [SerializeField] private float renderDistance;
     [SerializeField] private GameObject Player;
+    private PlayerInventory _playerInventory;
     private List<GameObject> chuncks = new List<GameObject>();
     private int _lastChunck = 0;
 
@@ -30,6 +31,7 @@ public class worldCreation : MonoBehaviour
     private void Start()
     {
         _blocks = GetComponent<Blocks>();
+        _playerInventory = Player.GetComponent<PlayerInventory>();
         StartCoroutine(GenerateChunck(true));
     }
     
@@ -163,12 +165,14 @@ public class worldCreation : MonoBehaviour
             var bix = Mathf.FloorToInt(block.x) - chunkPosX;
             var biy = Mathf.FloorToInt(block.y);
             var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
-            chunck.GetComponent<Chunck>().BlockIDs[bix, biy, biz] = 0;
+            var c = chunck.GetComponent<Chunck>();
+            _playerInventory.AddItem(c.BlockIDs[bix, biy, biz], 1);
+            c.BlockIDs[bix, biy, biz] = 0;
             GenerateMesh(chunck);
         }
     }
 
-    public void PlaceBlock(Vector3 block)
+    public void PlaceBlock(Vector3 block, int id)
     {
         var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
         var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
@@ -184,7 +188,7 @@ public class worldCreation : MonoBehaviour
             var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
             
             
-            chunck.GetComponent<Chunck>().BlockIDs[bix, biy, biz] = 1;
+            chunck.GetComponent<Chunck>().BlockIDs[bix, biy, biz] = (short) id;
             GenerateMesh(chunck);
         }
     }
