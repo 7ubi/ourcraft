@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Chunck : MonoBehaviour
 {
-    private short[,,] blockIDs;
+    private short[,,] _blockIDs;
 
     public short[,,] BlockIDs
     {
-        get => blockIDs;
-        set => blockIDs = value;
+        get => _blockIDs;
+        set => _blockIDs = value;
     }
 }

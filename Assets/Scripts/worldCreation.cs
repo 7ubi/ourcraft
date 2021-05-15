@@ -17,7 +17,10 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private int minHeight;
     private short[,,] BlockIDs;
     [SerializeField] private float noiseThreshold;
+    
     [SerializeField] private float treeThreshold;
+    [SerializeField] private int minTreeHeight;
+    [SerializeField] private int maxTreeHeight;
     
     [SerializeField] private int seed;
     [SerializeField] private GameObject chunck;
@@ -78,24 +81,27 @@ public class worldCreation : MonoBehaviour
                     (z + offset.y) * 0.05f + seed) >= noiseThreshold)
                 {
                     BlockIDs[x, height + minHeight, z] = 2;
-                    if (treeGen.NextDouble() <= treeThreshold)
+                    if (x > 1 && x < Size - 2 && z > 1 && z < Size - 2)
                     {
-                        for (var y = 1; y <= 5; y++)
+                        if (treeGen.NextDouble() <= treeThreshold)
                         {
-                            BlockIDs[x, height + minHeight + y, z] = 4;
-                            if (y <= 3) continue;
-                            for (var i = -1; i <= 1; i++)
+                            BlockIDs[x, height + minHeight, z] = 1;
+                            var h = treeGen.Next(minTreeHeight, maxTreeHeight);
+                            for (var y = 1; y <= h; y++)
                             {
-                                for (var j = -1; j <= 1; j++)
+                                BlockIDs[x, height + minHeight + y, z] = 4;
+                                if (y <= h - 2) continue;
+                                for (var i = -1; i <= 1; i++)
                                 {
-                                    if(i == 0 && j == 0) continue;
-                                    if(x + i < 0 || x + i >= Size) continue;
-                                    if(z + j < 0 || z + j >= Size) continue;
-                                    BlockIDs[x + i, height + minHeight + y, z + j] = 5;
+                                    for (var j = -1; j <= 1; j++)
+                                    {
+                                        if (i == 0 && j == 0) continue;
+                                        BlockIDs[x + i, height + minHeight + y, z + j] = 5;
+                                    }
                                 }
                             }
+                            BlockIDs[x, height + minHeight + h + 1, z] = 5;
                         }
-                        BlockIDs[x, height + minHeight + 6, z] = 5;
                     }
                 }
                 else
@@ -145,7 +151,8 @@ public class worldCreation : MonoBehaviour
             {
                 GameObject c = null;
                 var exists = false;
-                foreach (var chunck in from chunck in _chuncks let position1 = chunck.transform.position where Math.Abs(position1.x - x) < 0.1f && Math.Abs((float) (position1.z - z)) < 0.1f select chunck)
+                foreach (var chunck in from chunck in _chuncks let position1 = chunck.transform.position where Math.Abs(position1.x - x) < 0.1f &&
+                    Math.Abs((float) (position1.z - z)) < 0.1f select chunck)
                 {
                     c = chunck;
                     exists = true;
@@ -304,14 +311,14 @@ public class worldCreation : MonoBehaviour
                             GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
 
-                        if (y >= 1)
+                        if (y != 0)
                         {
                             if (BlockIDs[x, y - 1, z] == 0)
                                 GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
                         else
                         {
-                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
+                            GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices, BlockIDs[x, y, z]);
                         }
                     }
                 }
