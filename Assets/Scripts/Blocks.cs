@@ -16,6 +16,7 @@ public class Blocks: MonoBehaviour
         {
             1 => Dirt(),
             3 => Stone(),
+            5 => Leaves(),
             _ => null
         };
     }
@@ -95,6 +96,57 @@ public class Blocks: MonoBehaviour
         var xMax = 3 * _size;
         var yMin = 1 - _size;
         var yMax = 1;
+            
+        uvs.Add(new Vector2(xMin, yMax));
+        uvs.Add(new Vector2(xMax, yMax));
+        uvs.Add(new Vector2(xMax, yMin));
+        uvs.Add(new Vector2(xMin, yMin));
+
+        return uvs;
+    }
+
+    public List<Vector2> LogSide()
+    {
+        var uvs = new List<Vector2>();
+
+        var xMin = 4 * _size;
+        var xMax = 5 * _size;
+        var yMin = 1 - 2 * _size;
+        var yMax = 1 - _size;
+            
+        uvs.Add(new Vector2(xMin, yMax));
+        uvs.Add(new Vector2(xMax, yMax));
+        uvs.Add(new Vector2(xMax, yMin));
+        uvs.Add(new Vector2(xMin, yMin));
+
+        return uvs;
+    }
+    
+    public List<Vector2> LogTop()
+    {
+        var uvs = new List<Vector2>();
+
+        var xMin = 5 * _size;
+        var xMax = 6 * _size;
+        var yMin = 1 - 2 * _size;
+        var yMax = 1 - _size;
+            
+        uvs.Add(new Vector2(xMin, yMax));
+        uvs.Add(new Vector2(xMax, yMax));
+        uvs.Add(new Vector2(xMax, yMin));
+        uvs.Add(new Vector2(xMin, yMin));
+
+        return uvs;
+    }
+
+    public List<Vector2> Leaves()
+    {
+        var uvs = new List<Vector2>();
+
+        var xMin = 5 * _size;
+        var xMax = 6 * _size;
+        var yMin = 1 - 4 * _size;
+        var yMax = 1 - 3 * _size;
             
         uvs.Add(new Vector2(xMin, yMax));
         uvs.Add(new Vector2(xMax, yMax));
