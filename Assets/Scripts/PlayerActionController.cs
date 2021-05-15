@@ -28,10 +28,10 @@ public class PlayerActionController : MonoBehaviour
             }
             if(rightClick)
             {
-                if (!_inventory.CanPlaceBlock(_inventory.Current + 1))
+                if (!_inventory.CanPlaceBlock())
                     return;
-                _worldCreation.PlaceBlock(hit.point + transform.forward * -.01f, _inventory.Current + 1);
-                _inventory.AddItem(_inventory.Current + 1, -1);
+                _worldCreation.PlaceBlock(hit.point + transform.forward * -.01f, _inventory.ItemIds[_inventory.Current]);
+                _inventory.AddItem(_inventory.ItemIds[_inventory.Current], -1);
             }
         }
     }

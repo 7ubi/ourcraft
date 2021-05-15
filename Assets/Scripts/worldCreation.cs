@@ -28,6 +28,7 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private float renderDistance;
     [SerializeField] private GameObject player;
     private PlayerInventory _playerInventory;
+    private BlockTypes _blockTypes;
     private List<GameObject> _chuncks = new List<GameObject>();
     private int _lastChunck = 0;
 
@@ -37,11 +38,9 @@ public class worldCreation : MonoBehaviour
     {
         _blocks = GetComponent<Blocks>();
         _playerInventory = player.GetComponent<PlayerInventory>();
-
-        Random.InitState(seed);
+        _blockTypes = GetComponent<BlockTypes>();
         
         StartCoroutine(GenerateChunck(true));
-        
     }
     
     private void Update()
@@ -80,7 +79,7 @@ public class worldCreation : MonoBehaviour
                 if (Perlin3D((x + offset.x) * 0.05f + seed, (float) height * 0.05f + seed,
                     (z + offset.y) * 0.05f + seed) >= noiseThreshold)
                 {
-                    BlockIDs[x, height + minHeight, z] = 2;
+                    BlockIDs[x, height + minHeight, z] = _blockTypes.Grass;
                     if (x > 1 && x < Size - 2 && z > 1 && z < Size - 2)
                     {
                         if (treeGen.NextDouble() <= treeThreshold)
@@ -89,18 +88,18 @@ public class worldCreation : MonoBehaviour
                             var h = treeGen.Next(minTreeHeight, maxTreeHeight);
                             for (var y = 1; y <= h; y++)
                             {
-                                BlockIDs[x, height + minHeight + y, z] = 4;
+                                BlockIDs[x, height + minHeight + y, z] = _blockTypes.Log;
                                 if (y <= h - 2) continue;
                                 for (var i = -1; i <= 1; i++)
                                 {
                                     for (var j = -1; j <= 1; j++)
                                     {
                                         if (i == 0 && j == 0) continue;
-                                        BlockIDs[x + i, height + minHeight + y, z + j] = 5;
+                                        BlockIDs[x + i, height + minHeight + y, z + j] = _blockTypes.Leave;
                                     }
                                 }
                             }
-                            BlockIDs[x, height + minHeight + h + 1, z] = 5;
+                            BlockIDs[x, height + minHeight + h + 1, z] = _blockTypes.Leave;
                         }
                     }
                 }
@@ -116,19 +115,19 @@ public class worldCreation : MonoBehaviour
 
                     if (!grassTop && y > height + minHeight - 4)
                     {
-                        BlockIDs[x, y, z] = 2;
+                        BlockIDs[x, y, z] = _blockTypes.Grass;
                         grassTop = true;
                     }
                     else
                     {
 
                         if (y <= height + minHeight - 4)
-                            BlockIDs[x, y, z] = 3;
+                            BlockIDs[x, y, z] = _blockTypes.Stone;
                         else
-                            BlockIDs[x, y, z] = 1;
+                            BlockIDs[x, y, z] = _blockTypes.Dirt;
                     }
                 }
-                BlockIDs[x, 0, z] = 3;
+                BlockIDs[x, 0, z] = _blockTypes.Stone;
             }
             
         }
@@ -347,11 +346,11 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.up);
         normals.Add(Vector3.up);
 
-        if (ID != 2 && ID != 4)
+        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
         {
             uvs.AddRange(_blocks.GetBlockUV(ID));
         }
-        else if (ID == 2)
+        else if(ID == _blockTypes.Grass)
         {
             uvs.AddRange(_blocks.GrassTop());
         }
@@ -381,11 +380,11 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
         
-        if (ID != 2 && ID != 4)
+        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
         {
             uvs.AddRange(_blocks.GetBlockUV(ID));
         }
-        else if(ID == 2)
+        else if(ID == _blockTypes.Grass)
         {
             uvs.AddRange(_blocks.GrassSide());
         }
@@ -415,11 +414,11 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
         
-        if (ID != 2 && ID != 4)
+        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
         {
             uvs.AddRange(_blocks.GetBlockUV(ID));
         }
-        else if(ID == 2)
+        else if(ID == _blockTypes.Grass)
         {
             uvs.AddRange(_blocks.GrassSide());
         }
@@ -449,11 +448,11 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.forward);
         normals.Add(Vector3.forward);
 
-        if (ID != 2 && ID != 4)
+        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
         {
             uvs.AddRange(_blocks.GetBlockUV(ID));
         }
-        else if(ID == 2)
+        else if(ID == _blockTypes.Grass)
         {
             uvs.AddRange(_blocks.GrassSide());
         }
@@ -483,11 +482,11 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
 
-        if (ID != 2 && ID != 4)
+        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
         {
             uvs.AddRange(_blocks.GetBlockUV(ID));
         }
-        else if(ID == 2)
+        else if(ID == _blockTypes.Grass)
         {
             uvs.AddRange(_blocks.GrassSide());
         }
@@ -517,11 +516,11 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.down);
         normals.Add(Vector3.down);
 
-        if (ID != 2 && ID != 4)
+        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
         {
             uvs.AddRange(_blocks.GetBlockUV(ID));
         }
-        else if(ID == 2)
+        else if(ID == _blockTypes.Grass)
         {
             uvs.AddRange(_blocks.GrassBot());
         }
