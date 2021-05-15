@@ -48,6 +48,7 @@ public class PlayerInventory : MonoBehaviour
                 itemIds[i] = id;
                 index = i;
                 itemImages[i].sprite = icons[id - 1];
+                itemImages[i].color = new Color(255, 255, 255, 100);
                 break;
             }
         }
@@ -58,6 +59,7 @@ public class PlayerInventory : MonoBehaviour
         if (itemCount[index] > 0) return;
         itemIds[index] = 0;
         itemImages[index].sprite = null;
+        itemImages[index].color = new Color(255, 255, 255, 0);
     }
 
     public bool CanPlaceBlock()
