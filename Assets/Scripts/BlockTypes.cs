@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class BlockTypes : MonoBehaviour
 {
-    private const short dirt = 1;
-    private const short grass = 2;
-    private const short stone = 3;
-    private const short log = 4;
-    private const short leave = 5;
+    private const int dirt = 1;
+    private const int grass = 2;
+    private const int stone = 3;
+    private const int log = 4;
+    private const int leave = 5;
 
-    public short Dirt => dirt;
+    public int Dirt => dirt;
 
-    public short Grass => grass;
+    public int Grass => grass;
 
-    public short Stone => stone;
+    public int Stone => stone;
 
-    public short Log => log;
+    public int Log => log;
 
-    public short Leave => leave;
+    public int Leave => leave;
 }

@@ -15,7 +15,7 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private int maxHeight;
     [SerializeField] private int maxGeneratingHeight;
     [SerializeField] private int minHeight;
-    private short[,,] BlockIDs;
+    private int[,,] BlockIDs;
     [SerializeField] private float noiseThreshold;
     
     [SerializeField] private float treeThreshold;
@@ -28,18 +28,20 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private float renderDistance;
     [SerializeField] private GameObject player;
     private PlayerInventory _playerInventory;
-    private BlockTypes _blockTypes;
-    private List<GameObject> _chuncks = new List<GameObject>();
+    [SerializeField] private BlockTypes _blockTypes;
     private int _lastChunck = 0;
 
-    private Blocks _blocks;
+    [SerializeField] private Blocks _blocks;
 
     private void Start()
     {
-        _blocks = GetComponent<Blocks>();
+        //_blocks = GetComponent<Blocks>();
         _playerInventory = player.GetComponent<PlayerInventory>();
-        _blockTypes = GetComponent<BlockTypes>();
-        
+        //_blockTypes = GetComponent<BlockTypes>();
+    }
+
+    public void GenerateFirst()
+    {
         StartCoroutine(GenerateChunck(true));
     }
     
@@ -57,7 +59,7 @@ public class worldCreation : MonoBehaviour
 
     void GenerateBlocks(Vector2 offset)
     {
-        BlockIDs = new short[Size, maxHeight, Size];
+        BlockIDs = new int[Size, maxHeight, Size];
         var treeGen = new System.Random((int)(offset.x * 1000 + offset.y));
         for (var x = 0; x < Size; x++)
         {
@@ -150,7 +152,7 @@ public class worldCreation : MonoBehaviour
             {
                 GameObject c = null;
                 var exists = false;
-                foreach (var chunck in from chunck in _chuncks let position1 = chunck.transform.position where Math.Abs(position1.x - x) < 0.1f &&
+                foreach (var chunck in from chunck in Chuncks let position1 = chunck.transform.position where Math.Abs(position1.x - x) < 0.1f &&
                     Math.Abs((float) (position1.z - z)) < 0.1f select chunck)
                 {
                     c = chunck;
@@ -161,7 +163,7 @@ public class worldCreation : MonoBehaviour
                 {
                     var newChunck = Instantiate(chunck, new Vector3(x, 0, z), Quaternion.identity);
                     GenerateMesh(newChunck);
-                    _chuncks.Add(newChunck);
+                    Chuncks.Add(newChunck);
                     if(!firstGeneration)
                         yield return new WaitForSeconds(0.1f);
                 }
@@ -175,11 +177,11 @@ public class worldCreation : MonoBehaviour
             }
         }
         
-        if (_chuncks.Count < 0) yield break;
+        if (Chuncks.Count < 0) yield break;
         {
-            for (var i = _chuncks.Count - 1; i >= 0; i--)
+            for (var i = Chuncks.Count - 1; i >= 0; i--)
             {
-                var chunck = _chuncks[i];
+                var chunck = Chuncks[i];
                 if (!(chunck.transform.position.x < minX) && !(chunck.transform.position.x > maxX) &&
                     !(chunck.transform.position.z < minZ) && !(chunck.transform.position.z > maxZ)) continue;
                 
@@ -193,7 +195,7 @@ public class worldCreation : MonoBehaviour
         var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
         var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
 
-        foreach (var chunck in _chuncks.Where(chunck => Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
+        foreach (var chunck in Chuncks.Where(chunck => Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
                                                        Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
         {
             var bix = Mathf.FloorToInt(block.x) - chunkPosX;
@@ -213,7 +215,7 @@ public class worldCreation : MonoBehaviour
         
         
 
-        foreach (var chunck in _chuncks.Where(chunck =>
+        foreach (var chunck in Chuncks.Where(chunck =>
             Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
             Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
         {
@@ -334,7 +336,7 @@ public class worldCreation : MonoBehaviour
         chunck.GetComponent<MeshCollider>().sharedMesh = newMesh;
     }
 
-    void GenerateBlock_Top(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
+    void GenerateBlock_Top(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
     {
         vertices.Add(new Vector3(0f, 1f, 1f) + offset);
         vertices.Add(new Vector3(1f, 1f, 1f) + offset);
@@ -346,11 +348,11 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.up);
         normals.Add(Vector3.up);
 
-        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
+        if (id != _blockTypes.Grass && id != _blockTypes.Log)
         {
-            uvs.AddRange(_blocks.GetBlockUV(ID));
+            uvs.AddRange(_blocks.GetBlockUV(id));
         }
-        else if(ID == _blockTypes.Grass)
+        else if(id == _blockTypes.Grass)
         {
             uvs.AddRange(_blocks.GrassTop());
         }
@@ -368,7 +370,7 @@ public class worldCreation : MonoBehaviour
         currentIndex += 4;
     }
 
-    private void GenerateBlock_Right(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
+    private void GenerateBlock_Right(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
     {
         vertices.Add(new Vector3(1f, 1f, 0f) + offset);
         vertices.Add(new Vector3(1f, 1f, 1f) + offset);
@@ -380,11 +382,11 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
         
-        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
+        if (id != _blockTypes.Grass && id != _blockTypes.Log)
         {
-            uvs.AddRange(_blocks.GetBlockUV(ID));
+            uvs.AddRange(_blocks.GetBlockUV(id));
         }
-        else if(ID == _blockTypes.Grass)
+        else if(id == _blockTypes.Grass)
         {
             uvs.AddRange(_blocks.GrassSide());
         }
@@ -402,7 +404,7 @@ public class worldCreation : MonoBehaviour
         currentIndex += 4;
     }
 
-    private void GenerateBlock_Left(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
+    private void GenerateBlock_Left(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
     {
         vertices.Add(new Vector3(0f, 1f, 1f) + offset);
         vertices.Add(new Vector3(0f, 1f, 0f) + offset);
@@ -413,18 +415,24 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
-        
-        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
+        try
         {
-            uvs.AddRange(_blocks.GetBlockUV(ID));
+            if (id != _blockTypes.Grass && id != _blockTypes.Log)
+            {
+                uvs.AddRange(_blocks.GetBlockUV(id));
+            }
+            else if (id == _blockTypes.Grass)
+            {
+                uvs.AddRange(_blocks.GrassSide());
+            }
+            else
+            {
+                uvs.AddRange(_blocks.LogSide());
+            }
         }
-        else if(ID == _blockTypes.Grass)
+        catch (Exception e)
         {
-            uvs.AddRange(_blocks.GrassSide());
-        }
-        else
-        {
-            uvs.AddRange(_blocks.LogSide());
+            Debug.Log(_blocks == null);
         }
 
         indices.Add(currentIndex + 0);
@@ -436,7 +444,7 @@ public class worldCreation : MonoBehaviour
         currentIndex += 4;
     }
 
-    private void GenerateBlock_Forward(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
+    private void GenerateBlock_Forward(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
     {
         vertices.Add(new Vector3(1f, 1f, 1f) + offset);
         vertices.Add(new Vector3(0f, 1f, 1f) + offset);
@@ -448,11 +456,11 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.forward);
         normals.Add(Vector3.forward);
 
-        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
+        if (id != _blockTypes.Grass && id != _blockTypes.Log)
         {
-            uvs.AddRange(_blocks.GetBlockUV(ID));
+            uvs.AddRange(_blocks.GetBlockUV(id));
         }
-        else if(ID == _blockTypes.Grass)
+        else if(id == _blockTypes.Grass)
         {
             uvs.AddRange(_blocks.GrassSide());
         }
@@ -470,7 +478,7 @@ public class worldCreation : MonoBehaviour
         currentIndex += 4;
     }
 
-    private void GenerateBlock_Back(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
+    private void GenerateBlock_Back(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
     {
         vertices.Add(new Vector3(0f, 1f, 0f) + offset);
         vertices.Add(new Vector3(1f, 1f, 0f) + offset);
@@ -482,11 +490,11 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
 
-        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
+        if (id != _blockTypes.Grass && id != _blockTypes.Log)
         {
-            uvs.AddRange(_blocks.GetBlockUV(ID));
+            uvs.AddRange(_blocks.GetBlockUV(id));
         }
-        else if(ID == _blockTypes.Grass)
+        else if(id == _blockTypes.Grass)
         {
             uvs.AddRange(_blocks.GrassSide());
         }
@@ -504,7 +512,7 @@ public class worldCreation : MonoBehaviour
         currentIndex += 4;
     }
 
-    private void GenerateBlock_Bottom(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int ID)
+    private void GenerateBlock_Bottom(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
     {
         vertices.Add(new Vector3(0f, 0f, 0f) + offset);
         vertices.Add(new Vector3(1f, 0f, 0f) + offset);
@@ -516,11 +524,11 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.down);
         normals.Add(Vector3.down);
 
-        if (ID != _blockTypes.Grass && ID != _blockTypes.Log)
+        if (id != _blockTypes.Grass && id != _blockTypes.Log)
         {
-            uvs.AddRange(_blocks.GetBlockUV(ID));
+            uvs.AddRange(_blocks.GetBlockUV(id));
         }
-        else if(ID == _blockTypes.Grass)
+        else if(id == _blockTypes.Grass)
         {
             uvs.AddRange(_blocks.GrassBot());
         }
@@ -538,7 +546,7 @@ public class worldCreation : MonoBehaviour
         currentIndex += 4;
     }
 
-    public float Perlin3D(float x, float y, float z)
+    private float Perlin3D(float x, float y, float z)
     {
         var ab = Mathf.PerlinNoise(x, y);
         var bc = Mathf.PerlinNoise(y, z);
@@ -552,5 +560,46 @@ public class worldCreation : MonoBehaviour
         
         return abc / 6f;
     }
+
+    public void LoadData(int seed, List<ChunckInfo> chunckInfos)
+    {
+        this.seed = seed;
+        
+        if(chunckInfos.Count == 0) return;
+        
+        foreach (var chunckInfo in chunckInfos)
+        {
+            var c = Instantiate(chunck, chunckInfo.pos, Quaternion.identity);
+
+            var bIds = new int[Size, maxHeight, Size];
+
+            for (var i = 0; i < chunckInfo.blockIDs.Length; i++)
+            {
+                var z = i % Size;
+                var y = (i / Size) % maxHeight;
+                var x = i / (Size * maxHeight);
+
+                bIds[x, y, z] = chunckInfo.blockIDs[i];
+            }
+
+            c.GetComponent<Chunck>().BlockIDs = bIds;
+            
+            Chuncks.Add(c);
+            
+            GenerateMesh(c);
+        }
+    }
+
+    public int Seed
+    {
+        get => seed;
+        set => seed = value;
+    }
+
+    public List<GameObject> Chuncks { get; set; } = new List<GameObject>();
+
+    public int MAXHeight => maxHeight;
+
+    public int Size1 => Size;
 }
 

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Chunck : MonoBehaviour
 {
-    private short[,,] _blockIDs;
+    private int[,,] _blockIDs;
 
-    public short[,,] BlockIDs
+    public int[,,] BlockIDs
     {
         get => _blockIDs;
         set => _blockIDs = value;

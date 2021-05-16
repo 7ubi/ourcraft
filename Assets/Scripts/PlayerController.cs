@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speedH = 2.0f;
     [SerializeField] private  float speedV = 2.0f;
     [SerializeField] private float jumpForce;
-    [SerializeField] private SaveManager _saveManager;
 
     private float forward;
     private float right;

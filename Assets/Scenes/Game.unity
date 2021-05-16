@@ -2826,6 +2826,8 @@ MonoBehaviour:
   chunck: {fileID: 8451236987504973569, guid: 320c3e7c5fc352247932ecdea37a94a4, type: 3}
   renderDistance: 6
   player: {fileID: 1743702924}
+  _blockTypes: {fileID: 1731320885}
+  _blocks: {fileID: 1731320884}
 --- !u!4 &1731320883
 Transform:
   m_ObjectHideFlags: 0
@@ -3113,7 +3115,6 @@ MonoBehaviour:
   speedH: 2
   speedV: 2
   jumpForce: 5
-  _saveManager: {fileID: 0}
 --- !u!114 &1743702931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3127,7 +3128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selector: {fileID: 686466976}
-  _blockTypes: {fileID: 1731320885}
+  _blockTypes: {fileID: 0}
   icons:
   - {fileID: -2745123781392651398, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
   - {fileID: 5355251547629053043, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
