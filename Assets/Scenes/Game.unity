@@ -2794,6 +2794,7 @@ GameObject:
   - component: {fileID: 1731320882}
   - component: {fileID: 1731320884}
   - component: {fileID: 1731320885}
+  - component: {fileID: 1731320886}
   m_Layer: 0
   m_Name: World Manager
   m_TagString: Untagged
@@ -2863,6 +2864,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86cac6ef147c4674c99255b3e0952265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1731320886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731320881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5871a973b24e449ba571ae0660570178, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1743702924}
 --- !u!1 &1743217744
 GameObject:
   m_ObjectHideFlags: 0
@@ -3099,6 +3113,7 @@ MonoBehaviour:
   speedH: 2
   speedV: 2
   jumpForce: 5
+  _saveManager: {fileID: 0}
 --- !u!114 &1743702931
 MonoBehaviour:
   m_ObjectHideFlags: 0

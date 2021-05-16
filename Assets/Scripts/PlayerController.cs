@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speedH = 2.0f;
     [SerializeField] private  float speedV = 2.0f;
     [SerializeField] private float jumpForce;
+    [SerializeField] private SaveManager _saveManager;
 
     private float forward;
     private float right;
@@ -53,7 +54,7 @@ public class PlayerController : MonoBehaviour
         transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
         _camera.transform.eulerAngles = new Vector3(_pitch, _yaw, 0.0f);
 
-        if (Input.GetKey(KeyCode.Space) && isGrounded())
+        if (Input.GetKey(KeyCode.Space) && IsGrounded())
             _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, _rb.velocity.z);
     }
 
@@ -61,13 +62,23 @@ public class PlayerController : MonoBehaviour
     {
         var velocity = _rb.velocity;
         var yVel = velocity.y;
-        velocity = transform.forward * forward + transform.right * right;
+        var transform1 = transform;
+        velocity = transform1.forward * forward + transform1.right * right;
         velocity = new Vector3(velocity.x, yVel, velocity.z);
         _rb.velocity = velocity;
     }
 
-    bool isGrounded()
+    private bool IsGrounded()
     {
         return Physics.Raycast(transform.position, -Vector3.up, 1.25f + .1f);
     }
+
+    public void LoadData(Vector3 pos, Quaternion rotation)
+    {
+        transform.position = pos;
+        _camera.transform.rotation = rotation;
+        transform.eulerAngles = new Vector3(0, _camera.transform.eulerAngles.y, 0);
+    }
+
+    public Camera Camera => _camera;
 }
