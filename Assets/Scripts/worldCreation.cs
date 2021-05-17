@@ -42,6 +42,7 @@ public class worldCreation : MonoBehaviour
 
     public void GenerateFirst()
     {
+        seed = Random.Range(10000, 100000);
         StartCoroutine(GenerateChunck(true));
     }
     
@@ -78,8 +79,8 @@ public class worldCreation : MonoBehaviour
                 
                 
                 
-                if (Perlin3D((x + offset.x) * 0.05f + seed, (float) height * 0.05f + seed,
-                    (z + offset.y) * 0.05f + seed) >= noiseThreshold)
+                if (Perlin3D((x + offset.x + seed) * 0.05f, (float) (height + seed) * 0.05f,
+                    (z + offset.y + seed) * 0.05f) >= noiseThreshold)
                 {
                     BlockIDs[x, height + minHeight, z] = _blockTypes.Grass;
                     if (x > 1 && x < Size - 2 && z > 1 && z < Size - 2)
@@ -415,25 +416,20 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
-        try
+        
+        if (id != _blockTypes.Grass && id != _blockTypes.Log)
         {
-            if (id != _blockTypes.Grass && id != _blockTypes.Log)
-            {
-                uvs.AddRange(_blocks.GetBlockUV(id));
-            }
-            else if (id == _blockTypes.Grass)
-            {
-                uvs.AddRange(_blocks.GrassSide());
-            }
-            else
-            {
-                uvs.AddRange(_blocks.LogSide());
-            }
+            uvs.AddRange(_blocks.GetBlockUV(id));
         }
-        catch (Exception e)
+        else if (id == _blockTypes.Grass)
         {
-            Debug.Log(_blocks == null);
+            uvs.AddRange(_blocks.GrassSide());
         }
+        else
+        {
+            uvs.AddRange(_blocks.LogSide());
+        } 
+        
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);

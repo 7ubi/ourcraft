@@ -11,20 +11,22 @@ public class SaveManager : MonoBehaviour
     private worldCreation _worldCreation;
     private PlayerController _playerController;
     private PlayerInventory _playerInventory;
+    private string _worldName;
 
     private void Start()
     {
         _playerController = player.GetComponent<PlayerController>();
         _playerInventory = player.GetComponent<PlayerInventory>();
         _worldCreation = GetComponent<worldCreation>();
-        
-        if (File.Exists(Application.persistentDataPath + "/saves/ourcraft.data"))
+        _worldName = PlayerPrefs.GetString("world");
+        if (File.Exists(Application.persistentDataPath + "/saves/" + _worldName + ".data"))
         {
             LoadGame();
         }
         else
         {
             _worldCreation.GenerateFirst();
+            SaveGame();
         }
     }
 
@@ -41,12 +43,12 @@ public class SaveManager : MonoBehaviour
         var saveData = new SaveData(_playerController.transform.position, _playerController.Camera.transform.rotation,
             _playerInventory.ItemCount, _playerInventory.ItemIds,
             _worldCreation.Seed, _worldCreation.Chuncks, _worldCreation.Size1, _worldCreation.MAXHeight);
-        SerializationManager.Save("ourcraft", saveData);
+        SerializationManager.Save(_worldName, saveData);
     }
 
     public void LoadGame()
     {
-        var data = SerializationManager.Load(Application.persistentDataPath + "/saves/ourcraft.data") as SaveData;
+        var data = SerializationManager.Load(Application.persistentDataPath + "/saves/" + _worldName + ".data") as SaveData;
         
         _playerController.LoadData(data.playerInfo.pos, data.playerInfo.rotation);
         _playerInventory.LoadData(data.playerInfo.itemCount, data.playerInfo.itemIds);
