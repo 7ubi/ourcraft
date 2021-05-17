@@ -23,13 +23,11 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        Cursor.lockState = CursorLockMode.Locked;
         
     }
 
     private void Update()
     {
-        Cursor.visible = false;
         forward = Input.GetAxis("Vertical") * moveSpeed;
         right = Input.GetAxis("Horizontal") * moveSpeed;
 

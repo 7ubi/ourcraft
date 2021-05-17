@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEditor.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 
@@ -53,5 +54,12 @@ public class SaveManager : MonoBehaviour
         _playerController.LoadData(data.playerInfo.pos, data.playerInfo.rotation);
         _playerInventory.LoadData(data.playerInfo.itemCount, data.playerInfo.itemIds);
         _worldCreation.LoadData(data.seed, data.chuncksInfos);
+    }
+
+    public void MainMenu()
+    {
+        SaveGame();
+        Time.timeScale = 1;
+        SceneManager.LoadScene("MainMenu");
     }
 }
