@@ -8,7 +8,8 @@ using TMPro;
 public class LoadWorld : MonoBehaviour
 {
     [SerializeField] private Button world;
-    
+    [SerializeField] private LoadingScreen loadingScreen;
+    private GameObject _selected;
     
     private void Start()
     {
@@ -17,5 +18,21 @@ public class LoadWorld : MonoBehaviour
             var w = Instantiate(world.gameObject, this.transform);
             w.GetComponentInChildren<TMP_Text>().text = Path.GetFileNameWithoutExtension(file);
         }
+    }
+
+    public void Select(GameObject button)
+    {
+        if (_selected != null)
+        {
+            _selected.GetComponent<Image>().color = new Color(255, 255, 255, 100);
+        }
+        _selected = button;
+        
+        _selected.GetComponent<Image>().color = new Color(0, 100, 0, 100);
+    }
+
+    public void Load()
+    {
+        loadingScreen.LoadScene();
     }
 }
