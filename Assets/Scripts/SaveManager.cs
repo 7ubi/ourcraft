@@ -47,7 +47,7 @@ public class SaveManager : MonoBehaviour
         SerializationManager.Save(_worldName, saveData);
     }
 
-    public void LoadGame()
+    private void LoadGame()
     {
         var data = SerializationManager.Load(Application.persistentDataPath + "/saves/" + _worldName + ".data") as SaveData;
         
