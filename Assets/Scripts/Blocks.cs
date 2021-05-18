@@ -160,10 +160,10 @@ public class Blocks: MonoBehaviour
     {
         var uvs = new List<Vector2>();
 
-        var xMin = 1 - _size * 2;
-        var xMax = 1 - _size;
-        var yMin = 3 * _size;
-        var yMax = 4 * _size;
+        var xMin = 0;
+        var xMax = 1;
+        var yMin = 0;
+        var yMax = 1;
             
         uvs.Add(new Vector2(xMin, yMax));
         uvs.Add(new Vector2(xMax, yMax));

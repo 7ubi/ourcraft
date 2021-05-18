@@ -10,6 +10,8 @@ public class Water : MonoBehaviour
     [SerializeField] private BlockTypes blockTypes;
     [SerializeField] private Blocks blocks;
     [SerializeField] private worldCreation worldCreation;
+    
+    // water shader https://www.youtube.com/watch?v=gRq-IdShxpU
 
     private int[,] _waterIds;
     [SerializeField] private int height;
@@ -52,6 +54,7 @@ public class Water : MonoBehaviour
                 var offset = new Vector3(x, height - 0.1f, z);
                 if (_waterIds[x, z] == 0) continue;
                 GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices, _waterIds[x, z]);
+                GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices, _waterIds[x, z]);
             }
         }
         
@@ -78,6 +81,29 @@ public class Water : MonoBehaviour
         
         uvs.AddRange(blocks.Water());
         
+
+        indices.Add(currentIndex + 0);
+        indices.Add(currentIndex + 1);
+        indices.Add(currentIndex + 2);
+        indices.Add(currentIndex + 0);
+        indices.Add(currentIndex + 2);
+        indices.Add(currentIndex + 3);
+        currentIndex += 4;
+    }
+    
+    private void GenerateBlock_Bottom(ref int currentIndex, Vector3 offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
+    {
+        vertices.Add(new Vector3(0f, 1f, 0f) + offset);
+        vertices.Add(new Vector3(1f, 1f, 0f) + offset);
+        vertices.Add(new Vector3(1f, 1f, 1f) + offset);
+        vertices.Add(new Vector3(0f, 1f, 1f) + offset);
+
+        normals.Add(Vector3.down);
+        normals.Add(Vector3.down);
+        normals.Add(Vector3.down);
+        normals.Add(Vector3.down);
+
+        uvs.AddRange(blocks.Water());
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
