@@ -155,4 +155,21 @@ public class Blocks: MonoBehaviour
 
         return uvs;
     }
+    
+    public List<Vector2> Water()
+    {
+        var uvs = new List<Vector2>();
+
+        var xMin = 1 - _size * 2;
+        var xMax = 1 - _size;
+        var yMin = 3 * _size;
+        var yMax = 4 * _size;
+            
+        uvs.Add(new Vector2(xMin, yMax));
+        uvs.Add(new Vector2(xMax, yMax));
+        uvs.Add(new Vector2(xMax, yMin));
+        uvs.Add(new Vector2(xMin, yMin));
+
+        return uvs;
+    }
 }

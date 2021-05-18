@@ -45,8 +45,18 @@ public class SaveData
                 }
             }
 
+            var waterIds = new int[size * size];
+
+            for (var x = 0; x < size; x++)
+            {
+                for (var z = 0; z < size; z++)
+                {
+                    waterIds[x * size + z] = chunck.GetComponent<Chunck>().WaterIDs[x, z];
+                }
+            }
+
             c.blockIDs = blockIds;
-            
+            c.waterIDs = waterIds;
             chuncksInfos.Add(c);
         }
     }

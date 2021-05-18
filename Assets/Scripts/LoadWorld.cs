@@ -8,6 +8,7 @@ using TMPro;
 public class LoadWorld : MonoBehaviour
 {
     [SerializeField] private Button world;
+    [SerializeField] private GameObject canvas;
     [SerializeField] private LoadingScreen loadingScreen;
     private GameObject _selected;
     
@@ -33,6 +34,10 @@ public class LoadWorld : MonoBehaviour
 
     public void Load()
     {
+        if (_selected == null)
+            return;
+        loadingScreen.gameObject.SetActive(true);
+        canvas.SetActive(false);
         loadingScreen.LoadScene();
     }
 }

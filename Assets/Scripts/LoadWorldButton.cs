@@ -26,9 +26,6 @@ public class LoadWorldButton : MonoBehaviour
         PlayerPrefs.SetString("world", _worldName);
         
         _loadWorld.Select(gameObject);
-        
-        //var loadScene = GameObject.Find("Loading Canvas");
-        //loadScene.GetComponent<LoadingScreen>().LoadScene("Game");
     }
 
     private void Delete()

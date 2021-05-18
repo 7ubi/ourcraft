@@ -3522,6 +3522,7 @@ GameObject:
   - component: {fileID: 1731320884}
   - component: {fileID: 1731320885}
   - component: {fileID: 1731320886}
+  - component: {fileID: 1731320887}
   m_Layer: 0
   m_Name: World Manager
   m_TagString: Untagged
@@ -3554,6 +3555,7 @@ MonoBehaviour:
   renderDistance: 6
   player: {fileID: 1743702924}
   _blockTypes: {fileID: 1731320885}
+  water: {fileID: 1731320887}
   _blocks: {fileID: 1731320884}
 --- !u!4 &1731320883
 Transform:
@@ -3606,6 +3608,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1743702924}
+--- !u!114 &1731320887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731320881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 557a86b045e63a34c8cc5fac7bb9112e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waterChunck: {fileID: 8451236987504973569, guid: c34262576ff9a3e4888b17c5dce21dad,
+    type: 3}
+  blockTypes: {fileID: 1731320885}
+  blocks: {fileID: 1731320884}
+  worldCreation: {fileID: 1731320882}
+  height: 50
 --- !u!1 &1743217744
 GameObject:
   m_ObjectHideFlags: 0
