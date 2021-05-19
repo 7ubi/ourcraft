@@ -45,13 +45,16 @@ public class SaveData
                 }
             }
 
-            var waterIds = new int[size * size];
+            var waterIds = new int[size * maxHeight * size];
 
             for (var x = 0; x < size; x++)
             {
-                for (var z = 0; z < size; z++)
+                for (var y = 0; y < maxHeight; y++)
                 {
-                    waterIds[x * size + z] = chunck.GetComponent<Chunck>().WaterIDs[x, z];
+                    for (var z = 0; z < size; z++)
+                    {
+                        waterIds[x * maxHeight * size + y * size + z] = chunck.GetComponent<Chunck>().WaterIDs[x, y, z];
+                    }
                 }
             }
 

@@ -57,7 +57,7 @@ public class worldCreation : MonoBehaviour
         _lastChunck = currentChunck;
     }
 
-    private void GenerateBlocks(Vector2 offset)
+    private void GenerateBlocks(Vector2 offset, Transform chunck)
     {
         _blockIDs = new int[Size, maxHeight, Size];
         var treeGen = new System.Random((int)(offset.x * 1000 + offset.y));
@@ -76,10 +76,16 @@ public class worldCreation : MonoBehaviour
                     height = 1;
 
                 var grassTop = true;
-                if (height + minHeight < water.Height)
+                var waterTop = false;
+                if (height + minHeight - 1 < water.Height)
                 {
-                    _blockIDs[x, height + minHeight, z] = _blockTypes.Dirt;
-                    water.AddWater(x, z);
+                    _blockIDs[x, height + minHeight - 4, z] = _blockTypes.Dirt;
+                    for (var y = water.Height; y >= height + minHeight; y--)
+                    {
+                        water.AddWater(x, y, z);
+                    }
+
+                    waterTop = true;
                 }
                 else
                 {
@@ -119,28 +125,30 @@ public class worldCreation : MonoBehaviour
 
                 for(var y = height + minHeight - 1; y >= 1; y--)
                 {
-                    if(Perlin3D((x  + offset.x) * 0.05f + seed, (float)y * 0.05f + seed, (z + offset.y) * 0.05f  + seed) < noiseThreshold)
+                    if (Perlin3D((x + offset.x) * 0.05f + seed, (float) y * 0.05f + seed,
+                        (z + offset.y) * 0.05f + seed) < noiseThreshold)
+                    {
+                        if (waterTop)
+                        {
+                            water.AddWater(x, y, z);
+                        }
                         continue;
+                    }
 
+                    
                     if (!grassTop && y > height + minHeight - 4)
                     {
-                        if (y < water.Height)
-                        {
-                            water.AddWater(x, z);
-                        }
-                        else
-                        {
-                            _blockIDs[x, y, z] = _blockTypes.Grass;
-                            grassTop = true;
-                        }
+                        _blockIDs[x, y, z] = _blockTypes.Grass;
+                        grassTop = true;
                     }
                     else
                     {
-
                         if (y <= height + minHeight - 4)
                             _blockIDs[x, y, z] = _blockTypes.Stone;
                         else
                             _blockIDs[x, y, z] = _blockTypes.Dirt;
+                        
+                        waterTop = false;
                     }
                 }
                 _blockIDs[x, 0, z] = _blockTypes.Stone;
@@ -249,7 +257,7 @@ public class worldCreation : MonoBehaviour
         var c = chunck.GetComponent<Chunck>();
         if (c.BlockIDs == null)
         {
-            GenerateBlocks(new Vector2(position.x, position.z));
+            GenerateBlocks(new Vector2(position.x, position.z), chunck.transform);
             chunck.GetComponent<Chunck>().BlockIDs = _blockIDs;
         }
         else
@@ -258,7 +266,7 @@ public class worldCreation : MonoBehaviour
         }
         
         water.GenerateWater(chunck.transform);
-
+       // water.UpdateWater(chunck.transform);
         var newMesh = new Mesh();
         var vertices = new List<Vector3>();
         var normals = new List<Vector3>();
@@ -595,13 +603,14 @@ public class worldCreation : MonoBehaviour
             cChunck.BlockIDs = bIds;
             if (chunckInfo.waterIDs != null)
             {
-                var wIds = new int[Size, Size];
+                var wIds = new int[Size, maxHeight, Size];
                 for (var i = 0; i < chunckInfo.waterIDs.Length; i++)
                 {
                     var z = i % Size;
-                    var x = i / Size;
+                    var y = (i / Size) % maxHeight;
+                    var x = i / (Size * maxHeight);
 
-                    wIds[x, z] = chunckInfo.waterIDs[i];
+                    wIds[x, y, z] = chunckInfo.waterIDs[i];
                 }
                 cChunck.WaterIDs = wIds;
             }
@@ -611,7 +620,63 @@ public class worldCreation : MonoBehaviour
             GenerateMesh(c);
         }
     }
+    
+    public int GetBlock(Vector3 block)
+    {
+        var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
+        var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
 
+        foreach (var chunck in Chuncks.Where(chunck => Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
+                                                       Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
+        {
+            var bix = Mathf.FloorToInt(block.x) - chunkPosX;
+            var biy = Mathf.FloorToInt(block.y);
+            var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
+            var c = chunck.GetComponent<Chunck>();
+            return c.BlockIDs[bix, biy, biz];
+        }
+
+        return 0;
+    }
+
+    public int GetWater(Vector3 block)
+    {
+        var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
+        var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
+
+        foreach (var chunck in Chuncks.Where(chunck => Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
+                                                       Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
+        {
+            var bix = Mathf.FloorToInt(block.x) - chunkPosX;
+            var biy = Mathf.FloorToInt(block.y);
+            var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
+            var c = chunck.GetComponent<Chunck>();
+            return c.WaterIDs[bix, biy, biz];
+        }
+
+        return 0;
+    }
+
+    public void PlaceWater(Vector3 block)
+    {
+        var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
+        var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
+        
+        
+
+        foreach (var chunck in Chuncks.Where(chunck =>
+            Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
+            Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
+        {
+            var bix = Mathf.FloorToInt(block.x) - chunkPosX;
+            var biy = Mathf.FloorToInt(block.y);
+            var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
+            
+            
+            chunck.GetComponent<Chunck>().WaterIDs[bix, biy, biz] = 2;
+        }
+    }
+    
     public int Seed
     {
         get => seed;

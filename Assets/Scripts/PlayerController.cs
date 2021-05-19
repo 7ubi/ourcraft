@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speedH = 2.0f;
     [SerializeField] private  float speedV = 2.0f;
     [SerializeField] private float jumpForce;
+    [SerializeField] private GameObject selectGameObject;
+    private bool _canPlaceBlock;
 
     private float forward;
     private float right;
@@ -77,5 +79,23 @@ public class PlayerController : MonoBehaviour
         transform.eulerAngles = new Vector3(0, _camera.transform.eulerAngles.y, 0);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject == selectGameObject)
+        {
+            _canPlaceBlock = false;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject == selectGameObject)
+        {
+            _canPlaceBlock = true;
+        }
+    }
+
     public Camera Camera => _camera;
+
+    public bool CanPlaceBlock => _canPlaceBlock;
 }
