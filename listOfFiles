@@ -1,0 +1,206 @@
+.gitattributes
+.gitignore
+Assets/Images.meta
+Assets/Images/Water 0401normal.jpg
+Assets/Images/Water 0401normal.jpg.meta
+Assets/Images/background.png
+Assets/Images/background.png.meta
+Assets/Images/button.psd
+Assets/Images/button.psd.meta
+Assets/Images/texture_atlas.png
+Assets/Images/texture_atlas.png.meta
+Assets/Images/water 0340normal.jpg
+Assets/Images/water 0340normal.jpg.meta
+Assets/Images/water 0342normal.jpg
+Assets/Images/water 0342normal.jpg.meta
+Assets/Materials.meta
+Assets/Materials/Chunck.mat
+Assets/Materials/Chunck.mat.meta
+Assets/Materials/Player.mat
+Assets/Materials/Player.mat.meta
+Assets/Materials/Player.physicMaterial
+Assets/Materials/Player.physicMaterial.meta
+Assets/Materials/Select.mat
+Assets/Materials/Select.mat.meta
+Assets/Materials/Water Chunck.mat
+Assets/Materials/Water Chunck.mat.meta
+Assets/Prefabs.meta
+Assets/Prefabs/Chunck.prefab
+Assets/Prefabs/Chunck.prefab.meta
+Assets/Prefabs/Water Chunck.prefab
+Assets/Prefabs/Water Chunck.prefab.meta
+Assets/Prefabs/World.prefab
+Assets/Prefabs/World.prefab.meta
+Assets/Resources.meta
+Assets/Resources/BillingMode.json
+Assets/Resources/BillingMode.json.meta
+Assets/Scenes.meta
+Assets/Scenes/Game.unity
+Assets/Scenes/Game.unity.meta
+Assets/Scenes/MainMenu.unity
+Assets/Scenes/MainMenu.unity.meta
+Assets/Scenes/SampleSceneSettings.lighting
+Assets/Scenes/SampleSceneSettings.lighting.meta
+Assets/Scripts.meta
+Assets/Scripts/BlockTypes.cs
+Assets/Scripts/BlockTypes.cs.meta
+Assets/Scripts/Blocks.cs
+Assets/Scripts/Blocks.cs.meta
+Assets/Scripts/Chunck.cs
+Assets/Scripts/Chunck.cs.meta
+Assets/Scripts/ChunckInfo.cs
+Assets/Scripts/ChunckInfo.cs.meta
+Assets/Scripts/CreateWorld.cs
+Assets/Scripts/CreateWorld.cs.meta
+Assets/Scripts/LoadWorld.cs
+Assets/Scripts/LoadWorld.cs.meta
+Assets/Scripts/LoadWorldButton.cs
+Assets/Scripts/LoadWorldButton.cs.meta
+Assets/Scripts/LoadingScreen.cs
+Assets/Scripts/LoadingScreen.cs.meta
+Assets/Scripts/PauseMenu.cs
+Assets/Scripts/PauseMenu.cs.meta
+Assets/Scripts/PlayerActionController.cs
+Assets/Scripts/PlayerActionController.cs.meta
+Assets/Scripts/PlayerController.cs
+Assets/Scripts/PlayerController.cs.meta
+Assets/Scripts/PlayerInfo.cs
+Assets/Scripts/PlayerInfo.cs.meta
+Assets/Scripts/PlayerInventory.cs
+Assets/Scripts/PlayerInventory.cs.meta
+Assets/Scripts/QuaternionSerialization.cs
+Assets/Scripts/QuaternionSerialization.cs.meta
+Assets/Scripts/SaveData.cs
+Assets/Scripts/SaveData.cs.meta
+Assets/Scripts/SaveManager.cs
+Assets/Scripts/SaveManager.cs.meta
+Assets/Scripts/SerializationManager.cs
+Assets/Scripts/SerializationManager.cs.meta
+Assets/Scripts/Vector3Serialization.cs
+Assets/Scripts/Vector3Serialization.cs.meta
+Assets/Scripts/Water.cs
+Assets/Scripts/Water.cs.meta
+Assets/Scripts/worldCreation.cs
+Assets/Scripts/worldCreation.cs.meta
+Assets/Shader.meta
+Assets/Shader/Select.shadergraph
+Assets/Shader/Select.shadergraph.meta
+Assets/Shader/Water.shadergraph
+Assets/Shader/Water.shadergraph.meta
+Assets/TextMesh Pro.meta
+Assets/TextMesh Pro/Documentation.meta
+Assets/TextMesh Pro/Documentation/TextMesh Pro User Guide 2016.pdf
+Assets/TextMesh Pro/Documentation/TextMesh Pro User Guide 2016.pdf.meta
+Assets/TextMesh Pro/Fonts.meta
+Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt
+Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt.meta
+Assets/TextMesh Pro/Fonts/LiberationSans.ttf
+Assets/TextMesh Pro/Fonts/LiberationSans.ttf.meta
+Assets/TextMesh Pro/Resources.meta
+Assets/TextMesh Pro/Resources/Fonts & Materials.meta
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Drop Shadow.mat
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Drop Shadow.mat.meta
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset.meta
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Outline.mat
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Outline.mat.meta
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset.meta
+Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt
+Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt.meta
+Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt
+Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt.meta
+Assets/TextMesh Pro/Resources/Sprite Assets.meta
+Assets/TextMesh Pro/Resources/Sprite Assets/EmojiOne.asset
+Assets/TextMesh Pro/Resources/Sprite Assets/EmojiOne.asset.meta
+Assets/TextMesh Pro/Resources/Style Sheets.meta
+Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset
+Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset.meta
+Assets/TextMesh Pro/Resources/TMP Settings.asset
+Assets/TextMesh Pro/Resources/TMP Settings.asset.meta
+Assets/TextMesh Pro/Shaders.meta
+Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader
+Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader
+Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader
+Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader
+Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader
+Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader
+Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader
+Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_SDF.shader
+Assets/TextMesh Pro/Shaders/TMP_SDF.shader.meta
+Assets/TextMesh Pro/Shaders/TMP_Sprite.shader
+Assets/TextMesh Pro/Shaders/TMP_Sprite.shader.meta
+Assets/TextMesh Pro/Shaders/TMPro.cginc
+Assets/TextMesh Pro/Shaders/TMPro.cginc.meta
+Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc
+Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc.meta
+Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc
+Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc.meta
+Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc
+Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc.meta
+Assets/TextMesh Pro/Sprites.meta
+Assets/TextMesh Pro/Sprites/EmojiOne Attribution.txt
+Assets/TextMesh Pro/Sprites/EmojiOne Attribution.txt.meta
+Assets/TextMesh Pro/Sprites/EmojiOne.json
+Assets/TextMesh Pro/Sprites/EmojiOne.json.meta
+Assets/TextMesh Pro/Sprites/EmojiOne.png
+Assets/TextMesh Pro/Sprites/EmojiOne.png.meta
+Assets/UniversalRenderPipelineAsset.asset
+Assets/UniversalRenderPipelineAsset.asset.meta
+Assets/UniversalRenderPipelineAsset_Renderer.asset
+Assets/UniversalRenderPipelineAsset_Renderer.asset.meta
+Logs/AssetImportWorker0-prev.log
+Logs/AssetImportWorker0.log
+Logs/Packages-Update.log
+Logs/shadercompiler-AssetImportWorker0.log
+Logs/shadercompiler-UnityShaderCompiler.exe0.log
+Logs/shadercompiler-UnityShaderCompiler.exe1.log
+Logs/shadercompiler-UnityShaderCompiler.exe2.log
+Logs/shadercompiler-UnityShaderCompiler.exe3.log
+Logs/shadercompiler-UnityShaderCompiler.exe4.log
+Logs/shadercompiler-UnityShaderCompiler.exe5.log
+Logs/shadercompiler-UnityShaderCompiler.exe6.log
+Logs/shadercompiler-UnityShaderCompiler.exe7.log
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/AudioManager.asset
+ProjectSettings/ClusterInputManager.asset
+ProjectSettings/DynamicsManager.asset
+ProjectSettings/EditorBuildSettings.asset
+ProjectSettings/EditorSettings.asset
+ProjectSettings/GraphicsSettings.asset
+ProjectSettings/InputManager.asset
+ProjectSettings/NavMeshAreas.asset
+ProjectSettings/PackageManagerSettings.asset
+ProjectSettings/Physics2DSettings.asset
+ProjectSettings/PresetManager.asset
+ProjectSettings/ProjectSettings.asset
+ProjectSettings/ProjectVersion.txt
+ProjectSettings/QualitySettings.asset
+ProjectSettings/SceneTemplateSettings.json
+ProjectSettings/TagManager.asset
+ProjectSettings/TimeManager.asset
+ProjectSettings/TimelineSettings.asset
+ProjectSettings/URPProjectSettings.asset
+ProjectSettings/UnityConnectSettings.asset
+ProjectSettings/VFXManager.asset
+ProjectSettings/VersionControlSettings.asset
+ProjectSettings/XRSettings.asset
+README.md
+UserSettings/EditorUserSettings.asset
+UserSettings/Search.settings

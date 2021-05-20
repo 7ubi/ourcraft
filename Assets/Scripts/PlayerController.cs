@@ -97,5 +97,9 @@ public class PlayerController : MonoBehaviour
 
     public Camera Camera => _camera;
 
-    public bool CanPlaceBlock => _canPlaceBlock;
+    public bool CanPlaceBlock
+    {
+        get => _canPlaceBlock;
+        set => _canPlaceBlock = value;
+    }
 }

@@ -243,9 +243,12 @@ public class worldCreation : MonoBehaviour
             var bix = Mathf.FloorToInt(block.x) - chunkPosX;
             var biy = Mathf.FloorToInt(block.y);
             var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
+
+            var c = chunck.GetComponent<Chunck>();
+            c.BlockIDs[bix, biy, biz] = id;
+            c.WaterIDs[bix, biy, biz] = 0;
             
-            
-            chunck.GetComponent<Chunck>().BlockIDs[bix, biy, biz] = id;
+            water.GenerateWater(chunck.transform);
             GenerateMesh(chunck);
         }
     }

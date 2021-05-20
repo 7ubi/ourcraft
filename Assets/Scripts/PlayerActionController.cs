@@ -50,6 +50,7 @@ public class PlayerActionController : MonoBehaviour
             }
             else
             {
+                playerController.CanPlaceBlock = true;
                 selectGameObject.SetActive(false);
             }
         }

@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: d9a12ffaaa5dd67418211def4dfaee9a, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.8335275, g: 0.95325106, b: 1.1535705, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3657,6 +3657,7 @@ GameObject:
   - component: {fileID: 1731320885}
   - component: {fileID: 1731320886}
   - component: {fileID: 1731320887}
+  - component: {fileID: 1731320888}
   m_Layer: 0
   m_Name: World Manager
   m_TagString: Untagged
@@ -3678,9 +3679,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Size: 16
   maxHeight: 256
-  maxGeneratingHeight: 100
+  maxGeneratingHeight: 150
   minHeight: 45
-  noiseThreshold: 0.4
+  noiseThreshold: 0.3
   treeThreshold: 0.01
   minTreeHeight: 3
   maxTreeHeight: 7
@@ -3759,7 +3760,20 @@ MonoBehaviour:
   blockTypes: {fileID: 1731320885}
   blocks: {fileID: 1731320884}
   worldCreation: {fileID: 1731320882}
+  waterBlocks: {fileID: 1731320888}
   height: 50
+--- !u!114 &1731320888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731320881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eb08400d1079d34b858ee78a6705a75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1743217744
 GameObject:
   m_ObjectHideFlags: 0
