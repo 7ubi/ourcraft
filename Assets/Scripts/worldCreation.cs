@@ -89,8 +89,8 @@ public class worldCreation : MonoBehaviour
                 }
                 else
                 {
-                    if (Perlin3D((x + offset.x + seed) * 0.05f, (float) (height + seed) * 0.05f,
-                        (z + offset.y + seed) * 0.05f) >= noiseThreshold)
+                    if (Perlin3D((x + offset.x) * 0.05f + seed, (float) (height) * 0.05f  + seed,
+                        (z + offset.y) * 0.05f + seed) >= noiseThreshold)
                     {
                         _blockIDs[x, height + minHeight, z] = _blockTypes.Grass;
                         if (x > 1 && x < Size - 2 && z > 1 && z < Size - 2)
@@ -186,7 +186,7 @@ public class worldCreation : MonoBehaviour
                     GenerateMesh(newChunck);
                     Chuncks.Add(newChunck);
                     if(!firstGeneration)
-                        yield return new WaitForSeconds(0.1f);
+                        yield return new WaitForSeconds(1f);
                 }
                 else
                 {
@@ -211,6 +211,7 @@ public class worldCreation : MonoBehaviour
         }
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public void DestroyBlock(Vector3 block)
     {
         var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
@@ -225,7 +226,31 @@ public class worldCreation : MonoBehaviour
             var c = chunck.GetComponent<Chunck>();
             _playerInventory.AddItem(c.BlockIDs[bix, biy, biz], 1);
             c.BlockIDs[bix, biy, biz] = 0;
+            
             GenerateMesh(chunck);
+
+            if (bix == 0)
+            {
+                if(GetBlock(new Vector3(-1, 0, 0) + block) != 0)
+                    ReloadChunck(new Vector3(-1, 0, 0) + block);
+            }
+            
+            if (bix == Size - 1){
+                if(GetBlock(new Vector3(1, 0, 0) + block) != 0)
+                    ReloadChunck(new Vector3(1, 0, 0) + block);
+            }
+            
+            if (biz == 0)
+            {
+                if(GetBlock(new Vector3(0, 0, -1) + block) != 0)
+                    ReloadChunck(new Vector3(0, 0, -1) + block);
+            }
+            
+            if (biz == Size - 1)
+            {
+                if(GetBlock(new Vector3(0, 0, 1) + block) != 0)
+                    ReloadChunck(new Vector3(0, 0, 1) + block);
+            }
         }
     }
 
@@ -250,6 +275,7 @@ public class worldCreation : MonoBehaviour
             
             water.GenerateWater(chunck.transform);
             GenerateMesh(chunck);
+            break;
         }
     }
 
@@ -269,7 +295,7 @@ public class worldCreation : MonoBehaviour
         }
         
         water.GenerateWater(chunck.transform);
-       // water.UpdateWater(chunck.transform);
+        
         var newMesh = new Mesh();
         var vertices = new List<Vector3>();
         var normals = new List<Vector3>();
@@ -286,68 +312,68 @@ public class worldCreation : MonoBehaviour
                 {
                     var offset = new Vector3Int(x, y, z);
                     if (_blockIDs[x, y, z] == 0) continue;
+                    if (y < maxHeight - 1)
+                    {
+                        if (_blockIDs[x, y + 1, z] == 0)
+                            GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                    }
                     else
                     {
-                        if (y < Size - 1)
-                        {
-                            if (_blockIDs[x, y + 1, z] == 0)
-                                GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
-                        else
-                        {
-                            GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
-
-                        if (x < Size - 1)
-                        {
-                            if (_blockIDs[x + 1, y, z] == 0)
-                                GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
-                        else
-                        {
-                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
-
-                        if (x >= 1)
-                        {
-                            if (_blockIDs[x - 1, y, z] == 0)
-                                GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
-                        else
-                        {
-                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
-
-                        if (z < Size - 1)
-                        {
-                            if (_blockIDs[x, y, z + 1] == 0)
-                                GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
-                        else
-                        {
-                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
-
-                        if (z >= 1)
-                        {
-                            if (_blockIDs[x, y, z - 1] == 0)
-                                GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
-                        else
-                        {
-                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
-
-                        if (y != 0)
-                        {
-                            if (_blockIDs[x, y - 1, z] == 0)
-                                GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
-                        else
-                        {
-                            GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
-                        }
+                        GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
                     }
+
+                    if (x < Size - 1)
+                    {
+                        if (_blockIDs[x + 1, y, z] == 0)
+                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                    }
+                    else
+                    {
+                        if (GetBlock(new Vector3(x + position.x + 1, y + position.y, z + position.z)) == 0)
+                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                    }
+
+                    if (x >= 1)
+                    {
+                        if (_blockIDs[x - 1, y, z] == 0)
+                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                    }
+                    else
+                    {
+                        if (GetBlock(new Vector3(x + position.x - 1, y + position.y, z + position.z)) == 0)
+                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                    }
+
+                    if (z < Size - 1)
+                    {
+                        if (_blockIDs[x, y, z + 1] == 0)
+                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                    }
+                    else
+                    {
+                       // Debug.Log(GetBlock(new Vector3(x + position.x, y + position.y, z + position.z + 1)));
+                        if (GetBlock(new Vector3(x + position.x, y + position.y, z + position.z + 1)) == 0)
+                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                    }
+
+                    if (z >= 1)
+                    {
+                        if (_blockIDs[x, y, z - 1] == 0)
+                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                    }
+                    else
+                    {
+                        if (GetBlock(new Vector3(x + position.x, y + position.y, z + position.z - 1)) == 0)
+                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z]);
+                    }
+
+                    if (y >= 1)
+                    {
+                        if (_blockIDs[x, y - 1, z] == 0)
+                            GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                    }
+                    
                 }
             }
         }
@@ -520,7 +546,7 @@ public class worldCreation : MonoBehaviour
             uvs.AddRange(_blocks.GrassSide());
         }
         else
-        {
+        { 
             uvs.AddRange(_blocks.LogSide());
         }
         
@@ -638,8 +664,20 @@ public class worldCreation : MonoBehaviour
             var c = chunck.GetComponent<Chunck>();
             return c.BlockIDs[bix, biy, biz];
         }
+        
+        var height0 = Mathf.PerlinNoise((block.x) * 0.05f + seed, (block.z) * 0.05f + seed);
+        var height2 = Mathf.PerlinNoise((block.x) * 0.00001f + seed, (block.z) * 0.00001f + seed);
+        var height1 = Mathf.PerlinNoise((block.x) * 0.001f + seed, (block.z) * 0.001f + seed);
 
-        return 0;
+        var height = (int)(height0 * height1 * height2 * (maxGeneratingHeight - minHeight));
+
+        if (block.y >= height + minHeight)
+            return 0;
+
+        return Perlin3D((block.x) * 0.05f + seed, (float) (block.y) * 0.05f + seed,
+            (block.z) * 0.05f + seed) >= noiseThreshold
+            ? 1
+            : 0;
     }
 
     public int GetWater(Vector3 block)
@@ -677,6 +715,18 @@ public class worldCreation : MonoBehaviour
             
             
             chunck.GetComponent<Chunck>().WaterIDs[bix, biy, biz] = 2;
+        }
+    }
+
+    private void ReloadChunck(Vector3 block)
+    {
+        var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
+        var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
+
+        foreach (var chunck in Chuncks.Where(chunck => Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
+                                                       Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
+        {
+            GenerateMesh(chunck);
         }
     }
     
