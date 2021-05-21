@@ -23,7 +23,7 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private int maxTreeHeight;
     
     [SerializeField] private int seed;
-    [SerializeField] private GameObject chunck;
+    [FormerlySerializedAs("chunck")] [SerializeField] private GameObject chunckGameObject;
 
     [SerializeField] private float renderDistance;
     [SerializeField] private GameObject player;
@@ -31,6 +31,7 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private BlockTypes _blockTypes;
     [SerializeField] private Water water;
     private int _lastChunck = 0;
+    private Dictionary<Vector2, GameObject> _chuncks = new Dictionary<Vector2, GameObject>();
 
     [SerializeField] private Blocks _blocks;
 
@@ -171,29 +172,20 @@ public class worldCreation : MonoBehaviour
         {
             for (var z = minZ; z <= maxZ; z += Size)
             {
-                GameObject c = null;
-                var exists = false;
-                foreach (var chunck in from chunck in Chuncks let position1 = chunck.transform.position where Math.Abs(position1.x - x) < 0.1f &&
-                    Math.Abs((float) (position1.z - z)) < 0.1f select chunck)
-                {
-                    c = chunck;
-                    exists = true;
-                }
+                var c = GetChunck(new Vector3(x, 0, z));
 
-                if (!exists)
+                if (!c)
                 {
-                    var newChunck = Instantiate(chunck, new Vector3(x, 0, z), Quaternion.identity);
+                    var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
                     GenerateMesh(newChunck);
                     Chuncks.Add(newChunck);
+                    _chuncks.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z), newChunck);
                     if(!firstGeneration)
-                        yield return new WaitForSeconds(1f);
+                        yield return new WaitForSeconds(.1f);
                 }
                 else
                 {
-                    if (c != null)
-                    {
-                        c.SetActive(true);
-                    }
+                    c.SetActive(true);
                 }
             }
         }
@@ -214,69 +206,58 @@ public class worldCreation : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     public void DestroyBlock(Vector3 block)
     {
-        var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
-        var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
 
-        foreach (var chunck in Chuncks.Where(chunck => Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
-                                                       Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
+        var chunck = GetChunck(block);
+        
+        var bix = Mathf.FloorToInt(block.x) - (int)chunck.transform.position.x;
+        var biy = Mathf.FloorToInt(block.y);
+        var biz = Mathf.FloorToInt(block.z) - (int)chunck.transform.position.z;
+        var c = chunck.GetComponent<Chunck>();
+        _playerInventory.AddItem(c.BlockIDs[bix, biy, biz], 1);
+        c.BlockIDs[bix, biy, biz] = 0;
+        
+        GenerateMesh(chunck);
+
+        if (bix == 0)
         {
-            var bix = Mathf.FloorToInt(block.x) - chunkPosX;
-            var biy = Mathf.FloorToInt(block.y);
-            var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
-            var c = chunck.GetComponent<Chunck>();
-            _playerInventory.AddItem(c.BlockIDs[bix, biy, biz], 1);
-            c.BlockIDs[bix, biy, biz] = 0;
-            
-            GenerateMesh(chunck);
-
-            if (bix == 0)
-            {
-                if(GetBlock(new Vector3(-1, 0, 0) + block) != 0)
-                    ReloadChunck(new Vector3(-1, 0, 0) + block);
-            }
-            
-            if (bix == Size - 1){
-                if(GetBlock(new Vector3(1, 0, 0) + block) != 0)
-                    ReloadChunck(new Vector3(1, 0, 0) + block);
-            }
-            
-            if (biz == 0)
-            {
-                if(GetBlock(new Vector3(0, 0, -1) + block) != 0)
-                    ReloadChunck(new Vector3(0, 0, -1) + block);
-            }
-            
-            if (biz == Size - 1)
-            {
-                if(GetBlock(new Vector3(0, 0, 1) + block) != 0)
-                    ReloadChunck(new Vector3(0, 0, 1) + block);
-            }
+            if(GetBlock(new Vector3(-1, 0, 0) + block) != 0)
+                ReloadChunck(new Vector3(-1, 0, 0) + block);
         }
+        
+        if (bix == Size - 1){
+            if(GetBlock(new Vector3(1, 0, 0) + block) != 0)
+                ReloadChunck(new Vector3(1, 0, 0) + block);
+        }
+        
+        if (biz == 0)
+        {
+            if(GetBlock(new Vector3(0, 0, -1) + block) != 0)
+                ReloadChunck(new Vector3(0, 0, -1) + block);
+        }
+        
+        if (biz == Size - 1)
+        {
+            if(GetBlock(new Vector3(0, 0, 1) + block) != 0)
+                ReloadChunck(new Vector3(0, 0, 1) + block);
+        }
+    
     }
 
     public void PlaceBlock(Vector3 block, int id)
     {
-        var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
-        var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
+        var chunck = GetChunck(block);
         
+        var bix = Mathf.FloorToInt(block.x) - (int)chunck.transform.position.x;
+        var biy = Mathf.FloorToInt(block.y);
+        var biz = Mathf.FloorToInt(block.z) - (int)chunck.transform.position.z;
         
-
-        foreach (var chunck in Chuncks.Where(chunck =>
-            Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
-            Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
-        {
-            var bix = Mathf.FloorToInt(block.x) - chunkPosX;
-            var biy = Mathf.FloorToInt(block.y);
-            var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
-
-            var c = chunck.GetComponent<Chunck>();
-            c.BlockIDs[bix, biy, biz] = id;
-            c.WaterIDs[bix, biy, biz] = 0;
-            
-            water.GenerateWater(chunck.transform);
-            GenerateMesh(chunck);
-            break;
-        }
+        var c = chunck.GetComponent<Chunck>();
+        
+        c.BlockIDs[bix, biy, biz] = id;
+        c.WaterIDs[bix, biy, biz] = 0;
+        
+        water.GenerateWater(chunck.transform);
+        GenerateMesh(chunck);
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
@@ -616,7 +597,7 @@ public class worldCreation : MonoBehaviour
         
         foreach (var chunckInfo in chunckInfos)
         {
-            var c = Instantiate(chunck, chunckInfo.pos, Quaternion.identity);
+            var c = Instantiate(chunckGameObject, chunckInfo.pos, Quaternion.identity);
 
             var bIds = new int[Size, maxHeight, Size];
 
@@ -645,6 +626,7 @@ public class worldCreation : MonoBehaviour
             }
         
             Chuncks.Add(c);
+            _chuncks.Add(new Vector2(c.transform.position.x, c.transform.position.z), c);
             
             GenerateMesh(c);
         }
@@ -654,9 +636,8 @@ public class worldCreation : MonoBehaviour
     {
         var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
         var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
-
-        foreach (var chunck in Chuncks.Where(chunck => Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
-                                                       Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
+        var chunck = GetChunck(block);
+        if (chunck != null)
         {
             var bix = Mathf.FloorToInt(block.x) - chunkPosX;
             var biy = Mathf.FloorToInt(block.y);
@@ -664,7 +645,7 @@ public class worldCreation : MonoBehaviour
             var c = chunck.GetComponent<Chunck>();
             return c.BlockIDs[bix, biy, biz];
         }
-        
+
         var height0 = Mathf.PerlinNoise((block.x) * 0.05f + seed, (block.z) * 0.05f + seed);
         var height2 = Mathf.PerlinNoise((block.x) * 0.00001f + seed, (block.z) * 0.00001f + seed);
         var height1 = Mathf.PerlinNoise((block.x) * 0.001f + seed, (block.z) * 0.001f + seed);
@@ -680,53 +661,23 @@ public class worldCreation : MonoBehaviour
             : 0;
     }
 
-    public int GetWater(Vector3 block)
-    {
-        var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
-        var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
-
-        foreach (var chunck in Chuncks.Where(chunck => Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
-                                                       Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
-        {
-            var bix = Mathf.FloorToInt(block.x) - chunkPosX;
-            var biy = Mathf.FloorToInt(block.y);
-            var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
-            var c = chunck.GetComponent<Chunck>();
-            return c.WaterIDs[bix, biy, biz];
-        }
-
-        return 0;
-    }
-
-    public void PlaceWater(Vector3 block)
-    {
-        var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
-        var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
-        
-        
-
-        foreach (var chunck in Chuncks.Where(chunck =>
-            Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
-            Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
-        {
-            var bix = Mathf.FloorToInt(block.x) - chunkPosX;
-            var biy = Mathf.FloorToInt(block.y);
-            var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
-            
-            
-            chunck.GetComponent<Chunck>().WaterIDs[bix, biy, biz] = 2;
-        }
-    }
-
     private void ReloadChunck(Vector3 block)
     {
+        GenerateMesh(GetChunck(block));
+    }
+
+    private GameObject GetChunck(Vector3 block)
+    {
         var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
         var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
 
-        foreach (var chunck in Chuncks.Where(chunck => Math.Abs((float) (chunck.transform.position.x - chunkPosX)) < 0.1f &&
-                                                       Math.Abs((float) (chunck.transform.position.z - chunkPosZ)) < 0.1))
+        try
         {
-            GenerateMesh(chunck);
+            return _chuncks[new Vector2(chunkPosX, chunkPosZ)];
+        }
+        catch (Exception e)
+        {
+            return null;
         }
     }
     
