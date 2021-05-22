@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
@@ -33,11 +34,16 @@ public class worldCreation : MonoBehaviour
     private int _lastChunck = 0;
     private Dictionary<Vector2, GameObject> _chuncks = new Dictionary<Vector2, GameObject>();
 
-    [SerializeField] private Blocks _blocks;
+    [SerializeField] private Blocks[] blocks;
 
     private void Start()
     {
         _playerInventory = player.GetComponent<PlayerInventory>();
+
+        foreach (var b in blocks)
+        {
+            Blocks.Add(b.id, b);    
+        }
     }
 
     public void GenerateFirst()
@@ -381,18 +387,7 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.up);
         normals.Add(Vector3.up);
 
-        if (id != _blockTypes.Grass && id != _blockTypes.Log)
-        {
-            uvs.AddRange(_blocks.GetBlockUV(id));
-        }
-        else if(id == _blockTypes.Grass)
-        {
-            uvs.AddRange(_blocks.GrassTop());
-        }
-        else
-        {
-            uvs.AddRange(_blocks.LogTop());
-        }
+        uvs.AddRange(Blocks[id].TopUVs());
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -415,18 +410,7 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
         
-        if (id != _blockTypes.Grass && id != _blockTypes.Log)
-        {
-            uvs.AddRange(_blocks.GetBlockUV(id));
-        }
-        else if(id == _blockTypes.Grass)
-        {
-            uvs.AddRange(_blocks.GrassSide());
-        }
-        else
-        {
-            uvs.AddRange(_blocks.LogSide());
-        }
+        uvs.AddRange(Blocks[id].SideUVs());
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -449,18 +433,7 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
         
-        if (id != _blockTypes.Grass && id != _blockTypes.Log)
-        {
-            uvs.AddRange(_blocks.GetBlockUV(id));
-        }
-        else if (id == _blockTypes.Grass)
-        {
-            uvs.AddRange(_blocks.GrassSide());
-        }
-        else
-        {
-            uvs.AddRange(_blocks.LogSide());
-        } 
+        uvs.AddRange(Blocks[id].SideUVs());
         
 
         indices.Add(currentIndex + 0);
@@ -484,18 +457,7 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.forward);
         normals.Add(Vector3.forward);
 
-        if (id != _blockTypes.Grass && id != _blockTypes.Log)
-        {
-            uvs.AddRange(_blocks.GetBlockUV(id));
-        }
-        else if(id == _blockTypes.Grass)
-        {
-            uvs.AddRange(_blocks.GrassSide());
-        }
-        else
-        {
-            uvs.AddRange(_blocks.LogSide());
-        }
+        uvs.AddRange(Blocks[id].SideUVs());
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -518,18 +480,7 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
 
-        if (id != _blockTypes.Grass && id != _blockTypes.Log)
-        {
-            uvs.AddRange(_blocks.GetBlockUV(id));
-        }
-        else if(id == _blockTypes.Grass)
-        {
-            uvs.AddRange(_blocks.GrassSide());
-        }
-        else
-        { 
-            uvs.AddRange(_blocks.LogSide());
-        }
+        uvs.AddRange(Blocks[id].SideUVs());
         
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -552,18 +503,7 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.down);
         normals.Add(Vector3.down);
 
-        if (id != _blockTypes.Grass && id != _blockTypes.Log)
-        {
-            uvs.AddRange(_blocks.GetBlockUV(id));
-        }
-        else if(id == _blockTypes.Grass)
-        {
-            uvs.AddRange(_blocks.GrassBot());
-        }
-        else
-        {
-            uvs.AddRange(_blocks.LogTop());
-        }
+        uvs.AddRange(Blocks[id].BotUVs());
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -692,5 +632,7 @@ public class worldCreation : MonoBehaviour
     public int MAXHeight => maxHeight;
 
     public int Size1 => Size;
+
+    public Dictionary<int, Blocks> Blocks { get; } = new Dictionary<int, Blocks>();
 }
 

@@ -4,171 +4,55 @@ using System.Collections.Generic;
 using TMPro.EditorUtilities;
 using UnityEngine;
 
-public class Blocks: MonoBehaviour
+[Serializable]
+public class Blocks
 {
     // texture atlas from: https://github.com/mikolalysenko/tile-mip-map
 
-    private float _size = 0.0625f;
+    [SerializeField] public int id;
+    [SerializeField] public Rect top;
+    [SerializeField] public Rect side;
+    [SerializeField] public Rect bot;
+    [SerializeField] public Sprite img;
     
-    public List<Vector2> GetBlockUV(int BlockID)
+    public List<Vector2> TopUVs()
     {
-        return BlockID switch
+        var uvs = new List<Vector2>
         {
-            1 => Dirt(),
-            3 => Stone(),
-            5 => Leaves(),
-            _ => null
+            new Vector2(top.xMin, top.yMax),
+            new Vector2(top.xMax, top.yMax),
+            new Vector2(top.xMax, top.yMin),
+            new Vector2(top.xMin, top.yMin)
         };
-    }
 
-    private List<Vector2> Dirt()
-    {
-        var uvs = new List<Vector2>();
-
-        var xMin = 2 * _size;
-        var xMax = 3 * _size;
-        var yMin = 1 - _size;
-        var yMax = 1;
-        
-        uvs.Add(new Vector2(xMin, yMax));
-        uvs.Add(new Vector2(xMax, yMax));
-        uvs.Add(new Vector2(xMax, yMin));
-        uvs.Add(new Vector2(xMin, yMin));
-
-        return uvs;
-    }
-    private List<Vector2> Stone()
-    {
-        var uvs = new List<Vector2>();
-
-        var xMin = 1 * _size;
-        var xMax = 2 * _size;
-        var yMin = 1 - _size;
-        var yMax = 1;
-        
-        uvs.Add(new Vector2(xMin, yMax));
-        uvs.Add(new Vector2(xMax, yMax));
-        uvs.Add(new Vector2(xMax, yMin));
-        uvs.Add(new Vector2(xMin, yMin));
-
-        return uvs;
-    }
-
-    public List<Vector2> GrassTop()
-    {
-        var uvs = new List<Vector2>();
-
-        var xMin = 0 * _size;
-        var xMax = 1 * _size;
-        var yMin = 1 - _size;
-        var yMax = 1;
-            
-        uvs.Add(new Vector2(xMin, yMax));
-        uvs.Add(new Vector2(xMax, yMax));
-        uvs.Add(new Vector2(xMax, yMin));
-        uvs.Add(new Vector2(xMin, yMin));
 
         return uvs;
     }
     
-    public List<Vector2> GrassSide()
+    public List<Vector2> SideUVs()
     {
-        var uvs = new List<Vector2>();
+        var uvs = new List<Vector2>
+        {
+            new Vector2(side.xMin, side.yMax),
+            new Vector2(side.xMax, side.yMax),
+            new Vector2(side.xMax, side.yMin),
+            new Vector2(side.xMin, side.yMin)
+        };
 
-        var xMin = 3 * _size;
-        var xMax = 4 * _size;
-        var yMin = 1 - _size;
-        var yMax = 1;
-            
-        uvs.Add(new Vector2(xMin, yMax));
-        uvs.Add(new Vector2(xMax, yMax));
-        uvs.Add(new Vector2(xMax, yMin));
-        uvs.Add(new Vector2(xMin, yMin));
 
         return uvs;
     }
     
-    public List<Vector2> GrassBot()
+    public List<Vector2> BotUVs()
     {
-        var uvs = new List<Vector2>();
+        var uvs = new List<Vector2>
+        {
+            new Vector2(bot.xMin, bot.yMax),
+            new Vector2(bot.xMax, bot.yMax),
+            new Vector2(bot.xMax, bot.yMin),
+            new Vector2(bot.xMin, bot.yMin)
+        };
 
-        var xMin = 2 * _size;
-        var xMax = 3 * _size;
-        var yMin = 1 - _size;
-        var yMax = 1;
-            
-        uvs.Add(new Vector2(xMin, yMax));
-        uvs.Add(new Vector2(xMax, yMax));
-        uvs.Add(new Vector2(xMax, yMin));
-        uvs.Add(new Vector2(xMin, yMin));
-
-        return uvs;
-    }
-
-    public List<Vector2> LogSide()
-    {
-        var uvs = new List<Vector2>();
-
-        var xMin = 4 * _size;
-        var xMax = 5 * _size;
-        var yMin = 1 - 2 * _size;
-        var yMax = 1 - _size;
-            
-        uvs.Add(new Vector2(xMin, yMax));
-        uvs.Add(new Vector2(xMax, yMax));
-        uvs.Add(new Vector2(xMax, yMin));
-        uvs.Add(new Vector2(xMin, yMin));
-
-        return uvs;
-    }
-    
-    public List<Vector2> LogTop()
-    {
-        var uvs = new List<Vector2>();
-
-        var xMin = 5 * _size;
-        var xMax = 6 * _size;
-        var yMin = 1 - 2 * _size;
-        var yMax = 1 - _size;
-            
-        uvs.Add(new Vector2(xMin, yMax));
-        uvs.Add(new Vector2(xMax, yMax));
-        uvs.Add(new Vector2(xMax, yMin));
-        uvs.Add(new Vector2(xMin, yMin));
-
-        return uvs;
-    }
-
-    public List<Vector2> Leaves()
-    {
-        var uvs = new List<Vector2>();
-
-        var xMin = 5 * _size;
-        var xMax = 6 * _size;
-        var yMin = 1 - 4 * _size;
-        var yMax = 1 - 3 * _size;
-            
-        uvs.Add(new Vector2(xMin, yMax));
-        uvs.Add(new Vector2(xMax, yMax));
-        uvs.Add(new Vector2(xMax, yMin));
-        uvs.Add(new Vector2(xMin, yMin));
-
-        return uvs;
-    }
-    
-    public List<Vector2> Water()
-    {
-        var uvs = new List<Vector2>();
-
-        var xMin = 0;
-        var xMax = 1;
-        var yMin = 0;
-        var yMax = 1;
-            
-        uvs.Add(new Vector2(xMin, yMax));
-        uvs.Add(new Vector2(xMax, yMax));
-        uvs.Add(new Vector2(xMax, yMin));
-        uvs.Add(new Vector2(xMin, yMin));
 
         return uvs;
     }

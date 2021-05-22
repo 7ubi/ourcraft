@@ -5,14 +5,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Serialization;
 
 public class PlayerInventory : MonoBehaviour
 {
     [SerializeField] private RectTransform selector;
-
-    [SerializeField] private BlockTypes _blockTypes;
-
-    [SerializeField] private Sprite[] icons;
+    [SerializeField] private worldCreation worldCreation;
+    
     [SerializeField] private TMP_Text[] itemCountText;
     [SerializeField] private Image[] itemImages;
 
@@ -44,7 +43,7 @@ public class PlayerInventory : MonoBehaviour
                 if (ItemIds[i] != 0) continue;
                 ItemIds[i] = id;
                 index = i;
-                itemImages[i].sprite = icons[id - 1];
+                itemImages[i].sprite = worldCreation.Blocks[id].img;
                 itemImages[i].color = new Color(255, 255, 255, 100);
                 break;
             }
@@ -84,7 +83,7 @@ public class PlayerInventory : MonoBehaviour
             itemCountText[i].text = "" +  ItemCount[i];
             if (ItemIds[i] == 0) continue;
 
-            itemImages[i].sprite = icons[ItemIds[i] - 1];
+            itemImages[i].sprite = worldCreation.Blocks[ItemIds[i]].img;
             
             itemImages[i].color = new Color(255, 255, 255, 100);
         }

@@ -3653,7 +3653,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1731320883}
   - component: {fileID: 1731320882}
-  - component: {fileID: 1731320884}
   - component: {fileID: 1731320885}
   - component: {fileID: 1731320886}
   - component: {fileID: 1731320887}
@@ -3686,12 +3685,113 @@ MonoBehaviour:
   minTreeHeight: 3
   maxTreeHeight: 7
   seed: 69
-  chunck: {fileID: 8451236987504973569, guid: 320c3e7c5fc352247932ecdea37a94a4, type: 3}
+  chunckGameObject: {fileID: 8451236987504973569, guid: 320c3e7c5fc352247932ecdea37a94a4,
+    type: 3}
   renderDistance: 6
   player: {fileID: 1743702924}
   _blockTypes: {fileID: 1731320885}
   water: {fileID: 1731320887}
-  _blocks: {fileID: 1731320884}
+  blocks:
+  - id: 1
+    top:
+      serializedVersion: 2
+      x: 0.125
+      y: 0.9375
+      width: 0.0625
+      height: 0.0625
+    side:
+      serializedVersion: 2
+      x: 0.125
+      y: 0.9375
+      width: 0.0625
+      height: 0.0625
+    bot:
+      serializedVersion: 2
+      x: 0.125
+      y: 0.9375
+      width: 0.0625
+      height: 0.0625
+    img: {fileID: -2745123781392651398, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
+  - id: 2
+    top:
+      serializedVersion: 2
+      x: 0
+      y: 0.9375
+      width: 0.0625
+      height: 0.0625
+    side:
+      serializedVersion: 2
+      x: 0.1875
+      y: 0.9375
+      width: 0.0625
+      height: 0.0625
+    bot:
+      serializedVersion: 2
+      x: 0.125
+      y: 0.9375
+      width: 0.0625
+      height: 0.0625
+    img: {fileID: 5355251547629053043, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
+  - id: 3
+    top:
+      serializedVersion: 2
+      x: 0.0625
+      y: 0.9375
+      width: 0.0625
+      height: 0.0625
+    side:
+      serializedVersion: 2
+      x: 0.0625
+      y: 0.9375
+      width: 0.0625
+      height: 0.0625
+    bot:
+      serializedVersion: 2
+      x: 0.0625
+      y: 0.9375
+      width: 0.0625
+      height: 0.0625
+    img: {fileID: 2357402376764650975, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
+  - id: 4
+    top:
+      serializedVersion: 2
+      x: 0.3125
+      y: 0.875
+      width: 0.0625
+      height: 0.0625
+    side:
+      serializedVersion: 2
+      x: 0.25
+      y: 0.875
+      width: 0.0625
+      height: 0.0625
+    bot:
+      serializedVersion: 2
+      x: 0.3125
+      y: 0.875
+      width: 0.0625
+      height: 0.0625
+    img: {fileID: 6614459721757272673, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
+  - id: 5
+    top:
+      serializedVersion: 2
+      x: 0.3125
+      y: 0.75
+      width: 0.0625
+      height: 0.0625
+    side:
+      serializedVersion: 2
+      x: 0.3125
+      y: 0.75
+      width: 0.0625
+      height: 0.0625
+    bot:
+      serializedVersion: 2
+      x: 0.3125
+      y: 0.75
+      width: 0.0625
+      height: 0.0625
+    img: {fileID: -3342543724683398159, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
 --- !u!4 &1731320883
 Transform:
   m_ObjectHideFlags: 0
@@ -3706,18 +3806,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1731320884
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1731320881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f96ccadd237143c9b83d834e625cf004, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1731320885
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3758,10 +3846,30 @@ MonoBehaviour:
   waterChunck: {fileID: 8451236987504973569, guid: c34262576ff9a3e4888b17c5dce21dad,
     type: 3}
   blockTypes: {fileID: 1731320885}
-  blocks: {fileID: 1731320884}
+  blocks:
+    id: 0
+    top:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    side:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    bot:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    img: {fileID: 0}
   worldCreation: {fileID: 1731320882}
   waterBlocks: {fileID: 1731320888}
-  height: 50
+  height: 52
 --- !u!114 &1731320888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4024,13 +4132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selector: {fileID: 686466976}
-  _blockTypes: {fileID: 0}
-  icons:
-  - {fileID: -2745123781392651398, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
-  - {fileID: 5355251547629053043, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
-  - {fileID: 2357402376764650975, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
-  - {fileID: 6614459721757272673, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
-  - {fileID: -3342543724683398159, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
+  worldCreation: {fileID: 1731320882}
   itemCountText:
   - {fileID: 389860673}
   - {fileID: 1993418225}

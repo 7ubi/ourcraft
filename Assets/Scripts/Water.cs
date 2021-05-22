@@ -133,7 +133,10 @@ public class Water : MonoBehaviour
         normals.Add(Vector3.up);
         normals.Add(Vector3.up);
         
-        uvs.AddRange(blocks.Water());
+        uvs.Add(new Vector2(0, 1));
+        uvs.Add(new Vector2(1, 1));
+        uvs.Add(new Vector2(1, 0));
+        uvs.Add(new Vector2(0, 0));
         
 
         indices.Add(currentIndex + 0);
@@ -158,7 +161,10 @@ public class Water : MonoBehaviour
         normals.Add(Vector3.down);
         normals.Add(Vector3.down);
 
-        uvs.AddRange(blocks.Water());
+        uvs.Add(new Vector2(0, 1));
+        uvs.Add(new Vector2(1, 1));
+        uvs.Add(new Vector2(1, 0));
+        uvs.Add(new Vector2(0, 0));
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -181,8 +187,11 @@ public class Water : MonoBehaviour
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
         
-        uvs.AddRange(blocks.Water());
-
+        uvs.Add(new Vector2(0, 1));
+        uvs.Add(new Vector2(1, 1));
+        uvs.Add(new Vector2(1, 0));
+        uvs.Add(new Vector2(0, 0));
+        
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
         indices.Add(currentIndex + 2);
@@ -204,7 +213,10 @@ public class Water : MonoBehaviour
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
         
-        uvs.AddRange(blocks.Water());
+        uvs.Add(new Vector2(0, 1));
+        uvs.Add(new Vector2(1, 1));
+        uvs.Add(new Vector2(1, 0));
+        uvs.Add(new Vector2(0, 0));
         
 
         indices.Add(currentIndex + 0);
@@ -228,7 +240,10 @@ public class Water : MonoBehaviour
         normals.Add(Vector3.forward);
         normals.Add(Vector3.forward);
 
-        uvs.AddRange(blocks.Water());
+        uvs.Add(new Vector2(0, 1));
+        uvs.Add(new Vector2(1, 1));
+        uvs.Add(new Vector2(1, 0));
+        uvs.Add(new Vector2(0, 0));
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -251,7 +266,10 @@ public class Water : MonoBehaviour
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
 
-        uvs.AddRange(blocks.Water());
+        uvs.Add(new Vector2(0, 1));
+        uvs.Add(new Vector2(1, 1));
+        uvs.Add(new Vector2(1, 0));
+        uvs.Add(new Vector2(0, 0));
         
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -274,7 +292,10 @@ public class Water : MonoBehaviour
         normals.Add(Vector3.down);
         normals.Add(Vector3.down);
 
-        uvs.AddRange(blocks.Water());
+        uvs.Add(new Vector2(0, 1));
+        uvs.Add(new Vector2(1, 1));
+        uvs.Add(new Vector2(1, 0));
+        uvs.Add(new Vector2(0, 0));
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
