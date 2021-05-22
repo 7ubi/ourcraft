@@ -14,6 +14,7 @@ public class Blocks
     [SerializeField] public Rect side;
     [SerializeField] public Rect bot;
     [SerializeField] public Sprite img;
+    [SerializeField] public bool isTransparent = false;
     
     public List<Vector2> TopUVs()
     {

@@ -302,7 +302,11 @@ public class worldCreation : MonoBehaviour
                     if (y < maxHeight - 1)
                     {
                         if (_blockIDs[x, y + 1, z] == 0)
-                            GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                            GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                    _blockIDs[x, y, z]);
+                        else if (Blocks[_blockIDs[x, y + 1, z]].isTransparent)
+                            GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                    _blockIDs[x, y, z]);
                     }
                     else
                     {
@@ -313,44 +317,67 @@ public class worldCreation : MonoBehaviour
                     {
                         if (_blockIDs[x + 1, y, z] == 0)
                             GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                        else if (Blocks[_blockIDs[x + 1, y, z]].isTransparent)
+                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z]);
                     }
                     else
                     {
                         if (GetBlock(new Vector3(x + position.x + 1, y + position.y, z + position.z)) == 0)
                             GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                        else if (Blocks[GetBlock(new Vector3(x + position.x + 1, y + position.y, z + position.z))].isTransparent)
+                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z]);
                     }
 
                     if (x >= 1)
                     {
                         if (_blockIDs[x - 1, y, z] == 0)
                             GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                        else if (Blocks[_blockIDs[x - 1, y, z]].isTransparent)
+                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z]);
                     }
                     else
                     {
                         if (GetBlock(new Vector3(x + position.x - 1, y + position.y, z + position.z)) == 0)
                             GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                        else if (Blocks[GetBlock(new Vector3(x + position.x - 1, y + position.y, z + position.z))].isTransparent)
+                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z]);
                     }
 
                     if (z < Size - 1)
                     {
                         if (_blockIDs[x, y, z + 1] == 0)
                             GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                        else if (Blocks[_blockIDs[x, y, z + 1]].isTransparent)
+                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z]);
                     }
                     else
                     {
-                       // Debug.Log(GetBlock(new Vector3(x + position.x, y + position.y, z + position.z + 1)));
                         if (GetBlock(new Vector3(x + position.x, y + position.y, z + position.z + 1)) == 0)
                             GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                        else if (Blocks[GetBlock(new Vector3(x + position.x, y + position.y, z + position.z + 1))].isTransparent)
+                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z]);
                     }
 
                     if (z >= 1)
                     {
                         if (_blockIDs[x, y, z - 1] == 0)
                             GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                        else if (Blocks[_blockIDs[x, y, z - 1]].isTransparent)
+                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z]);
                     }
                     else
                     {
                         if (GetBlock(new Vector3(x + position.x, y + position.y, z + position.z - 1)) == 0)
+                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z]);
+                        else if (Blocks[GetBlock(new Vector3(x + position.x, y + position.y, z + position.z - 1))].isTransparent)
                             GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
                                 _blockIDs[x, y, z]);
                     }
@@ -359,6 +386,9 @@ public class worldCreation : MonoBehaviour
                     {
                         if (_blockIDs[x, y - 1, z] == 0)
                             GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                        else if (Blocks[_blockIDs[x, y - 1, z]].isTransparent)
+                            GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z]);
                     }
                     
                 }
