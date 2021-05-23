@@ -7,8 +7,6 @@ using UnityEngine.Serialization;
 public class Water : MonoBehaviour
 {
     [SerializeField] private GameObject waterChunck;
-    [SerializeField] private BlockTypes blockTypes;
-    [SerializeField] private Blocks blocks;
     [SerializeField] private worldCreation worldCreation;
     [SerializeField] private WaterBlocks waterBlocks;
     

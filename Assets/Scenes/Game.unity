@@ -2385,7 +2385,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -3678,12 +3678,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Size: 16
   maxHeight: 256
-  maxGeneratingHeight: 150
-  minHeight: 45
   noiseThreshold: 0.3
   treeThreshold: 0.01
   minTreeHeight: 3
   maxTreeHeight: 7
+  biomeNoise: 0.01
   seed: 69
   chunckGameObject: {fileID: 8451236987504973569, guid: 320c3e7c5fc352247932ecdea37a94a4,
     type: 3}
@@ -3797,6 +3796,70 @@ MonoBehaviour:
       height: 0.0625
     img: {fileID: -8488667363120882930, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 1
+  - id: 6
+    top:
+      serializedVersion: 2
+      x: 0.125
+      y: 0.75
+      width: 0.0625
+      height: 0.0625
+    side:
+      serializedVersion: 2
+      x: 0.25
+      y: 0.6875
+      width: 0.0625
+      height: 0.0625
+    bot:
+      serializedVersion: 2
+      x: 0.125
+      y: 0.9375
+      width: 0.0625
+      height: 0.0625
+    img: {fileID: -8970435892597880737, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
+    isTransparent: 1
+  - id: 7
+    top:
+      serializedVersion: 2
+      x: 0.125
+      y: 0.875
+      width: 0.0625
+      height: 0.0625
+    side:
+      serializedVersion: 2
+      x: 0.125
+      y: 0.875
+      width: 0.0625
+      height: 0.0625
+    bot:
+      serializedVersion: 2
+      x: 0.125
+      y: 0.875
+      width: 0.0625
+      height: 0.0625
+    img: {fileID: -7630100373914682455, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
+    isTransparent: 0
+  biomes:
+  - noiseMult1: 0.01
+    noiseMult2: 0.00001
+    maxGeneratingHeight: 100
+    minHeight: 50
+    topBlock: 2
+    secondaryBlock: 1
+    hasTree: 1
+  - noiseMult1: 0.05
+    noiseMult2: 0.0001
+    maxGeneratingHeight: 145
+    minHeight: 60
+    topBlock: 6
+    secondaryBlock: 1
+    hasTree: 1
+  - noiseMult1: 0.01
+    noiseMult2: 0.00001
+    maxGeneratingHeight: 100
+    minHeight: 50
+    topBlock: 7
+    secondaryBlock: 7
+    hasTree: 0
 --- !u!4 &1731320883
 Transform:
   m_ObjectHideFlags: 0
@@ -3850,32 +3913,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waterChunck: {fileID: 8451236987504973569, guid: c34262576ff9a3e4888b17c5dce21dad,
     type: 3}
-  blockTypes: {fileID: 1731320885}
-  blocks:
-    id: 0
-    top:
-      serializedVersion: 2
-      x: 0
-      y: 0
-      width: 0
-      height: 0
-    side:
-      serializedVersion: 2
-      x: 0
-      y: 0
-      width: 0
-      height: 0
-    bot:
-      serializedVersion: 2
-      x: 0
-      y: 0
-      width: 0
-      height: 0
-    img: {fileID: 0}
-    isTransparent: 0
   worldCreation: {fileID: 1731320882}
   waterBlocks: {fileID: 1731320888}
-  height: 52
+  height: 60
 --- !u!114 &1731320888
 MonoBehaviour:
   m_ObjectHideFlags: 0
