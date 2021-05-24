@@ -29,8 +29,7 @@ public class SaveData
 
         foreach (var chunck in chuncks)
         {
-            var c = new ChunckInfo();
-            c.pos = chunck.transform.position;
+            var c = new ChunckInfo {pos = chunck.transform.position};
 
             var blockIds = new int[size * maxHeight * size];
 

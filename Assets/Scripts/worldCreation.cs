@@ -14,6 +14,7 @@ public class worldCreation : MonoBehaviour
     //base code: https://github.com/Absurdponcho/BlockGame/blob/master/Assets/VoxelChunk.cs
     [SerializeField] int Size = 16;
     [SerializeField] private int maxHeight;
+    [SerializeField] private int minHeight;
     private int[,,] _blockIDs;
     [SerializeField] private float noiseThreshold;
     
@@ -21,7 +22,6 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private int minTreeHeight;
     [SerializeField] private int maxTreeHeight;
     [SerializeField] private float biomeNoise;
-    private Vector2 biomeNoiseOffset;
     
     [SerializeField] private int seed;
     [FormerlySerializedAs("chunck")] [SerializeField] private GameObject chunckGameObject;
@@ -85,10 +85,10 @@ public class worldCreation : MonoBehaviour
 
                 var grassTop = true;
                 var waterTop = false;
-                if (height + biome.minHeight - 1 < water.Height)
+                if (height + minHeight - 1 < water.Height)
                 {
-                    _blockIDs[x, height + biome.minHeight - 4, z] = biome.secondaryBlock;
-                    for (var y = water.Height; y >= height + biome.minHeight; y--)
+                    _blockIDs[x, height + minHeight - 4, z] = biome.secondaryBlock;
+                    for (var y = water.Height; y >= height + minHeight; y--)
                     {
                         water.AddWater(x, y, z);
                     }
@@ -100,30 +100,30 @@ public class worldCreation : MonoBehaviour
                     if (Perlin3D((x + offset.x) * 0.05f + seed, (float) (height) * 0.05f  + seed,
                         (z + offset.y) * 0.05f + seed) >= noiseThreshold)
                     {
-                        _blockIDs[x, height + biome.minHeight, z] = biome.topBlock;
+                        _blockIDs[x, height + minHeight, z] = biome.topBlock;
                         if (biome.hasTree)
                         {
                             if (x > 1 && x < Size - 2 && z > 1 && z < Size - 2)
                             {
                                 if (treeGen.NextDouble() <= treeThreshold)
                                 {
-                                    _blockIDs[x, height + biome.minHeight, z] = 1;
+                                    _blockIDs[x, height + minHeight, z] = 1;
                                     var h = treeGen.Next(minTreeHeight, maxTreeHeight);
                                     for (var y = 1; y <= h; y++)
                                     {
-                                        _blockIDs[x, height + biome.minHeight + y, z] = _blockTypes.Log;
+                                        _blockIDs[x, height + minHeight + y, z] = _blockTypes.Log;
                                         if (y <= h - 2) continue;
                                         for (var i = -1; i <= 1; i++)
                                         {
                                             for (var j = -1; j <= 1; j++)
                                             {
                                                 if (i == 0 && j == 0) continue;
-                                                _blockIDs[x + i, height + biome.minHeight + y, z + j] = _blockTypes.Leave;
+                                                _blockIDs[x + i, height + minHeight + y, z + j] = _blockTypes.Leave;
                                             }
                                         }
                                     }
 
-                                    _blockIDs[x, height + biome.minHeight + h + 1, z] = _blockTypes.Leave;
+                                    _blockIDs[x, height + minHeight + h + 1, z] = _blockTypes.Leave;
                                 }
                             }
                         }
@@ -134,7 +134,7 @@ public class worldCreation : MonoBehaviour
                     }
                 }
 
-                for(var y = height + biome.minHeight - 1; y >= 1; y--)
+                for(var y = height + minHeight - 1; y >= 1; y--)
                 {
                     if (Perlin3D((x + offset.x) * 0.05f + seed, (float) y * 0.05f + seed,
                         (z + offset.y) * 0.05f + seed) < noiseThreshold)
@@ -147,14 +147,14 @@ public class worldCreation : MonoBehaviour
                     }
 
                     
-                    if (!grassTop && y > height + biome.minHeight - 4)
+                    if (!grassTop && y > height + minHeight - 4)
                     {
                         _blockIDs[x, y, z] = biome.topBlock;
                         grassTop = true;
                     }
                     else
                     {
-                        if (y <= height + biome.minHeight - 4)
+                        if (y <= height + minHeight - 4)
                             _blockIDs[x, y, z] = _blockTypes.Stone;
                         else
                             _blockIDs[x, y, z] = biome.secondaryBlock;
@@ -623,7 +623,7 @@ public class worldCreation : MonoBehaviour
         var height = GetHeight(block.x, block.z);
         var biome = biomes[GetBiome(block.x, block.z)];
         
-        if (block.y >= height + biome.minHeight)
+        if (block.y >= height + minHeight)
             return 0;
 
         return Perlin3D((block.x) * 0.05f + seed, (float) (block.y) * 0.05f + seed,
@@ -646,7 +646,7 @@ public class worldCreation : MonoBehaviour
         {
             return _chuncks[new Vector2(chunkPosX, chunkPosZ)];
         }
-        catch (Exception e)
+        catch
         {
             return null;
         }
@@ -654,19 +654,43 @@ public class worldCreation : MonoBehaviour
 
     private int GetBiome(float x, float z)
     {
-        biomeNoiseOffset = new Vector2(seed * 0.5f, seed * 0.25f);   
-        var height0 = Mathf.PerlinNoise((x + biomeNoiseOffset.x) * biomeNoise + seed, (z + biomeNoiseOffset.y) * biomeNoise + seed);
-        return (int)(height0 * biomes.Length);
+        var strongestWeight = 0f;
+        var index = 0;
+        
+        for (var i = 0; i < biomes.Length; i++)
+        {
+            var weight = Mathf.PerlinNoise((x + biomes[i].offset.x) * 0.005f + seed,
+                (z + biomes[i].offset.y) * 0.005f + seed);
+
+            if (!(weight > strongestWeight)) continue;
+            strongestWeight = weight;
+            index = i;
+        }
+                       
+        return index;
     }
-    
+
     private int GetHeight(float x, float z)
     {
-        var biome = biomes[GetBiome(x, z)];
+        var height = 0;
+        var count = 0;
         
-        var height0 = Mathf.PerlinNoise(x * biome.noiseMult1 + seed, z * biome.noiseMult1 + seed);
-        var height1 = Mathf.PerlinNoise(x * biome.noiseMult2 + seed, z * biome.noiseMult2 + seed);
+        for (var i = 0; i < biomes.Length; i++)
+        {
+            var weight = Mathf.PerlinNoise((x + biomes[i].offset.x) * 0.005f + seed,
+                (z + biomes[i].offset.y) * 0.005f + seed);
+            
+            var height0 = Mathf.PerlinNoise(x * biomes[i].noiseMult1 + seed, z * biomes[i].noiseMult1 + seed);
+            var height1 = Mathf.PerlinNoise(x * biomes[i].noiseMult2 + seed, z * biomes[i].noiseMult2 + seed);
+            var h = (int) ((height0 + height1) * biomes[i].maxGeneratingHeight * weight);
 
-        return (int)(height0 * height1 * (biome.maxGeneratingHeight - biome.minHeight));
+            if (h < 0) continue;
+            height += h;
+            count++;
+        }
+
+        height /= count;
+        return height;
     }
     
     public int Seed

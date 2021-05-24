@@ -3678,6 +3678,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Size: 16
   maxHeight: 256
+  minHeight: 30
   noiseThreshold: 0.3
   treeThreshold: 0.01
   minTreeHeight: 3
@@ -3841,22 +3842,22 @@ MonoBehaviour:
   biomes:
   - noiseMult1: 0.01
     noiseMult2: 0.00001
-    maxGeneratingHeight: 100
-    minHeight: 50
+    maxGeneratingHeight: 90
+    offset: {x: 281947, y: 0.2}
     topBlock: 2
     secondaryBlock: 1
     hasTree: 1
   - noiseMult1: 0.05
     noiseMult2: 0.0001
-    maxGeneratingHeight: 145
-    minHeight: 60
+    maxGeneratingHeight: 125
+    offset: {x: 5748, y: 43534}
     topBlock: 6
     secondaryBlock: 1
     hasTree: 1
   - noiseMult1: 0.01
     noiseMult2: 0.00001
-    maxGeneratingHeight: 100
-    minHeight: 50
+    maxGeneratingHeight: 75
+    offset: {x: 234, y: 545}
     topBlock: 7
     secondaryBlock: 7
     hasTree: 0
