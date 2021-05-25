@@ -771,6 +771,102 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355544163}
   m_CullTransparentMesh: 1
+--- !u!1 &365165079
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 365165083}
+  - component: {fileID: 365165082}
+  - component: {fileID: 365165081}
+  - component: {fileID: 365165080}
+  m_Layer: 0
+  m_Name: destroyBlock
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &365165080
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 365165079}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &365165081
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 365165079}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &365165082
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 365165079}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &365165083
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 365165079}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 100.04102, y: 164.58282, z: 246.32527}
+  m_LocalScale: {x: 1.01, y: 1.01, z: 1.01}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &389860671
 GameObject:
   m_ObjectHideFlags: 0
@@ -3693,150 +3789,66 @@ MonoBehaviour:
   water: {fileID: 1731320887}
   blocks:
   - id: 1
-    top:
-      serializedVersion: 2
-      x: 0.125
-      y: 0.9375
-      width: 0.0625
-      height: 0.0625
-    side:
-      serializedVersion: 2
-      x: 0.125
-      y: 0.9375
-      width: 0.0625
-      height: 0.0625
-    bot:
-      serializedVersion: 2
-      x: 0.125
-      y: 0.9375
-      width: 0.0625
-      height: 0.0625
+    topIndex: 2
+    frontIndex: 2
+    backIndex: 2
+    rightIndex: 2
+    leftIndex: 2
+    botIndex: 2
     img: {fileID: 1173509292370233011, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
   - id: 2
-    top:
-      serializedVersion: 2
-      x: 0
-      y: 0.9375
-      width: 0.0625
-      height: 0.0625
-    side:
-      serializedVersion: 2
-      x: 0.1875
-      y: 0.9375
-      width: 0.0625
-      height: 0.0625
-    bot:
-      serializedVersion: 2
-      x: 0.125
-      y: 0.9375
-      width: 0.0625
-      height: 0.0625
+    topIndex: 0
+    frontIndex: 3
+    backIndex: 3
+    rightIndex: 3
+    leftIndex: 3
+    botIndex: 2
     img: {fileID: 2020866507082804010, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
   - id: 3
-    top:
-      serializedVersion: 2
-      x: 0.0625
-      y: 0.9375
-      width: 0.0625
-      height: 0.0625
-    side:
-      serializedVersion: 2
-      x: 0.0625
-      y: 0.9375
-      width: 0.0625
-      height: 0.0625
-    bot:
-      serializedVersion: 2
-      x: 0.0625
-      y: 0.9375
-      width: 0.0625
-      height: 0.0625
+    topIndex: 1
+    frontIndex: 1
+    backIndex: 1
+    rightIndex: 1
+    leftIndex: 1
+    botIndex: 1
     img: {fileID: 5922603432633689416, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
   - id: 4
-    top:
-      serializedVersion: 2
-      x: 0.3125
-      y: 0.875
-      width: 0.0625
-      height: 0.0625
-    side:
-      serializedVersion: 2
-      x: 0.25
-      y: 0.875
-      width: 0.0625
-      height: 0.0625
-    bot:
-      serializedVersion: 2
-      x: 0.3125
-      y: 0.875
-      width: 0.0625
-      height: 0.0625
+    topIndex: 21
+    frontIndex: 20
+    backIndex: 20
+    rightIndex: 20
+    leftIndex: 20
+    botIndex: 21
     img: {fileID: 5471422393896444001, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
   - id: 5
-    top:
-      serializedVersion: 2
-      x: 0.25
-      y: 0.75
-      width: 0.0625
-      height: 0.0625
-    side:
-      serializedVersion: 2
-      x: 0.25
-      y: 0.75
-      width: 0.0625
-      height: 0.0625
-    bot:
-      serializedVersion: 2
-      x: 0.25
-      y: 0.75
-      width: 0.0625
-      height: 0.0625
+    topIndex: 52
+    frontIndex: 52
+    backIndex: 52
+    rightIndex: 52
+    leftIndex: 52
+    botIndex: 52
     img: {fileID: -8488667363120882930, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 1
   - id: 6
-    top:
-      serializedVersion: 2
-      x: 0.125
-      y: 0.75
-      width: 0.0625
-      height: 0.0625
-    side:
-      serializedVersion: 2
-      x: 0.25
-      y: 0.6875
-      width: 0.0625
-      height: 0.0625
-    bot:
-      serializedVersion: 2
-      x: 0.125
-      y: 0.9375
-      width: 0.0625
-      height: 0.0625
+    topIndex: 66
+    frontIndex: 68
+    backIndex: 68
+    rightIndex: 68
+    leftIndex: 68
+    botIndex: 2
     img: {fileID: -8970435892597880737, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
-    isTransparent: 1
+    isTransparent: 0
   - id: 7
-    top:
-      serializedVersion: 2
-      x: 0.125
-      y: 0.875
-      width: 0.0625
-      height: 0.0625
-    side:
-      serializedVersion: 2
-      x: 0.125
-      y: 0.875
-      width: 0.0625
-      height: 0.0625
-    bot:
-      serializedVersion: 2
-      x: 0.125
-      y: 0.875
-      width: 0.0625
-      height: 0.0625
+    topIndex: 18
+    frontIndex: 18
+    backIndex: 18
+    rightIndex: 18
+    leftIndex: 18
+    botIndex: 18
     img: {fileID: -7630100373914682455, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
   biomes:

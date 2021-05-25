@@ -444,7 +444,7 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.right);
         normals.Add(Vector3.right);
         
-        uvs.AddRange(Blocks[id].SideUVs());
+        uvs.AddRange(Blocks[id].RightUVs());
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -467,7 +467,7 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.left);
         normals.Add(Vector3.left);
         
-        uvs.AddRange(Blocks[id].SideUVs());
+        uvs.AddRange(Blocks[id].LeftUVs());
         
 
         indices.Add(currentIndex + 0);
@@ -491,7 +491,7 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.forward);
         normals.Add(Vector3.forward);
 
-        uvs.AddRange(Blocks[id].SideUVs());
+        uvs.AddRange(Blocks[id].FrontUVs());
 
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
@@ -514,7 +514,7 @@ public class worldCreation : MonoBehaviour
         normals.Add(Vector3.back);
         normals.Add(Vector3.back);
 
-        uvs.AddRange(Blocks[id].SideUVs());
+        uvs.AddRange(Blocks[id].BackUVs());
         
         indices.Add(currentIndex + 0);
         indices.Add(currentIndex + 1);
