@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 public class worldCreation : MonoBehaviour
 {
     //base code: https://github.com/Absurdponcho/BlockGame/blob/master/Assets/VoxelChunk.cs
-    [SerializeField] int Size = 16;
+    [SerializeField] private int size = 16;
     [SerializeField] private int maxHeight;
     [SerializeField] private int minHeight;
     private int[,,] _blockIDs;
@@ -24,12 +24,13 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private float biomeNoise;
     
     [SerializeField] private int seed;
-    [FormerlySerializedAs("chunck")] [SerializeField] private GameObject chunckGameObject;
+    [SerializeField] private GameObject chunckGameObject;
 
     [SerializeField] private float renderDistance;
     [SerializeField] private GameObject player;
     private PlayerInventory _playerInventory;
-    [SerializeField] private BlockTypes _blockTypes;
+    [SerializeField] private BlockTypes blockTypes;
+    [SerializeField] private BlockCreation blockCreation;
     [SerializeField] private Water water;
     private int _lastChunck = 0;
     private Dictionary<Vector2, GameObject> _chuncks = new Dictionary<Vector2, GameObject>();
@@ -67,12 +68,12 @@ public class worldCreation : MonoBehaviour
 
     private void GenerateBlocks(Vector2 offset, Transform chunck)
     {
-        _blockIDs = new int[Size, maxHeight, Size];
+        _blockIDs = new int[size, maxHeight, size];
         var treeGen = new System.Random((int)(offset.x * 1000 + offset.y));
         water.CreateWater(offset);
-        for (var x = 0; x < Size; x++)
+        for (var x = 0; x < size; x++)
         {
-            for (var z = 0; z < Size; z++)
+            for (var z = 0; z < size; z++)
             {
                 var height = GetHeight(x + offset.x, z + offset.y);
 
@@ -103,7 +104,7 @@ public class worldCreation : MonoBehaviour
                         _blockIDs[x, height + minHeight, z] = biome.topBlock;
                         if (biome.hasTree)
                         {
-                            if (x > 1 && x < Size - 2 && z > 1 && z < Size - 2)
+                            if (x > 1 && x < size - 2 && z > 1 && z < size - 2)
                             {
                                 if (treeGen.NextDouble() <= treeThreshold)
                                 {
@@ -111,19 +112,19 @@ public class worldCreation : MonoBehaviour
                                     var h = treeGen.Next(minTreeHeight, maxTreeHeight);
                                     for (var y = 1; y <= h; y++)
                                     {
-                                        _blockIDs[x, height + minHeight + y, z] = _blockTypes.Log;
+                                        _blockIDs[x, height + minHeight + y, z] = blockTypes.Log;
                                         if (y <= h - 2) continue;
                                         for (var i = -1; i <= 1; i++)
                                         {
                                             for (var j = -1; j <= 1; j++)
                                             {
                                                 if (i == 0 && j == 0) continue;
-                                                _blockIDs[x + i, height + minHeight + y, z + j] = _blockTypes.Leave;
+                                                _blockIDs[x + i, height + minHeight + y, z + j] = blockTypes.Leave;
                                             }
                                         }
                                     }
 
-                                    _blockIDs[x, height + minHeight + h + 1, z] = _blockTypes.Leave;
+                                    _blockIDs[x, height + minHeight + h + 1, z] = blockTypes.Leave;
                                 }
                             }
                         }
@@ -155,14 +156,14 @@ public class worldCreation : MonoBehaviour
                     else
                     {
                         if (y <= height + minHeight - 4)
-                            _blockIDs[x, y, z] = _blockTypes.Stone;
+                            _blockIDs[x, y, z] = blockTypes.Stone;
                         else
                             _blockIDs[x, y, z] = biome.secondaryBlock;
                         
                         waterTop = false;
                     }
                 }
-                _blockIDs[x, 0, z] = _blockTypes.Stone;
+                _blockIDs[x, 0, z] = blockTypes.Stone;
             }
         }
     }
@@ -173,14 +174,14 @@ public class worldCreation : MonoBehaviour
         var playerX = position.x - (position.x % 16);
         var playerZ = position.z - (position.z % 16);
         
-        var minX = Convert.ToInt32(playerX - Size * renderDistance);
-        var maxX = Convert.ToInt32(playerX + Size * renderDistance);
-        var minZ = Convert.ToInt32(playerZ - Size * renderDistance);
-        var maxZ = Convert.ToInt32(playerZ + Size * renderDistance);
+        var minX = Convert.ToInt32(playerX - size * renderDistance);
+        var maxX = Convert.ToInt32(playerX + size * renderDistance);
+        var minZ = Convert.ToInt32(playerZ - size * renderDistance);
+        var maxZ = Convert.ToInt32(playerZ + size * renderDistance);
 
-        for (var x = minX; x <= maxX; x += Size)
+        for (var x = minX; x <= maxX; x += size)
         {
-            for (var z = minZ; z <= maxZ; z += Size)
+            for (var z = minZ; z <= maxZ; z += size)
             {
                 var c = GetChunck(new Vector3(x, 0, z));
 
@@ -234,7 +235,7 @@ public class worldCreation : MonoBehaviour
                 ReloadChunck(new Vector3(-1, 0, 0) + block);
         }
         
-        if (bix == Size - 1){
+        if (bix == size - 1){
             if(GetBlock(new Vector3(1, 0, 0) + block) != 0)
                 ReloadChunck(new Vector3(1, 0, 0) + block);
         }
@@ -245,7 +246,7 @@ public class worldCreation : MonoBehaviour
                 ReloadChunck(new Vector3(0, 0, -1) + block);
         }
         
-        if (biz == Size - 1)
+        if (biz == size - 1)
         {
             if(GetBlock(new Vector3(0, 0, 1) + block) != 0)
                 ReloadChunck(new Vector3(0, 0, 1) + block);
@@ -295,104 +296,104 @@ public class worldCreation : MonoBehaviour
 
         var currentIndex = 0;
 
-        for (var x = 0; x < Size; x++)
+        for (var x = 0; x < size; x++)
         {
             for (var y = 0; y < maxHeight; y++)
             {
-                for (var z = 0; z < Size; z++)
+                for (var z = 0; z < size; z++)
                 {
                     var offset = new Vector3Int(x, y, z);
                     if (_blockIDs[x, y, z] == 0) continue;
                     if (y < maxHeight - 1)
                     {
                         if (_blockIDs[x, y + 1, z] == 0)
-                            GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                    _blockIDs[x, y, z], 0, 1, true);
                         else if (Blocks[_blockIDs[x, y + 1, z]].isTransparent)
-                            GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                    _blockIDs[x, y, z], 0, 1, true);
                     }
                     else
                     {
-                        GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                        blockCreation.GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z], 0, 1, true);
                     }
 
-                    if (x < Size - 1)
+                    if (x < size - 1)
                     {
                         if (_blockIDs[x + 1, y, z] == 0)
-                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z], 0, 1, true);
                         else if (Blocks[_blockIDs[x + 1, y, z]].isTransparent)
-                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z], 0, 1, true);
                     }
                     else
                     {
                         if (GetBlock(new Vector3(x + position.x + 1, y + position.y, z + position.z)) == 0)
-                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z], 0, 1, true);
                         else if (Blocks[GetBlock(new Vector3(x + position.x + 1, y + position.y, z + position.z))].isTransparent)
-                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z], 0, 1, true);
                     }
 
                     if (x >= 1)
                     {
                         if (_blockIDs[x - 1, y, z] == 0)
-                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z], 0, 1, true);
                         else if (Blocks[_blockIDs[x - 1, y, z]].isTransparent)
-                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z], 0, 1, true);
                     }
                     else
                     {
                         if (GetBlock(new Vector3(x + position.x - 1, y + position.y, z + position.z)) == 0)
-                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z], 0, 1, true);
                         else if (Blocks[GetBlock(new Vector3(x + position.x - 1, y + position.y, z + position.z))].isTransparent)
-                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z], 0, 1, true);
                     }
 
-                    if (z < Size - 1)
+                    if (z < size - 1)
                     {
                         if (_blockIDs[x, y, z + 1] == 0)
-                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z], 0, 1, true);
                         else if (Blocks[_blockIDs[x, y, z + 1]].isTransparent)
-                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z], 0, 1, true);
                     }
                     else
                     {
                         if (GetBlock(new Vector3(x + position.x, y + position.y, z + position.z + 1)) == 0)
-                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z], 0, 1, true);
                         else if (Blocks[GetBlock(new Vector3(x + position.x, y + position.y, z + position.z + 1))].isTransparent)
-                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z], 0, 1, true);
                     }
 
                     if (z >= 1)
                     {
                         if (_blockIDs[x, y, z - 1] == 0)
-                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z], 0, 1, true);
                         else if (Blocks[_blockIDs[x, y, z - 1]].isTransparent)
-                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z], 0, 1, true);
                     }
                     else
                     {
                         if (GetBlock(new Vector3(x + position.x, y + position.y, z + position.z - 1)) == 0)
-                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z], 0, 1, true);
                         else if (Blocks[GetBlock(new Vector3(x + position.x, y + position.y, z + position.z - 1))].isTransparent)
-                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z], 0, 1, true);
                     }
 
                     if (y >= 1)
                     {
                         if (_blockIDs[x, y - 1, z] == 0)
-                            GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices, _blockIDs[x, y, z], 0, 1, true);
                         else if (Blocks[_blockIDs[x, y - 1, z]].isTransparent)
-                            GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                _blockIDs[x, y, z]);
+                            blockCreation.GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                _blockIDs[x, y, z], 0, 1, true);
                     }
                     
                 }
@@ -409,144 +410,7 @@ public class worldCreation : MonoBehaviour
         chunck.GetComponent<MeshCollider>().sharedMesh = newMesh;
     }
 
-    private void GenerateBlock_Top(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
-    {
-        vertices.Add(new Vector3(0f, 1f, 1f) + offset);
-        vertices.Add(new Vector3(1f, 1f, 1f) + offset);
-        vertices.Add(new Vector3(1f, 1f, 0f) + offset);
-        vertices.Add(new Vector3(0f, 1f, 0f) + offset);
-
-        normals.Add(Vector3.up);
-        normals.Add(Vector3.up);
-        normals.Add(Vector3.up);
-        normals.Add(Vector3.up);
-
-        uvs.AddRange(Blocks[id].TopUVs());
-
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
-
-    private void GenerateBlock_Right(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
-    {
-        vertices.Add(new Vector3(1f, 1f, 0f) + offset);
-        vertices.Add(new Vector3(1f, 1f, 1f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 1f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 0f) + offset);
-
-        normals.Add(Vector3.right);
-        normals.Add(Vector3.right);
-        normals.Add(Vector3.right);
-        normals.Add(Vector3.right);
-        
-        uvs.AddRange(Blocks[id].RightUVs());
-
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
-
-    private void GenerateBlock_Left(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
-    {
-        vertices.Add(new Vector3(0f, 1f, 1f) + offset);
-        vertices.Add(new Vector3(0f, 1f, 0f) + offset);
-        vertices.Add(new Vector3(0f, 0f, 0f) + offset);
-        vertices.Add(new Vector3(0f, 0f, 1f) + offset);
-
-        normals.Add(Vector3.left);
-        normals.Add(Vector3.left);
-        normals.Add(Vector3.left);
-        normals.Add(Vector3.left);
-        
-        uvs.AddRange(Blocks[id].LeftUVs());
-        
-
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
-
-    private void GenerateBlock_Forward(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
-    {
-        vertices.Add(new Vector3(1f, 1f, 1f) + offset);
-        vertices.Add(new Vector3(0f, 1f, 1f) + offset);
-        vertices.Add(new Vector3(0f, 0f, 1f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 1f) + offset);
-
-        normals.Add(Vector3.forward);
-        normals.Add(Vector3.forward);
-        normals.Add(Vector3.forward);
-        normals.Add(Vector3.forward);
-
-        uvs.AddRange(Blocks[id].FrontUVs());
-
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
-
-    private void GenerateBlock_Back(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
-    {
-        vertices.Add(new Vector3(0f, 1f, 0f) + offset);
-        vertices.Add(new Vector3(1f, 1f, 0f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 0f) + offset);
-        vertices.Add(new Vector3(0f, 0f, -0) + offset);
-
-        normals.Add(Vector3.back);
-        normals.Add(Vector3.back);
-        normals.Add(Vector3.back);
-        normals.Add(Vector3.back);
-
-        uvs.AddRange(Blocks[id].BackUVs());
-        
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
-
-    private void GenerateBlock_Bottom(ref int currentIndex, Vector3Int offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, int id)
-    {
-        vertices.Add(new Vector3(0f, 0f, 0f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 0f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 1f) + offset);
-        vertices.Add(new Vector3(0f, 0f, 1f) + offset);
-
-        normals.Add(Vector3.down);
-        normals.Add(Vector3.down);
-        normals.Add(Vector3.down);
-        normals.Add(Vector3.down);
-
-        uvs.AddRange(Blocks[id].BotUVs());
-
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
+   
 
     private float Perlin3D(float x, float y, float z)
     {
@@ -573,13 +437,13 @@ public class worldCreation : MonoBehaviour
         {
             var c = Instantiate(chunckGameObject, chunckInfo.pos, Quaternion.identity);
 
-            var bIds = new int[Size, maxHeight, Size];
+            var bIds = new int[size, maxHeight, size];
 
             for (var i = 0; i < chunckInfo.blockIDs.Length; i++)
             {
-                var z = i % Size;
-                var y = (i / Size) % maxHeight;
-                var x = i / (Size * maxHeight);
+                var z = i % size;
+                var y = (i / size) % maxHeight;
+                var x = i / (size * maxHeight);
 
                 bIds[x, y, z] = chunckInfo.blockIDs[i];
             }
@@ -587,12 +451,12 @@ public class worldCreation : MonoBehaviour
             cChunck.BlockIDs = bIds;
             if (chunckInfo.waterIDs != null)
             {
-                var wIds = new int[Size, maxHeight, Size];
+                var wIds = new int[size, maxHeight, size];
                 for (var i = 0; i < chunckInfo.waterIDs.Length; i++)
                 {
-                    var z = i % Size;
-                    var y = (i / Size) % maxHeight;
-                    var x = i / (Size * maxHeight);
+                    var z = i % size;
+                    var y = (i / size) % maxHeight;
+                    var x = i / (size * maxHeight);
 
                     wIds[x, y, z] = chunckInfo.waterIDs[i];
                 }
@@ -606,6 +470,7 @@ public class worldCreation : MonoBehaviour
         }
     }
     
+    // ReSharper disable Unity.PerformanceAnalysis
     public int GetBlock(Vector3 block)
     {
         var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
@@ -703,7 +568,7 @@ public class worldCreation : MonoBehaviour
 
     public int MAXHeight => maxHeight;
 
-    public int Size1 => Size;
+    public int Size => size;
 
     public Dictionary<int, Blocks> Blocks { get; } = new Dictionary<int, Blocks>();
 }

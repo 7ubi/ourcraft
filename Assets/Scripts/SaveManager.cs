@@ -42,7 +42,7 @@ public class SaveManager : MonoBehaviour
     {
         var saveData = new SaveData(_playerController.transform.position, _playerController.Camera.transform.rotation,
             _playerInventory.ItemCount, _playerInventory.ItemIds,
-            _worldCreation.Seed, _worldCreation.Chuncks, _worldCreation.Size1, _worldCreation.MAXHeight);
+            _worldCreation.Seed, _worldCreation.Chuncks, _worldCreation.Size, _worldCreation.MAXHeight);
         SerializationManager.Save(_worldName, saveData);
     }
 

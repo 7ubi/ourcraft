@@ -18,7 +18,7 @@ public class Water : MonoBehaviour
 
     public void CreateWater(Vector2 offset)
     {
-        _waterIds = new int[worldCreation.Size1,  worldCreation.MAXHeight,worldCreation.Size1];
+        _waterIds = new int[worldCreation.Size,  worldCreation.MAXHeight,worldCreation.Size];
         _offset = offset;
     }
 
@@ -56,11 +56,11 @@ public class Water : MonoBehaviour
 
         var currentIndex = 0;
 
-        for (var x = 0; x < worldCreation.Size1; x++)
+        for (var x = 0; x < worldCreation.Size; x++)
         {
             for(var y = 0; y < worldCreation.MAXHeight; y++)
             {
-                for (var z = 0; z < worldCreation.Size1; z++)
+                for (var z = 0; z < worldCreation.Size; z++)
                 {
                     var offset = new Vector3(x, y, z);
                     if (_waterIds[x, y, z] == 0) continue;
@@ -75,7 +75,7 @@ public class Water : MonoBehaviour
                         }
                     }
                     
-                    if (x < worldCreation.Size1 - 1)
+                    if (x < worldCreation.Size - 1)
                     {
                         if (_waterIds[x + 1, y, z] == 0)
                             GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, isTop);
@@ -87,7 +87,7 @@ public class Water : MonoBehaviour
                             GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, isTop);
                     }
 
-                    if (z < worldCreation.Size1 - 1)
+                    if (z < worldCreation.Size - 1)
                     {
                         if (_waterIds[x, y, z + 1] == 0)
                             GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, isTop);

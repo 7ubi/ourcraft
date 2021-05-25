@@ -8,6 +8,7 @@ public class Blocks
 {
     // texture atlas from: https://github.com/mikolalysenko/tile-mip-map
 
+    [SerializeField] public string name;
     [SerializeField] public int id;
     [SerializeField] public int topIndex;
     [SerializeField] public int frontIndex;
@@ -17,6 +18,7 @@ public class Blocks
     [SerializeField] public int botIndex;
     [SerializeField] public Sprite img;
     [SerializeField] public bool isTransparent = false;
+    [SerializeField] public float destroyTime = 1f;
     private static int _size = 16;
     private float _normalized = 1 / (float) _size;
     
