@@ -3890,16 +3890,18 @@ MonoBehaviour:
   size: 16
   maxHeight: 256
   minHeight: 30
-  noiseThreshold: 0.3
-  treeThreshold: 0.01
-  minTreeHeight: 3
-  maxTreeHeight: 7
+  noiseThreshold: 0.35
   seed: 69
   chunckGameObject: {fileID: 8451236987504973569, guid: 320c3e7c5fc352247932ecdea37a94a4,
     type: 3}
   destroyedBlock: {fileID: 4135905159320930976, guid: 172e7950ad0cc62458d8f3f28ae977d7,
     type: 3}
   renderDistance: 6
+  treeThreshold: 0.01
+  minTreeHeight: 3
+  maxTreeHeight: 7
+  ironNoiseOffset: {x: 2134, y: 43, z: 345}
+  ironNoiseThreshold: 0.35
   player: {fileID: 1743702924}
   blockTypes: {fileID: 1731320885}
   blockCreation: {fileID: 1731320884}
@@ -3982,6 +3984,28 @@ MonoBehaviour:
     img: {fileID: -7630100373914682455, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
+  - name: Iron
+    id: 8
+    topIndex: 33
+    frontIndex: 33
+    backIndex: 33
+    rightIndex: 33
+    leftIndex: 33
+    botIndex: 33
+    img: {fileID: 5371853929025790235, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
+    isTransparent: 0
+    destroyTime: 1
+  - name: Bedrock
+    id: 9
+    topIndex: 17
+    frontIndex: 17
+    backIndex: 17
+    rightIndex: 17
+    leftIndex: 17
+    botIndex: 17
+    img: {fileID: 7076371988945999865, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
+    isTransparent: 0
+    destroyTime: Infinity
   biomes:
   - noiseMult1: 0.01
     noiseMult2: 0.00001
@@ -4281,7 +4305,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1743702924}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 150, z: 4.5}
+  m_LocalPosition: {x: 0.5, y: 70, z: 4.5}
   m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_Children:
   - {fileID: 963194228}
@@ -4323,6 +4347,7 @@ MonoBehaviour:
   speedV: 2
   jumpForce: 5
   selectGameObject: {fileID: 1454945976}
+  worldCreation: {fileID: 1731320882}
 --- !u!114 &1743702931
 MonoBehaviour:
   m_ObjectHideFlags: 0

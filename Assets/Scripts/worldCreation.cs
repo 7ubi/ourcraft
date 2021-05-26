@@ -12,31 +12,42 @@ using Random = UnityEngine.Random;
 public class worldCreation : MonoBehaviour
 {
     //base code: https://github.com/Absurdponcho/BlockGame/blob/master/Assets/VoxelChunk.cs
+    
+    [Header("Chunck Info")]
     [SerializeField] private int size = 16;
     [SerializeField] private int maxHeight;
     [SerializeField] private int minHeight;
     private int[,,] _blockIDs;
     [SerializeField] private float noiseThreshold;
+    [SerializeField] private int seed;
+    [SerializeField] private GameObject chunckGameObject;
+    [SerializeField] private GameObject destroyedBlock;
+    [SerializeField] private float renderDistance;
     
+    [Header("Tree")]
     [SerializeField] private float treeThreshold;
     [SerializeField] private int minTreeHeight;
     [SerializeField] private int maxTreeHeight;
 
-    [SerializeField] private int seed;
-    [SerializeField] private GameObject chunckGameObject;
-    [SerializeField] private GameObject destroyedBlock;
-
-    [SerializeField] private float renderDistance;
+    [Header("Ores")]
+    [SerializeField] private Vector3 ironNoiseOffset;
+    [SerializeField] private float ironNoiseThreshold;
+    
+    [Header("Player")]
     [SerializeField] private GameObject player;
     private PlayerInventory _playerInventory;
+    
+    [Header("Scripts")]
     [SerializeField] private BlockTypes blockTypes;
     [SerializeField] private BlockCreation blockCreation;
     [SerializeField] private Water water;
-    private int _lastChunck = 0;
-    private Dictionary<Vector2, GameObject> _chuncks = new Dictionary<Vector2, GameObject>();
-
+    
+    
+    [Header("Blocks and Biomes")]
     [SerializeField] private Blocks[] blocks;
     [SerializeField] private Biome[] biomes;
+    private Dictionary<Vector2, GameObject> _chuncks = new Dictionary<Vector2, GameObject>();
+    private int _lastChunck = 0;
 
     private void Start()
     {
@@ -78,8 +89,6 @@ public class worldCreation : MonoBehaviour
                 var height = GetHeight(x + offset.x, z + offset.y);
 
                 var biome = biomes[GetBiome(x + offset.x, z + offset.y)];
-                
-                //Debug.Log(GetBiome(x + offset.x, z + offset.y));
                 
                 if (height <= 1)
                     height = 1;
@@ -156,14 +165,23 @@ public class worldCreation : MonoBehaviour
                     else
                     {
                         if (y <= height + minHeight - 4)
-                            _blockIDs[x, y, z] = blockTypes.Stone;
+                        {
+                            if (Perlin3D((x + ironNoiseOffset.x) * 0.5f + seed,
+                                    (y + ironNoiseOffset.y) * 0.5f + seed, (z + ironNoiseOffset.z) * 0.5f + seed) <
+                                ironNoiseThreshold)
+                            {
+                                _blockIDs[x, y, z] = blockTypes.Ironore;
+                            }
+                            else
+                                _blockIDs[x, y, z] = blockTypes.Stone;
+                        }
                         else
                             _blockIDs[x, y, z] = biome.secondaryBlock;
                         
                         waterTop = false;
                     }
                 }
-                _blockIDs[x, 0, z] = blockTypes.Stone;
+                _blockIDs[x, 0, z] = blockTypes.Bedrock;
             }
         }
     }

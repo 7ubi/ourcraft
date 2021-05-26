@@ -9,6 +9,10 @@ public class BlockTypes : MonoBehaviour
     private const int stone = 3;
     private const int log = 4;
     private const int leave = 5;
+    private const int snow = 6;
+    private const int sand = 7;
+    private const int ironore = 8;
+    private const int bedrock = 9;
 
     public int Dirt => dirt;
 
@@ -19,4 +23,12 @@ public class BlockTypes : MonoBehaviour
     public int Log => log;
 
     public int Leave => leave;
+
+    public int Snow => snow;
+
+    public int Sand => sand;
+
+    public int Ironore => ironore;
+
+    public int Bedrock => bedrock;
 }

@@ -26,6 +26,7 @@ public class SaveManager : MonoBehaviour
         else
         {
             _worldCreation.GenerateFirst();
+            _playerController.SetPos();
             SaveGame();
         }
     }

@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private  float speedV = 2.0f;
     [SerializeField] private float jumpForce;
     [SerializeField] private GameObject selectGameObject;
+    [SerializeField] private worldCreation worldCreation;
     private bool _canPlaceBlock;
 
     private float forward;
@@ -77,6 +78,18 @@ public class PlayerController : MonoBehaviour
         transform.position = pos;
         _camera.transform.rotation = rotation;
         transform.eulerAngles = new Vector3(0, _camera.transform.eulerAngles.y, 0);
+    }
+
+    public void SetPos()
+    {
+        var position = transform.position;
+        for (var y = worldCreation.MAXHeight - 1; y >= 0; y--)
+        {
+            if (worldCreation.GetBlock(new Vector3(position.x, y, position.z)) == 0) continue;
+            position = new Vector3(position.x, y + 1, position.z);
+            transform.position = position;
+            return;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
