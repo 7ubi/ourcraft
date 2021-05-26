@@ -15,9 +15,15 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private TMP_Text[] itemCountText;
     [SerializeField] private Image[] itemImages;
 
+    [SerializeField] private int destroyedBlockReach;
+
+    private readonly List<GameObject> _destroyedBlocks = new List<GameObject>(); 
+
 
     private void Update()
     {
+        DestroyedBlockInRage();
+        
         Current = (Current - (int)Input.mouseScrollDelta.y) % 9;
         if (Current < 0)
             Current = 8;
@@ -86,6 +92,25 @@ public class PlayerInventory : MonoBehaviour
             itemImages[i].sprite = worldCreation.Blocks[ItemIds[i]].img;
             
             itemImages[i].color = new Color(255, 255, 255, 100);
+        }
+    }
+
+    public void AddDestroyedBlock(GameObject block)
+    {
+        _destroyedBlocks.Add(block);
+    }
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    private void DestroyedBlockInRage()
+    {
+        for (var i = _destroyedBlocks.Count - 1; i >= 0; i--)
+        {
+            var destroyed = _destroyedBlocks[i];
+            
+            if (Vector3.Distance(transform.position, destroyed.transform.position) > destroyedBlockReach) continue;
+            AddItem(destroyed.GetComponent<DestroyedBlock>().ID, 1);
+            Destroy(destroyed);
+            _destroyedBlocks.Remove(destroyed);
         }
     }
 

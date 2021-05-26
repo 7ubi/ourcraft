@@ -21,10 +21,10 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private float treeThreshold;
     [SerializeField] private int minTreeHeight;
     [SerializeField] private int maxTreeHeight;
-    [SerializeField] private float biomeNoise;
-    
+
     [SerializeField] private int seed;
     [SerializeField] private GameObject chunckGameObject;
+    [SerializeField] private GameObject destroyedBlock;
 
     [SerializeField] private float renderDistance;
     [SerializeField] private GameObject player;
@@ -224,7 +224,9 @@ public class worldCreation : MonoBehaviour
         var biy = Mathf.FloorToInt(block.y);
         var biz = Mathf.FloorToInt(block.z) - (int)chunck.transform.position.z;
         var c = chunck.GetComponent<Chunck>();
-        _playerInventory.AddItem(c.BlockIDs[bix, biy, biz], 1);
+        
+        _playerInventory.AddDestroyedBlock(CreateDestroyedBlock(c.BlockIDs[bix, biy, biz], block + new Vector3(0.375f, 0.1f, 0.375f)));
+        
         c.BlockIDs[bix, biy, biz] = 0;
         
         GenerateMesh(chunck);
@@ -251,7 +253,6 @@ public class worldCreation : MonoBehaviour
             if(GetBlock(new Vector3(0, 0, 1) + block) != 0)
                 ReloadChunck(new Vector3(0, 0, 1) + block);
         }
-    
     }
 
     public void PlaceBlock(Vector3 block, int id)
@@ -486,7 +487,6 @@ public class worldCreation : MonoBehaviour
         }
 
         var height = GetHeight(block.x, block.z);
-        var biome = biomes[GetBiome(block.x, block.z)];
         
         if (block.y >= height + minHeight)
             return 0;
@@ -556,6 +556,40 @@ public class worldCreation : MonoBehaviour
 
         height /= count;
         return height;
+    }
+
+    private GameObject CreateDestroyedBlock(int id, Vector3 pos)
+    {
+        var b = Instantiate(destroyedBlock, pos, Quaternion.identity);
+        b.GetComponent<DestroyedBlock>().ID = id;
+
+        var newMesh = new Mesh();
+        var vertices = new List<Vector3>();
+        var normals = new List<Vector3>();
+        var uvs = new List<Vector2>();
+        var indices = new List<int>();
+
+        var currentIndex = 0;
+
+        
+        blockCreation.GenerateBlock_Top(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
+        blockCreation.GenerateBlock_Left(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
+        blockCreation.GenerateBlock_Right(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
+        blockCreation.GenerateBlock_Back(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
+        blockCreation.GenerateBlock_Forward(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
+        blockCreation.GenerateBlock_Bottom(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
+        
+        
+        newMesh.SetVertices(vertices);
+        newMesh.SetNormals(normals);
+        newMesh.SetUVs(0, uvs);
+        newMesh.SetIndices(indices, MeshTopology.Triangles, 0);
+
+        newMesh.RecalculateTangents();
+        b.GetComponent<MeshFilter>().mesh = newMesh;
+        b.GetComponent<MeshCollider>().sharedMesh = newMesh;
+        
+        return b;
     }
     
     public int Seed
