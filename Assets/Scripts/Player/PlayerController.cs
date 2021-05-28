@@ -22,15 +22,27 @@ public class PlayerController : MonoBehaviour
     private float _pitch = 0.0f;
     
     private Rigidbody _rb;
+    private PlayerInventory _playerInventory;
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        
+        _playerInventory = GetComponent<PlayerInventory>();
     }
 
     private void Update()
     {
+        if (_playerInventory.InInventory)
+        {
+            transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
+            _camera.transform.eulerAngles = new Vector3(_pitch, _yaw, 0.0f);
+            _rb.velocity = new Vector3(0, _rb.velocity.y, 0);
+            _rb.constraints = RigidbodyConstraints.FreezeAll;
+            return;
+        }
+
+        _rb.constraints = RigidbodyConstraints.None;
+        
         forward = Input.GetAxis("Vertical") * moveSpeed;
         right = Input.GetAxis("Horizontal") * moveSpeed;
 
@@ -60,6 +72,7 @@ public class PlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (_playerInventory.InInventory) return;
         var velocity = _rb.velocity;
         var yVel = velocity.y;
         var transform1 = transform;
@@ -86,7 +99,7 @@ public class PlayerController : MonoBehaviour
         for (var y = worldCreation.MAXHeight - 1; y >= 0; y--)
         {
             if (worldCreation.GetBlock(new Vector3(position.x, y, position.z)) == 0) continue;
-            position = new Vector3(position.x, y + 1, position.z);
+            position = new Vector3(position.x, y + 2, position.z);
             transform.position = position;
             return;
         }

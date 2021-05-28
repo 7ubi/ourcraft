@@ -15,9 +15,12 @@ public class PlayerActionController : MonoBehaviour
 
     [SerializeField] private PlayerController playerController;
     [SerializeField] private DestroyBlock destroyBlock;
+    [SerializeField] private PlayerInventory playerInventory;
     
     private void Update()
     {
+        if (playerInventory.InInventory) return;
+        
         var leftClick = Input.GetMouseButton(0);
         var rightClick = Input.GetMouseButtonDown(1);
 

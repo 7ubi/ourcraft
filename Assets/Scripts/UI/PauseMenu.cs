@@ -10,6 +10,7 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private PlayerActionController playerActionController;
     private PlayerController _playerController;
     private PlayerInventory _playerInventory;
+    [SerializeField] private InventoryCell inventoryCell;
 
     private void Start()
     {
@@ -24,6 +25,8 @@ public class PauseMenu : MonoBehaviour
     private void Update()
     {
         if (!Input.GetKeyDown(KeyCode.Escape)) return;
+        if(_playerInventory.InInventory)
+            inventoryCell.ResetToOriginalPos();
         Pause();
     }
 
@@ -34,7 +37,7 @@ public class PauseMenu : MonoBehaviour
         _playerInventory.enabled = panel.activeInHierarchy;
         panel.SetActive(!panel.activeInHierarchy);
         Time.timeScale = panel.activeInHierarchy ? 0 : 1;
-        Cursor.visible = panel.activeInHierarchy;
-        Cursor.lockState = panel.activeInHierarchy ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = _playerInventory.InInventory || panel.activeInHierarchy;
+        Cursor.lockState = _playerInventory.InInventory ? CursorLockMode.None : panel.activeInHierarchy ? CursorLockMode.None : CursorLockMode.Locked;
     }
 }
