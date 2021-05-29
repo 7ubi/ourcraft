@@ -13,6 +13,9 @@ GameObject:
   - component: {fileID: 8869736472206214432}
   - component: {fileID: 4642047381536682881}
   - component: {fileID: 363026983547850181}
+  - component: {fileID: 4188751697912799454}
+  - component: {fileID: 453490869700261606}
+  - component: {fileID: 1984993220019428441}
   m_Layer: 6
   m_Name: Chunck
   m_TagString: Untagged
@@ -108,5 +111,52 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f4e220ecb4b7764d98d390a07aa1106, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4188751697912799454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8451236987504973569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c873fe83a7d43894c9db455c5522c46d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldCreation: {fileID: 0}
+  meshFilter: {fileID: 8869736472206214432}
+  meshCollider: {fileID: 6456060020923204623}
+  chunck: {fileID: 363026983547850181}
+  water: {fileID: 453490869700261606}
+--- !u!114 &453490869700261606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8451236987504973569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 557a86b045e63a34c8cc5fac7bb9112e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waterChunck: {fileID: 8451236987504973569, guid: c34262576ff9a3e4888b17c5dce21dad,
+    type: 3}
+  worldCreation: {fileID: 0}
+  waterBlocks: {fileID: 1984993220019428441}
+  meshFilter: {fileID: 0}
+  height: 60
+--- !u!114 &1984993220019428441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8451236987504973569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eb08400d1079d34b858ee78a6705a75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

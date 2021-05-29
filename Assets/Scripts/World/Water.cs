@@ -7,30 +7,30 @@ using UnityEngine.Serialization;
 public class Water : MonoBehaviour
 {
     [SerializeField] private GameObject waterChunck;
-    [SerializeField] private worldCreation worldCreation;
+    public worldCreation worldCreation;
     [SerializeField] private WaterBlocks waterBlocks;
+    private MeshFilter meshFilter;
     
     // water shader https://www.youtube.com/watch?v=gRq-IdShxpU
 
     private int[,,] _waterIds;
     [SerializeField] private int height;
     private Vector2 _offset;
+    private Chunck _chunck;
+    private GameObject _water;
+    
+    private Mesh _newMesh;
+    private List<Vector3> _vertices;
+    private List<Vector3> _normals;
+    private List<Vector2> _uvs;
+    private List<int> _indices;
+    private Vector3 _position;
 
-    public void CreateWater(Vector2 offset)
+    public void CreateWater(Vector2 offset, Transform chunckParent)
     {
         _waterIds = new int[worldCreation.Size,  worldCreation.MAXHeight,worldCreation.Size];
         _offset = offset;
-    }
-
-    public void AddWater(int x, int y, int z)
-    {
-        _waterIds[x, y, z] = 1;
-    }
-
-    public void GenerateWater(Transform chunckParent)
-    {
-        var chunck = chunckParent.GetComponent<Chunck>();
-
+        
         if (chunckParent.childCount > 0)
         {
             for (var i = chunckParent.childCount - 1; i >= 0; i--)
@@ -39,21 +39,28 @@ public class Water : MonoBehaviour
             }
         }
         
-        var w = Instantiate(waterChunck, chunckParent);
+        _water = Instantiate(waterChunck, chunckParent);
+        _chunck = chunckParent.GetComponent<Chunck>();
+        meshFilter = _water.GetComponent<MeshFilter>();
         
-        if (chunck.WaterIDs != null)
-            _waterIds = chunck.WaterIDs;
+        _newMesh = new Mesh();
+        _vertices = new List<Vector3>();
+        _normals = new List<Vector3>();
+        _uvs = new List<Vector2>();
+        _indices = new List<int>();
+    }
+
+    public void AddWater(int x, int y, int z)
+    {
+        _waterIds[x, y, z] = 1;
+    }
+
+    public void GenerateWater()
+    {
+        if (_chunck.WaterIDs != null)
+            _waterIds = _chunck.WaterIDs;
         else
-        {
-            chunck.WaterIDs = _waterIds;
-        }
-
-        var newMesh = new Mesh();
-        var vertices = new List<Vector3>();
-        var normals = new List<Vector3>();
-        var uvs = new List<Vector2>();
-        var indices = new List<int>();
-
+            _chunck.WaterIDs = _waterIds;
         var currentIndex = 0;
 
         for (var x = 0; x < worldCreation.Size; x++)
@@ -69,8 +76,8 @@ public class Water : MonoBehaviour
                     {
                         if (_waterIds[x, y + 1, z] == 0)
                         {
-                            GenerateBlock_Top(ref currentIndex, offset, vertices, normals, uvs, indices);
-                            GenerateBlock_BottomOfTop(ref currentIndex, offset, vertices, normals, uvs, indices);
+                            GenerateBlock_Top(ref currentIndex, offset, _vertices, _normals, _uvs, _indices);
+                            GenerateBlock_BottomOfTop(ref currentIndex, offset, _vertices, _normals, _uvs, _indices);
                             isTop = true;
                         }
                     }
@@ -78,44 +85,48 @@ public class Water : MonoBehaviour
                     if (x < worldCreation.Size - 1)
                     {
                         if (_waterIds[x + 1, y, z] == 0)
-                            GenerateBlock_Right(ref currentIndex, offset, vertices, normals, uvs, indices, isTop);
+                            GenerateBlock_Right(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
                     }
 
                     if (x >= 1)
                     {
                         if (_waterIds[x - 1, y, z] == 0)
-                            GenerateBlock_Left(ref currentIndex, offset, vertices, normals, uvs, indices, isTop);
+                            GenerateBlock_Left(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
                     }
 
                     if (z < worldCreation.Size - 1)
                     {
                         if (_waterIds[x, y, z + 1] == 0)
-                            GenerateBlock_Forward(ref currentIndex, offset, vertices, normals, uvs, indices, isTop);
+                            GenerateBlock_Forward(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
                     }
 
                     if (z >= 1)
                     {
                         if (_waterIds[x, y, z - 1] == 0)
-                            GenerateBlock_Back(ref currentIndex, offset, vertices, normals, uvs, indices, isTop);
+                            GenerateBlock_Back(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
                     }
                     
                     if (y != 0)
                     {
                         if (_waterIds[x, y - 1, z] == 0)
-                            GenerateBlock_Bottom(ref currentIndex, offset, vertices, normals, uvs, indices);
+                            GenerateBlock_Bottom(ref currentIndex, offset, _vertices, _normals, _uvs, _indices);
                     }
                 }
             }
         }
         
-        newMesh.SetVertices(vertices);
-        newMesh.SetNormals(normals);
-        newMesh.SetUVs(0, uvs);
-        newMesh.SetIndices(indices, MeshTopology.Triangles, 0);
+        worldCreation.waterMeshesToApply.Add(this);
+    }
+    
+    public void ApplyMesh()
+    {
+        _newMesh.SetVertices(_vertices);
+        _newMesh.SetNormals(_normals);
+        _newMesh.SetUVs(0, _uvs);
+        _newMesh.SetIndices(_indices, MeshTopology.Triangles, 0);
 
-        newMesh.RecalculateTangents();
-        w.GetComponent<MeshFilter>().mesh = newMesh;
-        
+        _newMesh.RecalculateTangents();
+        meshFilter.mesh = _newMesh;
     }
 
     private void GenerateBlock_Top(ref int currentIndex, Vector3 offset, List<Vector3> vertices,
