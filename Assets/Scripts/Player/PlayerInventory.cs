@@ -90,6 +90,8 @@ public class PlayerInventory : MonoBehaviour
         for (var i = 0; i < ItemIds.Length; i++)
         {
             if (ItemIds[i] != id) continue;
+            if (ItemCount[i] >= worldCreation.Blocks[ItemIds[i]].stackSize) continue;
+            
             index = i;
             break;
         }
@@ -114,6 +116,20 @@ public class PlayerInventory : MonoBehaviour
         ItemIds[index] = 0;
         itemImages[index].sprite = null;
         itemImages[index].color = new Color(255, 255, 255, 0);
+    }
+
+    public void RemoveItem(int index)
+    {
+        ItemCount[index] -= 1;
+
+        if (ItemCount[index] <= 0)
+        {
+            ItemIds[index] = 0;
+            itemImages[index].sprite = null;
+            itemImages[index].color = new Color(255, 255, 255, 0);
+        }
+        
+        UpdateUI();
     }
 
     public bool CanPlaceBlock()
@@ -167,45 +183,116 @@ public class PlayerInventory : MonoBehaviour
         _destroyedBlocks.Add(block);
     }
 
-    public void ReplaceItem(int index)
+    public void ReplaceItem(int index, int mouseBtn)
     {
         var id = 0;
         var count = 0;
         var changed = false;
-        
-        if (ItemIds[index] != 0)
+        if (mouseBtn == 0)
         {
-            itemCell.gameObject.SetActive(true);
-            id = itemCell.Id;
-            count = itemCell.Count;
-            itemCell.SetSprite(worldCreation.Blocks[ItemIds[index]].img, ItemIds[index], ItemCount[index], index);
-        
-            ItemIds[index] = 0;
-            itemImages[index].sprite = null;
-            itemImages[index].color = new Color(255, 255, 255, 0);
-            ItemCount[index] = 0;
-            UpdateText(index);
-            changed = true;
-        }
-        
-        if (!changed)
-        {
-            if (itemCell.Id == 0) return;
-            ItemIds[index] = itemCell.Id;
-            itemImages[index].sprite = worldCreation.Blocks[ItemIds[index]].img;
-            ItemCount[index] = itemCell.Count;
-            itemImages[index].color = new Color(255, 255, 255, 100);
-            itemCell.Reset();
-            UpdateText(index);
+            if (itemCell.Id == ItemIds[index])
+            {
+                ItemCount[index] += itemCell.Count;
+
+                if (ItemCount[index] <= worldCreation.Blocks[ItemIds[index]].stackSize)
+                {
+                    itemCell.Reset();
+                }
+                else
+                {
+                    var dCount = ItemCount[index] % worldCreation.Blocks[ItemIds[index]].stackSize;
+                    ItemCount[index] -= dCount;
+                    itemCell.Count = dCount;
+                    itemCell.UpdateText();
+                }
+
+                UpdateText(index);
+                return;
+            }
+
+
+            if (ItemIds[index] != 0)
+            {
+                id = itemCell.Id;
+                count = itemCell.Count;
+                itemCell.SetSprite(worldCreation.Blocks[ItemIds[index]].img, ItemIds[index], ItemCount[index], index);
+
+
+                ItemIds[index] = 0;
+                itemImages[index].sprite = null;
+                itemImages[index].color = new Color(255, 255, 255, 0);
+                ItemCount[index] = 0;
+                UpdateText(index);
+                changed = true;
+
+            }
+
+            if (!changed)
+            {
+                if (itemCell.Id == 0) return;
+                ItemIds[index] = itemCell.Id;
+                itemImages[index].sprite = worldCreation.Blocks[ItemIds[index]].img;
+                ItemCount[index] = itemCell.Count;
+                itemImages[index].color = new Color(255, 255, 255, 100);
+                itemCell.Reset();
+                UpdateText(index);
+            }
+            else
+            {
+                if (id == 0) return;
+                ItemIds[index] = id;
+                itemImages[index].sprite = worldCreation.Blocks[id].img;
+                ItemCount[index] = count;
+                itemImages[index].color = new Color(255, 255, 255, 100);
+                UpdateText(index);
+            }
         }
         else
         {
-            if (id == 0) return;
-            ItemIds[index] = id;
-            itemImages[index].sprite = worldCreation.Blocks[id].img;
-            ItemCount[index] = count;
-            itemImages[index].color = new Color(255, 255, 255, 100);
-            UpdateText(index);
+            if (itemCell.Id == 0)
+            {
+                if (ItemIds[index] == 0) return;
+                var c = ItemCount[index];
+                ItemCount[index] /= 2;
+                
+                itemCell.SetSprite(worldCreation.Blocks[ItemIds[index]].img, ItemIds[index], c - ItemCount[index], index);
+                
+                if (ItemCount[index] == 0)
+                {
+                    ItemIds[index] = 0;
+                    itemImages[index].sprite = null;
+                    itemImages[index].color = new Color(255, 255, 255, 0);
+                }
+                
+                UpdateText(index);
+            }
+            else
+            {
+                if (ItemIds[index] != 0 && ItemIds[index] != itemCell.Id) return;
+                
+                
+                if (ItemIds[index] == 0)
+                {
+                    ItemIds[index] = itemCell.Id;
+                    itemImages[index].sprite = worldCreation.Blocks[ItemIds[index]].img;
+                    itemImages[index].color = new Color(255, 255, 255, 100);
+                }
+
+                if (ItemCount[index] < worldCreation.Blocks[ItemIds[index]].stackSize)
+                {
+                    itemCell.Count -= 1;
+                    ItemCount[index] += 1;
+                    UpdateText(index);
+                }
+
+                if (itemCell.Count <= 0)
+                {
+                    itemCell.Reset();
+                }
+                
+                
+                itemCell.UpdateText();
+            }
         }
     }
 

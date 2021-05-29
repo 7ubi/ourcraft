@@ -19,6 +19,7 @@ public class InventoryIndex : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData data)
     {
-        _playerInventory.ReplaceItem(Index);
+        var mouseBtn = data.button == PointerEventData.InputButton.Left ? 0 : 1;
+        _playerInventory.ReplaceItem(Index, mouseBtn);
     }
 }

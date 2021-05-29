@@ -48,7 +48,7 @@ public class PlayerActionController : MonoBehaviour
                 if (!inventory.CanPlaceBlock()) return;
                 if (!playerController.CanPlaceBlock) return;
                 worldCreation.PlaceBlock(hit.point + transform.forward * -.01f, inventory.ItemIds[inventory.Current]);
-                inventory.AddItem(inventory.ItemIds[inventory.Current], -1);
+                inventory.RemoveItem(inventory.Current);
             }
         }
         

@@ -19,6 +19,7 @@ public class Blocks
     [SerializeField] public Sprite img;
     [SerializeField] public bool isTransparent = false;
     [SerializeField] public float destroyTime = 1f;
+    [SerializeField] public int stackSize = 64;
     private static int _size = 16;
     private float _normalized = 1 / (float) _size;
     

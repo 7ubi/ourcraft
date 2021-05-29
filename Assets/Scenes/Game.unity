@@ -1853,7 +1853,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &477995637
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2858,6 +2858,7 @@ MonoBehaviour:
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
+    stackSize: 64
   - name: 
     id: 0
     topIndex: 241
@@ -2869,6 +2870,7 @@ MonoBehaviour:
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
+    stackSize: 64
   - name: 
     id: 0
     topIndex: 242
@@ -2880,6 +2882,7 @@ MonoBehaviour:
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
+    stackSize: 64
   - name: 
     id: 0
     topIndex: 243
@@ -2891,6 +2894,7 @@ MonoBehaviour:
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
+    stackSize: 64
   - name: 
     id: 0
     topIndex: 244
@@ -2902,6 +2906,7 @@ MonoBehaviour:
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
+    stackSize: 64
   - name: 
     id: 0
     topIndex: 245
@@ -2913,6 +2918,7 @@ MonoBehaviour:
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
+    stackSize: 64
   - name: 
     id: 0
     topIndex: 246
@@ -2924,6 +2930,7 @@ MonoBehaviour:
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
+    stackSize: 64
   - name: 
     id: 0
     topIndex: 247
@@ -2935,6 +2942,7 @@ MonoBehaviour:
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
+    stackSize: 64
   - name: 
     id: 0
     topIndex: 248
@@ -2946,6 +2954,7 @@ MonoBehaviour:
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
+    stackSize: 64
   - name: 
     id: 0
     topIndex: 249
@@ -2957,6 +2966,7 @@ MonoBehaviour:
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
+    stackSize: 64
   destroyBlockGameObject: {fileID: 118591996}
   worldCreation: {fileID: 1731320882}
   blockCreation: {fileID: 1731320884}
@@ -4408,6 +4418,7 @@ MonoBehaviour:
     img: {fileID: 1173509292370233011, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
+    stackSize: 64
   - name: Grass
     id: 2
     topIndex: 0
@@ -4419,6 +4430,7 @@ MonoBehaviour:
     img: {fileID: 2020866507082804010, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
+    stackSize: 64
   - name: Stone
     id: 3
     topIndex: 1
@@ -4430,6 +4442,7 @@ MonoBehaviour:
     img: {fileID: 5922603432633689416, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
+    stackSize: 64
   - name: Log
     id: 4
     topIndex: 21
@@ -4441,6 +4454,7 @@ MonoBehaviour:
     img: {fileID: 5471422393896444001, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
+    stackSize: 64
   - name: Leave
     id: 5
     topIndex: 52
@@ -4452,6 +4466,7 @@ MonoBehaviour:
     img: {fileID: -8488667363120882930, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 1
     destroyTime: 0.2
+    stackSize: 64
   - name: Snow
     id: 6
     topIndex: 66
@@ -4463,6 +4478,7 @@ MonoBehaviour:
     img: {fileID: -8970435892597880737, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
+    stackSize: 64
   - name: Sand
     id: 7
     topIndex: 18
@@ -4474,6 +4490,7 @@ MonoBehaviour:
     img: {fileID: -7630100373914682455, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
+    stackSize: 64
   - name: Iron
     id: 8
     topIndex: 33
@@ -4485,6 +4502,7 @@ MonoBehaviour:
     img: {fileID: 5371853929025790235, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
+    stackSize: 64
   - name: Bedrock
     id: 9
     topIndex: 17
@@ -4496,6 +4514,7 @@ MonoBehaviour:
     img: {fileID: 7076371988945999865, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: Infinity
+    stackSize: 64
   biomes:
   - noiseMult1: 0.01
     noiseMult2: 0.00001

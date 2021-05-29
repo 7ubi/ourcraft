@@ -54,6 +54,11 @@ public class InventoryCell : MonoBehaviour
         LastIndex = 0;
     }
 
+    public void UpdateText()
+    {
+        text.text = Count <= 0 ? "": "" + Count;
+    }
+
     public void ResetToOriginalPos()
     {
         if (Id == 0) return;
