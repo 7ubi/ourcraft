@@ -11,7 +11,7 @@ public class PlayerInventory : MonoBehaviour
 {
     [SerializeField] private RectTransform selector;
     [SerializeField] private worldCreation worldCreation;
-    [SerializeField] private GameObject canvas;
+    [SerializeField] private SaveManager saveManager;
 
     [SerializeField] private InventoryCell itemCell;
     [SerializeField] private GameObject cell;
@@ -111,6 +111,8 @@ public class PlayerInventory : MonoBehaviour
 
         ItemCount[index] += amount;
         UpdateText(index);
+        
+        saveManager.SavePlayerData();
 
         if (ItemCount[index] > 0) return;
         ItemIds[index] = 0;
@@ -294,6 +296,8 @@ public class PlayerInventory : MonoBehaviour
                 itemCell.UpdateText();
             }
         }
+        
+        saveManager.SavePlayerData();
     }
 
     // ReSharper disable Unity.PerformanceAnalysis

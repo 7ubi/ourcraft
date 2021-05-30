@@ -19,7 +19,7 @@ public class worldCreation : MonoBehaviour
     [SerializeField] public int minHeight;
     [SerializeField] public float noiseThreshold;
     [SerializeField] private int seed;
-    [SerializeField] private GameObject chunckGameObject;
+    [SerializeField] public GameObject chunckGameObject;
     [SerializeField] private GameObject destroyedBlock;
     [SerializeField] private float renderDistance;
     public List<MeshCreation> meshesToApply = new List<MeshCreation>();
@@ -44,13 +44,14 @@ public class worldCreation : MonoBehaviour
     [SerializeField]
     public BlockTypes blockTypes;
     [SerializeField] public BlockCreation blockCreation;
+    [SerializeField] public SaveManager saveManager;
     
     
     [Header("Blocks and Biomes")]
     [SerializeField] private Blocks[] blocks;
     [SerializeField] public Biome[] biomes;
-    private readonly Dictionary<Vector2, GameObject> _chuncks = new Dictionary<Vector2, GameObject>();
-    private Dictionary<Vector2, Chunck> _chuncksChunck = new Dictionary<Vector2, Chunck>();
+    public readonly Dictionary<Vector2, GameObject> _chuncks = new Dictionary<Vector2, GameObject>();
+    public Dictionary<Vector2, Chunck> _chuncksChunck = new Dictionary<Vector2, Chunck>();
     private int _lastChunck = 0;
     private bool _firstGen = true;
     
@@ -80,6 +81,7 @@ public class worldCreation : MonoBehaviour
                 var mesh = meshesToApply[i];
                 mesh.ApplyMesh();
                 meshesToApply.Remove(mesh);
+                saveManager.SaveChunck(mesh.gameObject.GetComponent<Chunck>());
             }
             
             for (var i = waterMeshesToApply.Count - 1; i >= 0; i--)
@@ -97,6 +99,7 @@ public class worldCreation : MonoBehaviour
             var mesh = meshesToApply[0];
             mesh.ApplyMesh();
             meshesToApply.Remove(mesh);
+            saveManager.SaveChunck(mesh.gameObject.GetComponent<Chunck>());
         }
         
         if(waterMeshesToApply.Count > 0)
@@ -118,6 +121,7 @@ public class worldCreation : MonoBehaviour
     }
 
 
+    // ReSharper disable Unity.PerformanceAnalysis
     private void GenerateChunck()
     {
         var position = player.transform.position;
@@ -135,7 +139,7 @@ public class worldCreation : MonoBehaviour
             {
                 var c = GetChunck(new Vector3(x, 0, z));
 
-                if (!c)
+                if (c == null)
                 {
                     var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
                     var m = newChunck.GetComponent<MeshCreation>();
@@ -144,6 +148,7 @@ public class worldCreation : MonoBehaviour
                     Chuncks.Add(newChunck);
                     _chuncks.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z), newChunck);
                     _chuncksChunck.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z), newChunck.GetComponent<Chunck>());
+                    
                 }
                 else
                 {
@@ -181,6 +186,8 @@ public class worldCreation : MonoBehaviour
         c.BlockIDs[bix, biy, biz] = 0;
         
         chunck.GetComponent<MeshCreation>().GenerateMesh();
+        
+        saveManager.SaveChunck(chunck);
 
         if (bix == 0)
         {
@@ -219,6 +226,8 @@ public class worldCreation : MonoBehaviour
         c.BlockIDs[bix, biy, biz] = id;
         c.WaterIDs[bix, biy, biz] = 0;
         
+        saveManager.SaveChunck(c);
+        
         chunck.GetComponent<MeshCreation>().water.GenerateWater();
         chunck.GetComponent<MeshCreation>().GenerateMesh();
     }
@@ -238,50 +247,9 @@ public class worldCreation : MonoBehaviour
         return abc / 6f;
     }
 
-    public void LoadData(int seed, List<ChunckInfo> chunckInfos)
+    public void LoadData(int seed)
     {
         this.seed = seed;
-        
-        if(chunckInfos.Count == 0) return;
-        
-        foreach (var chunckInfo in chunckInfos)
-        {
-            var c = Instantiate(chunckGameObject, chunckInfo.pos, Quaternion.identity);
-            var m = c.GetComponent<MeshCreation>();
-            m.worldCreation = this;
-
-            var bIds = new int[size, maxHeight, size];
-
-            for (var i = 0; i < chunckInfo.blockIDs.Length; i++)
-            {
-                var z = i % size;
-                var y = (i / size) % maxHeight;
-                var x = i / (size * maxHeight);
-
-                bIds[x, y, z] = chunckInfo.blockIDs[i];
-            }
-            var cChunck = c.GetComponent<Chunck>();
-            cChunck.BlockIDs = bIds;
-            if (chunckInfo.waterIDs != null)
-            {
-                var wIds = new int[size, maxHeight, size];
-                for (var i = 0; i < chunckInfo.waterIDs.Length; i++)
-                {
-                    var z = i % size;
-                    var y = (i / size) % maxHeight;
-                    var x = i / (size * maxHeight);
-
-                    wIds[x, y, z] = chunckInfo.waterIDs[i];
-                }
-                cChunck.WaterIDs = wIds;
-            }
-        
-            Chuncks.Add(c);
-            _chuncks.Add(new Vector2(c.transform.position.x, c.transform.position.z), c);
-            _chuncksChunck.Add(new Vector2(c.transform.position.x, c.transform.position.z), c.GetComponent<Chunck>());
-            
-            c.GetComponent<MeshCreation>().GenerateMesh();
-        }
     }
     
     // ReSharper disable Unity.PerformanceAnalysis

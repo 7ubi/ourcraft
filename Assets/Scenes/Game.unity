@@ -3991,7 +3991,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1731320886}
         m_TargetAssemblyTypeName: SaveManager, Assembly-CSharp
-        m_MethodName: SaveGame
+        m_MethodName: SavePlayerData
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4397,6 +4397,8 @@ MonoBehaviour:
   destroyedBlock: {fileID: 4135905159320930976, guid: 172e7950ad0cc62458d8f3f28ae977d7,
     type: 3}
   renderDistance: 6
+  meshesToApply: []
+  waterMeshesToApply: []
   treeThreshold: 0.01
   minTreeHeight: 3
   maxTreeHeight: 7
@@ -4405,7 +4407,7 @@ MonoBehaviour:
   player: {fileID: 1743702924}
   blockTypes: {fileID: 1731320885}
   blockCreation: {fileID: 1731320884}
-  water: {fileID: 1731320887}
+  saveManager: {fileID: 1731320886}
   blocks:
   - name: Dirt
     id: 1
@@ -4859,6 +4861,7 @@ MonoBehaviour:
   jumpForce: 5
   selectGameObject: {fileID: 1454945976}
   worldCreation: {fileID: 1731320882}
+  saveManager: {fileID: 1731320886}
 --- !u!114 &1743702931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4873,7 +4876,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selector: {fileID: 686466976}
   worldCreation: {fileID: 1731320882}
-  canvas: {fileID: 1743217744}
+  saveManager: {fileID: 1731320886}
   itemCell: {fileID: 477995638}
   cell: {fileID: 571676984170850651, guid: 0331aa0329c21c643af6920168384014, type: 3}
   cellParent: {fileID: 326017185}

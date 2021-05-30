@@ -5,18 +5,20 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
-public class SerializationManager 
+public class SerializationManager
 {
-    public static void Save(string saveName, SaveData saveData)
+    private static string _save = Application.persistentDataPath + "/saves/";
+    
+    public static void SavePlayerData(string saveName, PlayerInfo saveData)
     {
         var formatter = GetBinaryForrmatter();
 
-        if (!Directory.Exists(Application.persistentDataPath + "/saves"))
+        if (!Directory.Exists(_save + saveName))
         {
-            Directory.CreateDirectory(Application.persistentDataPath + "/saves");
+            Directory.CreateDirectory(_save + saveName);
         }
 
-        var path = Application.persistentDataPath + "/saves/" + saveName + ".data";
+        var path = _save + saveName + "/player.world";
 
         var file = File.Create(path);
 
@@ -24,13 +26,51 @@ public class SerializationManager
         file.Close();
     }
 
-    public static object Load(string path)
+    public static object LoadPlayerData(string path)
     {
         if (!File.Exists(path))
             return null;
 
         var formatter = GetBinaryForrmatter();
         var file = File.Open(path, FileMode.Open);
+        try
+        {
+            var save = formatter.Deserialize(file);
+            file.Close();
+
+            return save;
+        }
+        catch
+        {
+            file.Close();
+            return null;
+        }
+    }
+    
+    public static void SaveChunckData(string saveName, Vector2 pos, ChunckInfo saveData)
+    {
+        var formatter = GetBinaryForrmatter();
+
+        if (!Directory.Exists(_save + saveName + "/chuncks"))
+        {
+            Directory.CreateDirectory(_save + saveName + "/chuncks");
+        }
+
+        var path = _save + saveName + "/chuncks/" + (int)pos.x + "-" + (int)pos.y + ".chunck";
+
+        var file = File.Create(path);
+
+        formatter.Serialize(file, saveData);
+        file.Close();
+    }
+
+    public static object LoadChunckData(string fileName)
+    {
+        if (!File.Exists(fileName))
+            return null;
+
+        var formatter = GetBinaryForrmatter();
+        var file = File.Open( fileName, FileMode.Open);
         try
         {
             var save = formatter.Deserialize(file);

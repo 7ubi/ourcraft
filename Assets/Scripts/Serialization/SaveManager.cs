@@ -19,15 +19,16 @@ public class SaveManager : MonoBehaviour
         _playerInventory = player.GetComponent<PlayerInventory>();
         _worldCreation = GetComponent<worldCreation>();
         _worldName = PlayerPrefs.GetString("world");
-        if (File.Exists(Application.persistentDataPath + "/saves/" + _worldName + ".data"))
+        if (Directory.Exists(Application.persistentDataPath + "/saves/" + _worldName))
         {
-            LoadGame();
+            LoadPlayerData();
+            LoadChuncks();
         }
         else
         {
             _worldCreation.GenerateFirst();
             _playerController.SetPos();
-            SaveGame();
+            SavePlayerData();
         }
     }
 
@@ -35,30 +36,95 @@ public class SaveManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
-            SaveGame();
+            SavePlayerData();
         }
     }
 
-    public void SaveGame()
+    public void SavePlayerData()
     {
-        var saveData = new SaveData(_playerController.transform.position, _playerController.Camera.transform.rotation,
-            _playerInventory.ItemCount, _playerInventory.ItemIds,
-            _worldCreation.Seed, _worldCreation.Chuncks, _worldCreation.Size, _worldCreation.MAXHeight);
-        SerializationManager.Save(_worldName, saveData);
+        var saveData = new PlayerInfo(_playerController.transform.position, _playerController.Camera.transform.rotation,
+            _playerInventory.ItemCount, _playerInventory.ItemIds, _worldCreation.Seed);
+        SerializationManager.SavePlayerData(_worldName, saveData);
     }
 
-    private void LoadGame()
+    private void LoadPlayerData()
     {
-        var data = SerializationManager.Load(Application.persistentDataPath + "/saves/" + _worldName + ".data") as SaveData;
+        var data = SerializationManager.LoadPlayerData(Application.persistentDataPath + "/saves/" + _worldName + "/player.world") as PlayerInfo;
         
-        _playerController.LoadData(data.playerInfo.pos, data.playerInfo.rotation);
-        _playerInventory.LoadData(data.playerInfo.itemCount, data.playerInfo.itemIds);
-        _worldCreation.LoadData(data.seed, data.chuncksInfos);
+        _playerController.LoadData(data.pos, data.rotation);
+        _playerInventory.LoadData(data.itemCount, data.itemIds);
+        _worldCreation.LoadData(data.seed);
     }
 
+    public void SaveChunck(Chunck chunck)
+    {
+        SavePlayerData();
+        var pos = chunck.transform.position;
+        var data = new ChunckInfo(pos, chunck.BlockIDs, chunck.WaterIDs);
+        
+        SerializationManager.SaveChunckData(_worldName, new Vector2(pos.x, pos.z), data);
+    }
+
+    private void LoadChuncks()
+    {
+        foreach (var file in System.IO.Directory.GetFiles(Application.persistentDataPath + "/saves/" + _worldName + "/chuncks/"))
+        {
+            LoadChunck(file);
+        }
+    }
+    
+    private void LoadChunck(string file)
+    {
+        var data = SerializationManager.LoadChunckData(file) as ChunckInfo;
+
+        ConstructChunck(data);
+    }
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    private void ConstructChunck(ChunckInfo chunckInfo)
+    {
+        
+        var c = Instantiate(_worldCreation.chunckGameObject, chunckInfo.pos, Quaternion.identity);
+    
+        var m = c.GetComponent<MeshCreation>();
+        m.worldCreation = _worldCreation;
+
+        var bIds = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
+
+        for (var i = 0; i < chunckInfo.blockIDs.Length; i++)
+        {
+            var z = i % _worldCreation.Size;
+            var y = (i / _worldCreation.Size) % _worldCreation.MAXHeight;
+            var x = i / (_worldCreation.Size * _worldCreation.MAXHeight);
+
+            bIds[x, y, z] = (int)chunckInfo.blockIDs[i];
+        }
+        var cChunck = c.GetComponent<Chunck>();
+        cChunck.BlockIDs = bIds;
+        if (chunckInfo.waterIDs != null)
+        {
+            var wIds = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
+            for (var i = 0; i < chunckInfo.waterIDs.Length; i++)
+            {
+                var z = i % _worldCreation.Size;
+                var y = (i / _worldCreation.Size) % _worldCreation.MAXHeight;
+                var x = i / (_worldCreation.Size * _worldCreation.MAXHeight);
+                wIds[x, y, z] = (int)chunckInfo.waterIDs[i];
+            }
+            cChunck.WaterIDs = wIds;
+        }
+
+        _worldCreation.Chuncks.Add(c);
+        _worldCreation._chuncks.Add(new Vector2(c.transform.position.x, c.transform.position.z), c);
+        _worldCreation._chuncksChunck.Add(new Vector2(c.transform.position.x, c.transform.position.z), c.GetComponent<Chunck>());
+    
+        c.GetComponent<MeshCreation>().GenerateMesh();
+        
+    }
+    
     public void MainMenu()
     {
-        SaveGame();
+        SavePlayerData();
         Time.timeScale = 1;
         SceneManager.LoadScene("MainMenu");
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -13,6 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce;
     [SerializeField] private GameObject selectGameObject;
     [SerializeField] private worldCreation worldCreation;
+    [SerializeField] private SaveManager saveManager;
     private bool _canPlaceBlock;
 
     private float forward;

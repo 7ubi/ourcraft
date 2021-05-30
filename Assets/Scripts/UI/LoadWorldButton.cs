@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -31,6 +32,6 @@ public class LoadWorldButton : MonoBehaviour
     private void Delete()
     {
         Destroy(gameObject);
-        File.Delete(Application.persistentDataPath + "/saves/" + _worldName + ".data");
+        FileUtil.DeleteFileOrDirectory(Application.persistentDataPath + "/saves/" + _worldName);
     }
 }

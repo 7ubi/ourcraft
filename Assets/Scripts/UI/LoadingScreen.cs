@@ -36,4 +36,9 @@ public class LoadingScreen : MonoBehaviour
     {
         progressBar.value = progress;
     }
+    
+    public void Quit()
+    {
+        Application.Quit();
+    }
 }

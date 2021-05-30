@@ -14,10 +14,10 @@ public class LoadWorld : MonoBehaviour
     
     private void Start()
     {
-        foreach (var file in System.IO.Directory.GetFiles(Application.persistentDataPath + "/saves"))
+        foreach (var file in System.IO.Directory.GetDirectories(Application.persistentDataPath + "/saves/"))
         {
-            var w = Instantiate(world.gameObject, this.transform);
-            w.GetComponentInChildren<TMP_Text>().text = Path.GetFileNameWithoutExtension(file);
+            var w = Instantiate(world.gameObject, transform);
+            w.GetComponentInChildren<TMP_Text>().text = file.Substring((Application.persistentDataPath + "/saves/").Length);
         }
     }
 
