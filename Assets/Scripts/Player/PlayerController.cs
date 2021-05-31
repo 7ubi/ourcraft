@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce;
     [SerializeField] private GameObject selectGameObject;
     [SerializeField] private worldCreation worldCreation;
-    [SerializeField] private SaveManager saveManager;
+    [SerializeField] private int drag;
     private bool _canPlaceBlock;
 
     private float forward;
@@ -67,9 +67,20 @@ public class PlayerController : MonoBehaviour
 
         transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
         _camera.transform.eulerAngles = new Vector3(_pitch, _yaw, 0.0f);
-
-        if (Input.GetKey(KeyCode.Space) && IsGrounded())
-            _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, _rb.velocity.z);
+        if (worldCreation.GetUnderWater(transform.position))
+        {
+            _rb.drag = drag;
+            if (Input.GetKey(KeyCode.Space))
+            {
+                _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, _rb.velocity.z);
+            }
+        }
+        else
+        {
+            _rb.drag = 0;
+            if (Input.GetKey(KeyCode.Space) && IsGrounded())
+                _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, _rb.velocity.z);
+        }
     }
 
     private void LateUpdate()

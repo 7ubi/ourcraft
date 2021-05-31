@@ -4473,6 +4473,8 @@ MonoBehaviour:
   destroyedBlock: {fileID: 4135905159320930976, guid: 172e7950ad0cc62458d8f3f28ae977d7,
     type: 3}
   renderDistance: 6
+  meshesToUpdate: []
+  waterMeshesToUpdate: []
   meshesToApply: []
   waterMeshesToApply: []
   treeThreshold: 0.01
@@ -4684,6 +4686,7 @@ MonoBehaviour:
     type: 3}
   worldCreation: {fileID: 1731320882}
   waterBlocks: {fileID: 1731320888}
+  waterAnimTime: 1
   height: 60
 --- !u!114 &1731320888
 MonoBehaviour:
@@ -4938,7 +4941,7 @@ MonoBehaviour:
   jumpForce: 5
   selectGameObject: {fileID: 1454945976}
   worldCreation: {fileID: 1731320882}
-  saveManager: {fileID: 1731320886}
+  drag: 10
 --- !u!114 &1743702931
 MonoBehaviour:
   m_ObjectHideFlags: 0
