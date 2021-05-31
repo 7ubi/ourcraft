@@ -21,6 +21,7 @@ public class MeshCreation : MonoBehaviour
     private Vector2 _offset;
     
     [SerializeField] public Water water;
+    public bool CanGenerateMesh { get; set; } = false;
     
     
     // ReSharper disable Unity.PerformanceAnalysis
@@ -29,11 +30,7 @@ public class MeshCreation : MonoBehaviour
         _position = transform.position;
         _offset = new Vector2(_position.x, _position.z);
         
-        _newMesh = new Mesh();
-        _vertices = new List<Vector3>();
-        _normals = new List<Vector3>();
-        _uvs = new List<Vector2>();
-        _indices = new List<int>();
+        ResetMesh();
         
         water.worldCreation = worldCreation;
         water.CreateWater(_offset, transform);
@@ -52,7 +49,17 @@ public class MeshCreation : MonoBehaviour
         }
     }
 
-    private void GenerateMeshThreaded()
+    public void ResetMesh()
+    {
+        _newMesh = new Mesh();
+        _vertices = new List<Vector3>();
+        _normals = new List<Vector3>();
+        _uvs = new List<Vector2>();
+        _indices = new List<int>();
+        CanGenerateMesh = false;
+    }
+
+    public void GenerateMeshThreaded()
     {
 
         var currentIndex = 0;
@@ -281,6 +288,7 @@ public class MeshCreation : MonoBehaviour
 
     public void ApplyMesh()
     {
+        CanGenerateMesh = true;
         _newMesh.SetVertices(_vertices);
         _newMesh.SetNormals(_normals);
         _newMesh.SetUVs(0, _uvs);

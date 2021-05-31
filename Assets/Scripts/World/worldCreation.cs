@@ -22,6 +22,8 @@ public class worldCreation : MonoBehaviour
     [SerializeField] public GameObject chunckGameObject;
     [SerializeField] private GameObject destroyedBlock;
     [SerializeField] private float renderDistance;
+    
+    public List<MeshCreation> meshesToUpdate = new List<MeshCreation>();
     public List<MeshCreation> meshesToApply = new List<MeshCreation>();
     public List<Water> waterMeshesToApply = new List<Water>();
     
@@ -96,6 +98,18 @@ public class worldCreation : MonoBehaviour
             _firstGen = false;
         }
         
+        if(meshesToUpdate.Count > 0)
+        {
+            for (var i = meshesToUpdate.Count - 1; i >= 0; i--)
+            {
+                var mesh = meshesToUpdate[i];
+                if (!mesh.CanGenerateMesh) continue;
+                
+                mesh.GenerateMesh();
+                meshesToUpdate.Remove(mesh);
+            }
+        }
+        
         if(meshesToApply.Count > 0)
         {
             var mesh = meshesToApply[0];
@@ -104,11 +118,13 @@ public class worldCreation : MonoBehaviour
             saveManager.SaveChunck(mesh.gameObject.GetComponent<Chunck>());
         }
         
+        
         if(waterMeshesToApply.Count > 0)
         {
             var mesh = waterMeshesToApply[0];
             mesh.ApplyMesh();
             waterMeshesToApply.Remove(mesh);
+            saveManager.SaveChunck(mesh.gameObject.GetComponent<Chunck>());
         }
         
         
@@ -186,8 +202,18 @@ public class worldCreation : MonoBehaviour
         _playerInventory.AddDestroyedBlock(CreateDestroyedBlock(c.BlockIDs[bix, biy, biz], block + new Vector3(0.375f, 0.1f, 0.375f)));
         
         c.BlockIDs[bix, biy, biz] = 0;
+
+        if (c.WaterIDs[bix, biy + 1, biz] != 0)
+        {
+            chunck.GetComponent<Water>().UpdateWaterDown(block);
+        }
+
+        var m = chunck.GetComponent<MeshCreation>();
         
-        chunck.GetComponent<MeshCreation>().GenerateMesh();
+        if(m.CanGenerateMesh)
+            m.GenerateMesh();
+        else
+            meshesToUpdate.Add(m);
         
         saveManager.SaveChunck(chunck);
 
@@ -215,6 +241,7 @@ public class worldCreation : MonoBehaviour
         }
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public void PlaceBlock(Vector3 block, int id)
     {
         var chunck = GetChunck(block);
@@ -229,9 +256,13 @@ public class worldCreation : MonoBehaviour
         c.WaterIDs[bix, biy, biz] = 0;
         
         saveManager.SaveChunck(c);
+
+        var m = chunck.GetComponent<MeshCreation>();
         
-        chunck.GetComponent<MeshCreation>().water.GenerateWater();
-        chunck.GetComponent<MeshCreation>().GenerateMesh();
+        if(m.CanGenerateMesh)
+            m.GenerateMesh();
+        else
+            meshesToUpdate.Add(m);
     }
 
     public float Perlin3D(float x, float y, float z)
@@ -311,13 +342,13 @@ public class worldCreation : MonoBehaviour
         return chunck.WaterIDs[bix, biy, biz] != 0;
     }
 
-    private void ReloadChunck(Vector3 block)
+    public void ReloadChunck(Vector3 block)
     {
         GetChunck(block).GetComponent<MeshCreation>().GenerateMesh();
         GetChunck(block).GetComponent<Water>().GenerateWater();
     }
 
-    private Chunck GetChunck(Vector3 block)
+    public Chunck GetChunck(Vector3 block)
     {
         var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
         var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;

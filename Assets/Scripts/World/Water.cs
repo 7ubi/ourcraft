@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -9,7 +10,8 @@ public class Water : MonoBehaviour
     [SerializeField] private GameObject waterChunck;
     public worldCreation worldCreation;
     [SerializeField] private WaterBlocks waterBlocks;
-    private MeshFilter meshFilter;
+    [SerializeField] private float waterAnimTime = 1f;
+    private MeshFilter _meshFilter;
     
     // water shader https://www.youtube.com/watch?v=gRq-IdShxpU
 
@@ -42,8 +44,13 @@ public class Water : MonoBehaviour
         
         _water = Instantiate(waterChunck, chunckParent);
         _chunck = chunckParent.GetComponent<Chunck>();
-        meshFilter = _water.GetComponent<MeshFilter>();
+        _meshFilter = _water.GetComponent<MeshFilter>();
         
+        ResetMesh();
+    }
+
+    private void ResetMesh()
+    {
         _newMesh = new Mesh();
         _vertices = new List<Vector3>();
         _normals = new List<Vector3>();
@@ -56,6 +63,34 @@ public class Water : MonoBehaviour
         _waterIds[x, y, z] = 1;
     }
 
+    public void UpdateWaterDown(Vector3 block)
+    {
+        StartCoroutine(UpdateWaterDownEnumerator(block));
+    }
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    private IEnumerator UpdateWaterDownEnumerator(Vector3 block)
+    {
+        yield return new WaitForSeconds(waterAnimTime);
+        
+        if (worldCreation.GetBlock(block) != 0) yield break;
+        
+        var chunckPos = worldCreation.GetChunck(block).transform.position;
+        
+        var bix = Mathf.FloorToInt(block.x) - (int)chunckPos.x;
+        var biy = Mathf.FloorToInt(block.y);
+        var biz = Mathf.FloorToInt(block.z) - (int)chunckPos.z;
+        
+        _chunck.WaterIDs[bix, biy, biz] = 1;
+        _waterIds[bix, biy, biz] = 1;
+        worldCreation.saveManager.SaveChunck(_chunck);
+        var c = _chunck.GetComponent<MeshCreation>();
+        c.ResetMesh();
+        ResetMesh();
+        c.GenerateMeshThreaded();
+        StartCoroutine(UpdateWaterDownEnumerator(block + new Vector3(0, -1, 0)));
+    }
+    
     public void GenerateWater()
     {
         if (_chunck.WaterIDs != null)
@@ -191,7 +226,6 @@ public class Water : MonoBehaviour
                 }
             }
         }
-        
         worldCreation.waterMeshesToApply.Add(this);
     }
     
@@ -203,7 +237,7 @@ public class Water : MonoBehaviour
         _newMesh.SetIndices(_indices, MeshTopology.Triangles, 0);
 
         _newMesh.RecalculateTangents();
-        meshFilter.mesh = _newMesh;
+        _meshFilter.mesh = _newMesh;
     }
 
     private void GenerateBlock_Top(ref int currentIndex, Vector3 offset, List<Vector3> vertices,
