@@ -21,7 +21,7 @@ public class MeshCreation : MonoBehaviour
     private Vector2 _offset;
     
     [SerializeField] public Water water;
-    public bool CanGenerateMesh { get; set; } = false;
+    public bool CanGenerateMesh { get; set; } = true;
     
     
     // ReSharper disable Unity.PerformanceAnalysis
@@ -167,10 +167,17 @@ public class MeshCreation : MonoBehaviour
                 }
             }
         }
-
+        
         worldCreation.meshesToApply.Add(this);
-        var waterThread = new Thread(new ThreadStart(water.GenerateWater));
-        waterThread.Start();
+        if (water.CanGenerateMesh)
+        {
+            var waterThread = new Thread(new ThreadStart(water.GenerateWater));
+            waterThread.Start();
+        }
+        else
+        {
+            worldCreation.waterMeshesToUpdate.Add(water);
+        }
     }
     
     private void GenerateBlocks()
@@ -190,20 +197,18 @@ public class MeshCreation : MonoBehaviour
                     height = 1;
 
                 var grassTop = true;
-                var waterTop = false;
+                
                 if (height + worldCreation.minHeight - 1 < water.Height)
                 {
-                    _blockIDs[x, height + worldCreation.minHeight - 4, z] = biome.secondaryBlock;
+                    _blockIDs[x, height + worldCreation.minHeight - 1, z] = biome.secondaryBlock;
                     for (var y = water.Height; y >= height + worldCreation.minHeight; y--)
                     {
                         water.AddWater(x, y, z);
                     }
-
-                    waterTop = true;
                 }
                 else
                 {
-                    if (worldCreation.Perlin3D((x + _offset.x) * 0.05f + worldCreation.Seed, (float) (height) * 0.05f  + worldCreation.Seed,
+                    if (worldCreation.Perlin3D((x + _offset.x) * 0.05f + worldCreation.Seed, height * 0.05f  + worldCreation.Seed,
                         (z + _offset.y) * 0.05f + worldCreation.Seed) >= worldCreation.noiseThreshold)
                     {
                         _blockIDs[x, height + worldCreation.minHeight, z] = biome.topBlock;
@@ -245,14 +250,9 @@ public class MeshCreation : MonoBehaviour
                     if (worldCreation.Perlin3D((x + _offset.x) * 0.05f + worldCreation.Seed, (float) y * 0.05f + worldCreation.Seed,
                         (z + _offset.y) * 0.05f + worldCreation.Seed) < worldCreation.noiseThreshold)
                     {
-                        if (waterTop)
-                        {
-                            water.AddWater(x, y, z);
-                        }
                         continue;
                     }
 
-                    
                     if (!grassTop && y > height + worldCreation.minHeight - 4)
                     {
                         _blockIDs[x, y, z] = biome.topBlock;
@@ -274,7 +274,6 @@ public class MeshCreation : MonoBehaviour
                         else
                             _blockIDs[x, y, z] = biome.secondaryBlock;
                         
-                        waterTop = false;
                     }
                 }
                 _blockIDs[x, 0, z] = worldCreation.blockTypes.Bedrock;

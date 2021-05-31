@@ -24,6 +24,7 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private float renderDistance;
     
     public List<MeshCreation> meshesToUpdate = new List<MeshCreation>();
+    public List<Water> waterMeshesToUpdate = new List<Water>();
     public List<MeshCreation> meshesToApply = new List<MeshCreation>();
     public List<Water> waterMeshesToApply = new List<Water>();
     
@@ -107,6 +108,18 @@ public class worldCreation : MonoBehaviour
                 
                 mesh.GenerateMesh();
                 meshesToUpdate.Remove(mesh);
+            }
+        }
+        
+        if(waterMeshesToUpdate.Count > 0)
+        {
+            for (var i = waterMeshesToUpdate.Count - 1; i >= 0; i--)
+            {
+                var mesh = waterMeshesToUpdate[i];
+                if (!mesh.CanGenerateMesh) continue;
+                
+                mesh.GenerateWater();
+                waterMeshesToUpdate.Remove(mesh);
             }
         }
         
@@ -344,8 +357,12 @@ public class worldCreation : MonoBehaviour
 
     public void ReloadChunck(Vector3 block)
     {
-        GetChunck(block).GetComponent<MeshCreation>().GenerateMesh();
-        GetChunck(block).GetComponent<Water>().GenerateWater();
+        var m = GetChunck(block).GetComponent<MeshCreation>();
+        
+        if (m.CanGenerateMesh)
+            m.GenerateMesh();
+        else
+            meshesToUpdate.Add(m);
     }
 
     public Chunck GetChunck(Vector3 block)
@@ -386,14 +403,14 @@ public class worldCreation : MonoBehaviour
         var height = 0;
         var count = 0;
         
-        for (var i = 0; i < biomes.Length; i++)
+        foreach (var t in biomes)
         {
-            var weight = Mathf.PerlinNoise((x + biomes[i].offset.x) * 0.005f + seed,
-                (z + biomes[i].offset.y) * 0.005f + seed);
+            var weight = Mathf.PerlinNoise((x + t.offset.x) * 0.005f + seed,
+                (z + t.offset.y) * 0.005f + seed);
             
-            var height0 = Mathf.PerlinNoise(x * biomes[i].noiseMult1 + seed, z * biomes[i].noiseMult1 + seed);
-            var height1 = Mathf.PerlinNoise(x * biomes[i].noiseMult2 + seed, z * biomes[i].noiseMult2 + seed);
-            var h = (int) ((height0 + height1) * biomes[i].maxGeneratingHeight * weight);
+            var height0 = Mathf.PerlinNoise(x * t.noiseMult1 + seed, z * t.noiseMult1 + seed);
+            var height1 = Mathf.PerlinNoise(x * t.noiseMult2 + seed, z * t.noiseMult2 + seed);
+            var h = (int) ((height0 + height1) * t.maxGeneratingHeight * weight);
 
             if (h < 0) continue;
             height += h;

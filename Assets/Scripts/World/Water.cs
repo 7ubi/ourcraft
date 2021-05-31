@@ -27,6 +27,8 @@ public class Water : MonoBehaviour
     private List<Vector2> _uvs;
     private List<int> _indices;
     private Vector3 _position;
+    
+    public bool CanGenerateMesh { get; set; } = true;
 
     public void CreateWater(Vector2 offset, Transform chunckParent)
     {
@@ -84,6 +86,30 @@ public class Water : MonoBehaviour
         _chunck.WaterIDs[bix, biy, biz] = 1;
         _waterIds[bix, biy, biz] = 1;
         worldCreation.saveManager.SaveChunck(_chunck);
+        
+        if (bix == 0)
+        {
+            if(worldCreation.GetWater(new Vector3(-1, 0, 0) + block) == 1)
+                worldCreation.ReloadChunck(new Vector3(-1, 0, 0) + block);
+        }
+        
+        if (bix == worldCreation.Size - 1){
+            if(worldCreation.GetWater(new Vector3(1, 0, 0) + block) == 1)
+                worldCreation.ReloadChunck(new Vector3(1, 0, 0) + block);
+        }
+        
+        if (biz == 0)
+        {
+            if(worldCreation.GetWater(new Vector3(0, 0, -1) + block) == 1)
+                worldCreation.ReloadChunck(new Vector3(0, 0, -1) + block);
+        }
+        
+        if (biz == worldCreation.Size - 1)
+        {
+            if(worldCreation.GetWater(new Vector3(0, 0, 1) + block) == 1)
+                worldCreation.ReloadChunck(new Vector3(0, 0, 1) + block);
+        }
+        
         var c = _chunck.GetComponent<MeshCreation>();
         c.ResetMesh();
         ResetMesh();
@@ -93,6 +119,7 @@ public class Water : MonoBehaviour
     
     public void GenerateWater()
     {
+        CanGenerateMesh = false;
         if (_chunck.WaterIDs != null)
             _waterIds = _chunck.WaterIDs;
         else
@@ -226,6 +253,8 @@ public class Water : MonoBehaviour
                 }
             }
         }
+
+        CanGenerateMesh = true;
         worldCreation.waterMeshesToApply.Add(this);
     }
     
