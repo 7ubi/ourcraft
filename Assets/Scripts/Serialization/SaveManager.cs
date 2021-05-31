@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,8 @@ public class SaveManager : MonoBehaviour
     private PlayerController _playerController;
     private PlayerInventory _playerInventory;
     private string _worldName;
+
+    private List<MeshCreation> _chuncks = new List<MeshCreation>();
 
     private void Start()
     {
@@ -71,6 +74,11 @@ public class SaveManager : MonoBehaviour
         {
             LoadChunck(file);
         }
+
+        foreach (var chunck in _chuncks)
+        {
+            chunck.GenerateMesh();
+        }
     }
     
     private void LoadChunck(string file)
@@ -117,9 +125,8 @@ public class SaveManager : MonoBehaviour
         _worldCreation.Chuncks.Add(c);
         _worldCreation._chuncks.Add(new Vector2(c.transform.position.x, c.transform.position.z), c);
         _worldCreation._chuncksChunck.Add(new Vector2(c.transform.position.x, c.transform.position.z), c.GetComponent<Chunck>());
-    
-        c.GetComponent<MeshCreation>().GenerateMesh();
         
+        _chuncks.Add(c.GetComponent<MeshCreation>());
     }
     
     public void MainMenu()

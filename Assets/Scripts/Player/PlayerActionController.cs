@@ -9,6 +9,7 @@ public class PlayerActionController : MonoBehaviour
 {
     [SerializeField] private float range;
     [SerializeField] private worldCreation worldCreation;
+    [SerializeField] private GameObject underWater;
     
     [SerializeField] private PlayerInventory inventory;
     [SerializeField] private LayerMask layerMask;
@@ -66,5 +67,7 @@ public class PlayerActionController : MonoBehaviour
             playerController.CanPlaceBlock = true;
             selectGameObject.SetActive(false);
         }
+        
+        underWater.SetActive(worldCreation.GetUnderWater(transform.position));
     }
 }

@@ -28,13 +28,17 @@ public class ChunckInfo
 
         var waterIds = new byte[_size * _maxHeight * _size];
 
-        for (var x = 0; x < _size; x++)
+        if (waterIDsChunck != null)
         {
-            for (var y = 0; y < _maxHeight; y++)
+
+            for (var x = 0; x < _size; x++)
             {
-                for (var z = 0; z < _size; z++)
+                for (var y = 0; y < _maxHeight; y++)
                 {
-                    waterIds[x * _maxHeight * _size + y * _size + z] = (byte)waterIDsChunck[x, y, z];
+                    for (var z = 0; z < _size; z++)
+                    {
+                        waterIds[x * _maxHeight * _size + y * _size + z] = (byte) waterIDsChunck[x, y, z];
+                    }
                 }
             }
         }

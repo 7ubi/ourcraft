@@ -79,6 +79,7 @@ public class worldCreation : MonoBehaviour
             for (var i = meshesToApply.Count - 1; i >= 0; i--)
             {
                 var mesh = meshesToApply[i];
+                if(mesh == null){ meshesToApply.Remove(mesh); continue;}
                 mesh.ApplyMesh();
                 meshesToApply.Remove(mesh);
                 saveManager.SaveChunck(mesh.gameObject.GetComponent<Chunck>());
@@ -87,6 +88,7 @@ public class worldCreation : MonoBehaviour
             for (var i = waterMeshesToApply.Count - 1; i >= 0; i--)
             {
                 var mesh = waterMeshesToApply[i];
+                if(mesh == null){ waterMeshesToApply.Remove(mesh); continue;}
                 mesh.ApplyMesh();
                 waterMeshesToApply.Remove(mesh);
             }
@@ -191,24 +193,24 @@ public class worldCreation : MonoBehaviour
 
         if (bix == 0)
         {
-            if(GetBlock(new Vector3(-1, 0, 0) + block) != 0)
+            if(GetBlock(new Vector3(-1, 0, 0) + block) != 0 || GetWater(new Vector3(-1, 0, 0) + block) == 1)
                 ReloadChunck(new Vector3(-1, 0, 0) + block);
         }
         
         if (bix == size - 1){
-            if(GetBlock(new Vector3(1, 0, 0) + block) != 0)
+            if(GetBlock(new Vector3(1, 0, 0) + block) != 0 || GetWater(new Vector3(1, 0, 0) + block) == 1)
                 ReloadChunck(new Vector3(1, 0, 0) + block);
         }
         
         if (biz == 0)
         {
-            if(GetBlock(new Vector3(0, 0, -1) + block) != 0)
+            if(GetBlock(new Vector3(0, 0, -1) + block) != 0 || GetWater(new Vector3(0, 0, -1) + block) == 1)
                 ReloadChunck(new Vector3(0, 0, -1) + block);
         }
         
         if (biz == size - 1)
         {
-            if(GetBlock(new Vector3(0, 0, 1) + block) != 0)
+            if(GetBlock(new Vector3(0, 0, 1) + block) != 0 || GetWater(new Vector3(0, 0, 1) + block) == 1)
                 ReloadChunck(new Vector3(0, 0, 1) + block);
         }
     }
@@ -279,10 +281,40 @@ public class worldCreation : MonoBehaviour
             ? 1
             : 0;
     }
+    
+    public int GetWater(Vector3 block)
+    {
+        var chunkPosX = Mathf.FloorToInt(block.x / 16f) * 16;
+        var chunkPosZ = Mathf.FloorToInt(block.z / 16f) * 16;
+        var chunck = GetChunck(block);
+        if (chunck == null) 
+            return GetBlock(block) == 0 ?  GetHeight(block.x, block.z) < block.y ? 1 : 0: 1;
+        var bix = Mathf.FloorToInt(block.x) - chunkPosX;
+        var biy = Mathf.FloorToInt(block.y);
+        var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
+        if (chunck.WaterIDs != null)
+        {
+            return chunck.WaterIDs[bix, biy, biz];
+        }
+
+        return 1;
+    }
+
+    public bool GetUnderWater(Vector3 pos)
+    {
+        var chunck = GetChunck(pos);
+        var chunckPos = chunck.transform.position;
+        var bix = Mathf.FloorToInt(pos.x) - (int)chunckPos.x;
+        var biy = Mathf.FloorToInt(pos.y);
+        var biz = Mathf.FloorToInt(pos.z) - (int)chunckPos.z;
+
+        return chunck.WaterIDs[bix, biy, biz] != 0;
+    }
 
     private void ReloadChunck(Vector3 block)
     {
-        GetChunck(block).GetComponent<MeshCreation>().GenerateMesh();;
+        GetChunck(block).GetComponent<MeshCreation>().GenerateMesh();
+        GetChunck(block).GetComponent<Water>().GenerateWater();
     }
 
     private Chunck GetChunck(Vector3 block)

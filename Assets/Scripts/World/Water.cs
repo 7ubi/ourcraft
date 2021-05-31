@@ -30,7 +30,8 @@ public class Water : MonoBehaviour
     {
         _waterIds = new int[worldCreation.Size,  worldCreation.MAXHeight,worldCreation.Size];
         _offset = offset;
-        
+        _position = transform.position;
+         
         if (chunckParent.childCount > 0)
         {
             for (var i = chunckParent.childCount - 1; i >= 0; i--)
@@ -81,11 +82,36 @@ public class Water : MonoBehaviour
                             isTop = true;
                         }
                     }
+                    else
+                    {
+                        GenerateBlock_Top(ref currentIndex, offset, _vertices, _normals, _uvs, _indices);
+                        GenerateBlock_BottomOfTop(ref currentIndex, offset, _vertices, _normals, _uvs, _indices);
+                        isTop = true;
+                    }
                     
                     if (x < worldCreation.Size - 1)
                     {
                         if (_waterIds[x + 1, y, z] == 0)
                             GenerateBlock_Right(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
+                    }
+                    else
+                    {
+                        if (worldCreation.GetWater(new Vector3(x + _position.x + 1, y + _position.y,
+                            z + _position.z)) == 0)
+                        {
+                            if (worldCreation.GetBlock(new Vector3(x + _position.x + 1, y + _position.y,
+                                z + _position.z)) == 0)
+                            {
+                                GenerateBlock_Right(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                    isTop);
+                            }
+                            else if (worldCreation
+                                .Blocks[
+                                    worldCreation.GetBlock(new Vector3(x + _position.x + 1, y + _position.y,
+                                        z + _position.z))].isTransparent)
+                                GenerateBlock_Right(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                    isTop);
+                        }
                     }
 
                     if (x >= 1)
@@ -93,17 +119,68 @@ public class Water : MonoBehaviour
                         if (_waterIds[x - 1, y, z] == 0)
                             GenerateBlock_Left(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
                     }
+                    else
+                    {
+                        if (worldCreation.GetWater(new Vector3(x + _position.x - 1, y + _position.y,
+                            z + _position.z)) == 0)
+                        {
+                            if (worldCreation.GetBlock(new Vector3(x + _position.x - 1, y + _position.y,
+                                z + _position.z)) == 0)
+                                GenerateBlock_Left(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                    isTop);
+                            else if (worldCreation
+                                .Blocks[
+                                    worldCreation.GetBlock(new Vector3(x + _position.x - 1, y + _position.y,
+                                        z + _position.z))].isTransparent)
+                                GenerateBlock_Left(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                    isTop);
+                        }
+                    }
 
                     if (z < worldCreation.Size - 1)
                     {
                         if (_waterIds[x, y, z + 1] == 0)
                             GenerateBlock_Forward(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
                     }
+                    else
+                    {
+                        if (worldCreation.GetWater(new Vector3(x + _position.x, y + _position.y,
+                            z + _position.z + 1)) == 0)
+                        {
+                            if (worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
+                                z + _position.z + 1)) == 0)
+                                GenerateBlock_Forward(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                    isTop);
+                            else if (worldCreation
+                                .Blocks[
+                                    worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
+                                        z + _position.z + 1))].isTransparent)
+                                GenerateBlock_Forward(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                    isTop);
+                        }
+                    }
 
                     if (z >= 1)
                     {
                         if (_waterIds[x, y, z - 1] == 0)
                             GenerateBlock_Back(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
+                    }
+                    else
+                    {
+                        if (worldCreation.GetWater(new Vector3(x + _position.x, y + _position.y,
+                            z + _position.z - 1)) == 0)
+                        {
+                            if (worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
+                                z + _position.z - 1)) == 0)
+                                GenerateBlock_Back(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                    isTop);
+                            else if (worldCreation
+                                .Blocks[
+                                    worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
+                                        z + _position.z - 1))].isTransparent)
+                                GenerateBlock_Back(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                    isTop);
+                        }
                     }
                     
                     if (y != 0)
