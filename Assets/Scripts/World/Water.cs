@@ -9,9 +9,11 @@ public class Water : MonoBehaviour
 {
     [SerializeField] private GameObject waterChunck;
     public worldCreation worldCreation;
-    [SerializeField] private WaterBlocks waterBlocks;
     [SerializeField] private float waterAnimTime = 1f;
     private MeshFilter _meshFilter;
+
+    [SerializeField] private BlockShape topWater;
+    [SerializeField] private BlockShape normalWater;
     
     // water shader https://www.youtube.com/watch?v=gRq-IdShxpU
 
@@ -132,29 +134,38 @@ public class Water : MonoBehaviour
             {
                 for (var z = 0; z < worldCreation.Size; z++)
                 {
-                    var offset = new Vector3(x, y, z);
+                    var offset = new Vector3Int(x, y, z);
                     if (_waterIds[x, y, z] == 0) continue;
-                    var isTop = false;
+
+                    var shape = normalWater;
+                    
                     if (y <= worldCreation.MAXHeight - 1)
                     {
                         if (_waterIds[x, y + 1, z] == 0)
                         {
-                            GenerateBlock_Top(ref currentIndex, offset, _vertices, _normals, _uvs, _indices);
-                            GenerateBlock_BottomOfTop(ref currentIndex, offset, _vertices, _normals, _uvs, _indices);
-                            isTop = true;
+                            shape = topWater;
+                            
+                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                _normals, _uvs, _indices, shape.faceData[2]);
+                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                _normals, _uvs, _indices, shape.faceData[6]);
                         }
                     }
                     else
                     {
-                        GenerateBlock_Top(ref currentIndex, offset, _vertices, _normals, _uvs, _indices);
-                        GenerateBlock_BottomOfTop(ref currentIndex, offset, _vertices, _normals, _uvs, _indices);
-                        isTop = true;
+                        shape = topWater;
+                        
+                        worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                            _normals, _uvs, _indices, shape.faceData[2]);
+                        worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                            _normals, _uvs, _indices, shape.faceData[6]);
                     }
-                    
+
                     if (x < worldCreation.Size - 1)
                     {
                         if (_waterIds[x + 1, y, z] == 0)
-                            GenerateBlock_Right(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
+                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                _normals, _uvs, _indices, shape.faceData[5]);
                     }
                     else
                     {
@@ -164,22 +175,22 @@ public class Water : MonoBehaviour
                             if (worldCreation.GetBlock(new Vector3(x + _position.x + 1, y + _position.y,
                                 z + _position.z)) == 0)
                             {
-                                GenerateBlock_Right(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                    isTop);
+                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                    _normals, _uvs, _indices, shape.faceData[5]);
                             }
-                            else if (worldCreation
-                                .Blocks[
+                            else if (worldCreation.Blocks[
                                     worldCreation.GetBlock(new Vector3(x + _position.x + 1, y + _position.y,
                                         z + _position.z))].isTransparent)
-                                GenerateBlock_Right(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                    isTop);
+                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                    _normals, _uvs, _indices, shape.faceData[5]);
                         }
                     }
 
                     if (x >= 1)
                     {
                         if (_waterIds[x - 1, y, z] == 0)
-                            GenerateBlock_Left(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
+                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                _normals, _uvs, _indices, shape.faceData[4]);
                     }
                     else
                     {
@@ -188,21 +199,22 @@ public class Water : MonoBehaviour
                         {
                             if (worldCreation.GetBlock(new Vector3(x + _position.x - 1, y + _position.y,
                                 z + _position.z)) == 0)
-                                GenerateBlock_Left(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                    isTop);
+                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                    _normals, _uvs, _indices, shape.faceData[4]);
                             else if (worldCreation
                                 .Blocks[
                                     worldCreation.GetBlock(new Vector3(x + _position.x - 1, y + _position.y,
                                         z + _position.z))].isTransparent)
-                                GenerateBlock_Left(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                    isTop);
+                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                    _normals, _uvs, _indices, shape.faceData[4]);
                         }
                     }
 
                     if (z < worldCreation.Size - 1)
                     {
                         if (_waterIds[x, y, z + 1] == 0)
-                            GenerateBlock_Forward(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
+                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                _normals, _uvs, _indices, shape.faceData[1]);
                     }
                     else
                     {
@@ -211,21 +223,22 @@ public class Water : MonoBehaviour
                         {
                             if (worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
                                 z + _position.z + 1)) == 0)
-                                GenerateBlock_Forward(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                    isTop);
+                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                    _normals, _uvs, _indices, shape.faceData[1]);
                             else if (worldCreation
                                 .Blocks[
                                     worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
                                         z + _position.z + 1))].isTransparent)
-                                GenerateBlock_Forward(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                    isTop);
+                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                    _normals, _uvs, _indices, shape.faceData[1]);
                         }
                     }
 
                     if (z >= 1)
                     {
                         if (_waterIds[x, y, z - 1] == 0)
-                            GenerateBlock_Back(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, isTop);
+                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                _normals, _uvs, _indices, shape.faceData[0]);
                     }
                     else
                     {
@@ -234,21 +247,22 @@ public class Water : MonoBehaviour
                         {
                             if (worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
                                 z + _position.z - 1)) == 0)
-                                GenerateBlock_Back(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                    isTop);
+                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                    _normals, _uvs, _indices, shape.faceData[0]);
                             else if (worldCreation
                                 .Blocks[
                                     worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
                                         z + _position.z - 1))].isTransparent)
-                                GenerateBlock_Back(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                    isTop);
+                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                    _normals, _uvs, _indices, shape.faceData[0]);
                         }
                     }
                     
                     if (y != 0)
                     {
                         if (_waterIds[x, y - 1, z] == 0)
-                            GenerateBlock_Bottom(ref currentIndex, offset, _vertices, _normals, _uvs, _indices);
+                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
+                                _normals, _uvs, _indices, shape.faceData[3]);
                     }
                 }
             }
@@ -267,192 +281,6 @@ public class Water : MonoBehaviour
 
         _newMesh.RecalculateTangents();
         _meshFilter.mesh = _newMesh;
-    }
-
-    private void GenerateBlock_Top(ref int currentIndex, Vector3 offset, List<Vector3> vertices,
-        List<Vector3> normals, List<Vector2> uvs, List<int> indices)
-    {
-        vertices.Add(new Vector3(0f, 0.9f, 1f) + offset);
-        vertices.Add(new Vector3(1f, 0.9f, 1f) + offset);
-        vertices.Add(new Vector3(1f, 0.9f, 0f) + offset);
-        vertices.Add(new Vector3(0f, 0.9f, 0f) + offset);
-
-        normals.Add(Vector3.up);
-        normals.Add(Vector3.up);
-        normals.Add(Vector3.up);
-        normals.Add(Vector3.up);
-        
-        uvs.Add(new Vector2(0, 1));
-        uvs.Add(new Vector2(1, 1));
-        uvs.Add(new Vector2(1, 0));
-        uvs.Add(new Vector2(0, 0));
-        
-
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
-    
-    private void GenerateBlock_BottomOfTop(ref int currentIndex, Vector3 offset, List<Vector3> vertices,
-        List<Vector3> normals, List<Vector2> uvs, List<int> indices)
-    {
-        vertices.Add(new Vector3(0f, 0.9f, 0f) + offset);
-        vertices.Add(new Vector3(1f, 0.9f, 0f) + offset);
-        vertices.Add(new Vector3(1f, 0.9f, 1f) + offset);
-        vertices.Add(new Vector3(0f, 0.9f, 1f) + offset);
-
-        normals.Add(Vector3.down);
-        normals.Add(Vector3.down);
-        normals.Add(Vector3.down);
-        normals.Add(Vector3.down);
-
-        uvs.Add(new Vector2(0, 1));
-        uvs.Add(new Vector2(1, 1));
-        uvs.Add(new Vector2(1, 0));
-        uvs.Add(new Vector2(0, 0));
-
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
-    
-    private void GenerateBlock_Right(ref int currentIndex, Vector3 offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, bool isTop)
-    {
-        vertices.Add(new Vector3(1f, waterBlocks.GetSideHeight(isTop), 0f) + offset);
-        vertices.Add(new Vector3(1f, waterBlocks.GetSideHeight(isTop), 1f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 1f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 0f) + offset);
-
-        normals.Add(Vector3.right);
-        normals.Add(Vector3.right);
-        normals.Add(Vector3.right);
-        normals.Add(Vector3.right);
-        
-        uvs.Add(new Vector2(0, 1));
-        uvs.Add(new Vector2(1, 1));
-        uvs.Add(new Vector2(1, 0));
-        uvs.Add(new Vector2(0, 0));
-        
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
-
-    private void GenerateBlock_Left(ref int currentIndex, Vector3 offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, bool isTop)
-    {
-        vertices.Add(new Vector3(0f, waterBlocks.GetSideHeight(isTop), 1f) + offset);
-        vertices.Add(new Vector3(0f, waterBlocks.GetSideHeight(isTop), 0f) + offset);
-        vertices.Add(new Vector3(0f, 0f, 0f) + offset);
-        vertices.Add(new Vector3(0f, 0f, 1f) + offset);
-
-        normals.Add(Vector3.left);
-        normals.Add(Vector3.left);
-        normals.Add(Vector3.left);
-        normals.Add(Vector3.left);
-        
-        uvs.Add(new Vector2(0, 1));
-        uvs.Add(new Vector2(1, 1));
-        uvs.Add(new Vector2(1, 0));
-        uvs.Add(new Vector2(0, 0));
-        
-
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
-
-    private void GenerateBlock_Forward(ref int currentIndex, Vector3 offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, bool isTop)
-    {
-        vertices.Add(new Vector3(1f, waterBlocks.GetSideHeight(isTop), 1f) + offset);
-        vertices.Add(new Vector3(0f, waterBlocks.GetSideHeight(isTop), 1f) + offset);
-        vertices.Add(new Vector3(0f, 0f, 1f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 1f) + offset);
-
-        normals.Add(Vector3.forward);
-        normals.Add(Vector3.forward);
-        normals.Add(Vector3.forward);
-        normals.Add(Vector3.forward);
-
-        uvs.Add(new Vector2(0, 1));
-        uvs.Add(new Vector2(1, 1));
-        uvs.Add(new Vector2(1, 0));
-        uvs.Add(new Vector2(0, 0));
-
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
-
-    private void GenerateBlock_Back(ref int currentIndex, Vector3 offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices, bool isTop)
-    {
-        vertices.Add(new Vector3(0f, waterBlocks.GetSideHeight(isTop), 0f) + offset);
-        vertices.Add(new Vector3(1f, waterBlocks.GetSideHeight(isTop), 0f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 0f) + offset);
-        vertices.Add(new Vector3(0f, 0f, -0) + offset);
-
-        normals.Add(Vector3.back);
-        normals.Add(Vector3.back);
-        normals.Add(Vector3.back);
-        normals.Add(Vector3.back);
-
-        uvs.Add(new Vector2(0, 1));
-        uvs.Add(new Vector2(1, 1));
-        uvs.Add(new Vector2(1, 0));
-        uvs.Add(new Vector2(0, 0));
-        
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
-    }
-
-    private void GenerateBlock_Bottom(ref int currentIndex, Vector3 offset, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs, List<int> indices)
-    {
-        vertices.Add(new Vector3(0f, 0f, 0f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 0f) + offset);
-        vertices.Add(new Vector3(1f, 0f, 1f) + offset);
-        vertices.Add(new Vector3(0f, 0f, 1f) + offset);
-
-        normals.Add(Vector3.down);
-        normals.Add(Vector3.down);
-        normals.Add(Vector3.down);
-        normals.Add(Vector3.down);
-
-        uvs.Add(new Vector2(0, 1));
-        uvs.Add(new Vector2(1, 1));
-        uvs.Add(new Vector2(1, 0));
-        uvs.Add(new Vector2(0, 0));
-
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 1);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 0);
-        indices.Add(currentIndex + 2);
-        indices.Add(currentIndex + 3);
-        currentIndex += 4;
     }
 
     public int Height => height;

@@ -22,6 +22,7 @@ public class worldCreation : MonoBehaviour
     [SerializeField] public GameObject chunckGameObject;
     [SerializeField] private GameObject destroyedBlock;
     [SerializeField] private float renderDistance;
+    [SerializeField] private BlockShape destroyedBlockShape;
     
     public List<MeshCreation> meshesToUpdate = new List<MeshCreation>();
     public List<Water> waterMeshesToUpdate = new List<Water>();
@@ -423,36 +424,44 @@ public class worldCreation : MonoBehaviour
 
     private GameObject CreateDestroyedBlock(int id, Vector3 pos)
     {
-        var b = Instantiate(destroyedBlock, pos, Quaternion.identity);
-        b.GetComponent<DestroyedBlock>().ID = id;
+        var block = Instantiate(destroyedBlock, pos, Quaternion.identity);
+        block.GetComponent<DestroyedBlock>().ID = id;
 
         var newMesh = new Mesh();
-        var vertices = new List<Vector3>();
-        var normals = new List<Vector3>();
-        var uvs = new List<Vector2>();
-        var indices = new List<int>();
+        var _vertices = new List<Vector3>();
+        var _normals = new List<Vector3>();
+        var _uvs = new List<Vector2>();
+        var _indices = new List<int>();
 
         var currentIndex = 0;
 
+        var b = Blocks[id];
+
+        var offset = new Vector3Int(0, 0, 0);
         
-        blockCreation.GenerateBlock_Top(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
-        blockCreation.GenerateBlock_Left(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
-        blockCreation.GenerateBlock_Right(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
-        blockCreation.GenerateBlock_Back(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
-        blockCreation.GenerateBlock_Forward(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
-        blockCreation.GenerateBlock_Bottom(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices, id, 0, 0.3f, true);
+        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                    destroyedBlockShape.faceData[2], b.GETRect(b.topIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+            destroyedBlockShape.faceData[5], b.GETRect(b.rightIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+            destroyedBlockShape.faceData[4], b.GETRect(b.leftIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+            destroyedBlockShape.faceData[1], b.GETRect(b.frontIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+            destroyedBlockShape.faceData[0], b.GETRect(b.backIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+            destroyedBlockShape.faceData[3], b.GETRect(b.botIndex));
         
-        
-        newMesh.SetVertices(vertices);
-        newMesh.SetNormals(normals);
-        newMesh.SetUVs(0, uvs);
-        newMesh.SetIndices(indices, MeshTopology.Triangles, 0);
+        newMesh.SetVertices(_vertices);
+        newMesh.SetNormals(_normals);
+        newMesh.SetUVs(0, _uvs);
+        newMesh.SetIndices(_indices, MeshTopology.Triangles, 0);
 
         newMesh.RecalculateTangents();
-        b.GetComponent<MeshFilter>().mesh = newMesh;
-        b.GetComponent<MeshCollider>().sharedMesh = newMesh;
+        block.GetComponent<MeshFilter>().mesh = newMesh;
+        block.GetComponent<MeshCollider>().sharedMesh = newMesh;
         
-        return b;
+        return block;
     }
     
     public int Seed

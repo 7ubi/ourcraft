@@ -66,17 +66,25 @@ public class DestroyBlock : MonoBehaviour
         var normals = new List<Vector3>();
         var uvs = new List<Vector2>();
         var indices = new List<int>();
+        var offset = new Vector3Int(0, 0, 0);
 
         var currentIndex = 0;
 
+        var b = destroyStagesBlocks[_currentDestroyState];
+
         
-        blockCreation.GenerateBlock_Top(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices,_currentDestroyState, 0, 1, false);
-        blockCreation.GenerateBlock_Left(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices,_currentDestroyState, 0, 1, false);
-        blockCreation.GenerateBlock_Right(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices,_currentDestroyState, 0, 1, false);
-        blockCreation.GenerateBlock_Back(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices,_currentDestroyState, 0, 1, false);
-        blockCreation.GenerateBlock_Forward(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices,_currentDestroyState, 0, 1, false);
-        blockCreation.GenerateBlock_Bottom(ref currentIndex, new Vector3Int(0, 0, 0), vertices, normals, uvs, indices,_currentDestroyState, 0, 1, false);
-        
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+            b.blockShape.faceData[2], b.GETRect(b.topIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+            b.blockShape.faceData[5], b.GETRect(b.topIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+            b.blockShape.faceData[4], b.GETRect(b.topIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+            b.blockShape.faceData[1], b.GETRect(b.topIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+            b.blockShape.faceData[0], b.GETRect(b.topIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+            b.blockShape.faceData[3], b.GETRect(b.topIndex));
         
         newMesh.SetVertices(vertices);
         newMesh.SetNormals(normals);
@@ -93,11 +101,6 @@ public class DestroyBlock : MonoBehaviour
         _currentDestroyState = 0;
         _lastDestroyState = -1;
         destroyBlockGameObject.SetActive(false);
-    }
-
-    public List<Vector2> GetUVs()
-    {
-        return destroyStagesBlocks[_currentDestroyState].TopUVs();
     }
 
     public bool IsDestroyingBlock

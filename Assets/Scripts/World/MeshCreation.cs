@@ -72,96 +72,123 @@ public class MeshCreation : MonoBehaviour
                 {
                     var offset = new Vector3Int(x, y, z);
                     if (_blockIDs[x, y, z] == 0) continue;
+                    var b = worldCreation.Blocks[_blockIDs[x, y, z]];
+
+                    if (b.isTransparent)
+                    {
+                        worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                            b.blockShape.faceData[2], b.GETRect(b.topIndex));
+                        worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                            b.blockShape.faceData[5], b.GETRect(b.rightIndex));
+                        worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                            b.blockShape.faceData[4], b.GETRect(b.leftIndex));
+                        worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                            b.blockShape.faceData[1], b.GETRect(b.frontIndex));
+                        worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                            b.blockShape.faceData[0], b.GETRect(b.backIndex));
+                        worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                            b.blockShape.faceData[3], b.GETRect(b.botIndex));
+                    }
+                    
                     if (y < worldCreation.MAXHeight - 1)
                     {
                         if (_blockIDs[x, y + 1, z] == 0)
-                            worldCreation.blockCreation.GenerateBlock_Top(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                    _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                    b.blockShape.faceData[2], b.GETRect(b.topIndex));
                         else if (worldCreation.Blocks[_blockIDs[x, y + 1, z]].isTransparent)
-                            worldCreation.blockCreation.GenerateBlock_Top(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                    _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[2], b.GETRect(b.topIndex));
                     }
                     else
                     {
-                        worldCreation.blockCreation.GenerateBlock_Top(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, _blockIDs[x, y, z], 0, 1, true);
+                        worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                            b.blockShape.faceData[2], b.GETRect(b.topIndex));
                     }
 
                     if (x < worldCreation.Size - 1)
                     {
                         if (_blockIDs[x + 1, y, z] == 0)
-                            worldCreation.blockCreation.GenerateBlock_Right(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[5], b.GETRect(b.rightIndex));
                         else if (worldCreation.Blocks[_blockIDs[x + 1, y, z]].isTransparent)
-                            worldCreation.blockCreation.GenerateBlock_Right(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[5], b.GETRect(b.rightIndex));
                     }
                     else
                     {
                         if (worldCreation.GetBlock(new Vector3(x + _position.x + 1, y + _position.y, z + _position.z)) == 0)
-                            worldCreation.blockCreation.GenerateBlock_Right(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[5], b.GETRect(b.rightIndex));
                         else if (worldCreation.Blocks[worldCreation.GetBlock(new Vector3(x + _position.x + 1, y + _position.y, z + _position.z))].isTransparent)
-                            worldCreation.blockCreation.GenerateBlock_Right(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[5], b.GETRect(b.rightIndex));
                     }
 
                     if (x >= 1)
                     {
                         if (_blockIDs[x - 1, y, z] == 0)
-                            worldCreation.blockCreation.GenerateBlock_Left(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[4], b.GETRect(b.leftIndex));
                         else if (worldCreation.Blocks[_blockIDs[x - 1, y, z]].isTransparent)
-                            worldCreation.blockCreation.GenerateBlock_Left(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[4], b.GETRect(b.leftIndex));
                     }
                     else
                     {
                         if (worldCreation.GetBlock(new Vector3(x + _position.x - 1, y + _position.y, z + _position.z)) == 0)
-                            worldCreation.blockCreation.GenerateBlock_Left(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[4], b.GETRect(b.leftIndex));
                         else if (worldCreation.Blocks[worldCreation.GetBlock(new Vector3(x + _position.x - 1, y + _position.y, z + _position.z))].isTransparent)
-                            worldCreation.blockCreation.GenerateBlock_Left(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[4], b.GETRect(b.leftIndex));
                     }
 
                     if (z < worldCreation.Size - 1)
                     {
                         if (_blockIDs[x, y, z + 1] == 0)
-                            worldCreation.blockCreation.GenerateBlock_Forward(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[1], b.GETRect(b.frontIndex));
                         else if (worldCreation.Blocks[_blockIDs[x, y, z + 1]].isTransparent)
-                            worldCreation.blockCreation.GenerateBlock_Forward(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[1], b.GETRect(b.frontIndex));
                     }
                     else
                     {
                         if (worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y, z + _position.z + 1)) == 0)
-                            worldCreation.blockCreation.GenerateBlock_Forward(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[1], b.GETRect(b.frontIndex));
                         else if (worldCreation.Blocks[worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y, z + _position.z + 1))].isTransparent)
-                            worldCreation.blockCreation.GenerateBlock_Forward(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[1], b.GETRect(b.frontIndex));
                     }
 
                     if (z >= 1)
                     {
                         if (_blockIDs[x, y, z - 1] == 0)
-                            worldCreation.blockCreation.GenerateBlock_Back(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[0], b.GETRect(b.backIndex));
                         else if (worldCreation.Blocks[_blockIDs[x, y, z - 1]].isTransparent)
-                            worldCreation.blockCreation.GenerateBlock_Back(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[0], b.GETRect(b.backIndex));
                     }
                     else
                     {
                         if (worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y, z + _position.z - 1)) == 0)
-                            worldCreation.blockCreation.GenerateBlock_Back(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[0], b.GETRect(b.backIndex));
                         else if (worldCreation.Blocks[worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y, z + _position.z - 1))].isTransparent)
-                            worldCreation.blockCreation.GenerateBlock_Back(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[0], b.GETRect(b.backIndex));
                     }
 
                     if (y >= 1)
                     {
                         if (_blockIDs[x, y - 1, z] == 0)
-                            worldCreation.blockCreation.GenerateBlock_Bottom(ref currentIndex, offset, _vertices, _normals, _uvs, _indices, _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[3], b.GETRect(b.botIndex));
                         else if (worldCreation.Blocks[_blockIDs[x, y - 1, z]].isTransparent)
-                            worldCreation.blockCreation.GenerateBlock_Bottom(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                _blockIDs[x, y, z], 0, 1, true);
+                            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
+                                b.blockShape.faceData[3], b.GETRect(b.botIndex));
                     }
                     
                 }
@@ -212,29 +239,44 @@ public class MeshCreation : MonoBehaviour
                         (z + _offset.y) * 0.05f + worldCreation.Seed) >= worldCreation.noiseThreshold)
                     {
                         _blockIDs[x, height + worldCreation.minHeight, z] = biome.topBlock;
-                        if (biome.hasTree)
+                        if (biome.hasTree || biome.hasCactus)
                         {
                             if (x > 1 && x < worldCreation.Size - 2 && z > 1 && z < worldCreation.Size - 2)
                             {
-                                if (treeGen.NextDouble() <= worldCreation.treeThreshold)
+                                if (treeGen.NextDouble() <= biome.vegetationThreshold)
                                 {
-                                    _blockIDs[x, height + worldCreation.minHeight, z] = 1;
-                                    var h = treeGen.Next(worldCreation.minTreeHeight, worldCreation.maxTreeHeight);
-                                    for (var y = 1; y <= h; y++)
+                                    if (biome.hasTree)
                                     {
-                                        _blockIDs[x, height + worldCreation.minHeight + y, z] = worldCreation.blockTypes.Log;
-                                        if (y <= h - 2) continue;
-                                        for (var i = -1; i <= 1; i++)
+                                        _blockIDs[x, height + worldCreation.minHeight, z] = 1;
+                                        var h = treeGen.Next(biome.minVegetationHeight, biome.maxVegetationHeight);
+                                        for (var y = 1; y <= h; y++)
                                         {
-                                            for (var j = -1; j <= 1; j++)
+                                            _blockIDs[x, height + worldCreation.minHeight + y, z] =
+                                                BlockTypes.Log;
+                                            if (y <= h - 2) continue;
+                                            for (var i = -1; i <= 1; i++)
                                             {
-                                                if (i == 0 && j == 0) continue;
-                                                _blockIDs[x + i, height + worldCreation.minHeight + y, z + j] = worldCreation.blockTypes.Leave;
+                                                for (var j = -1; j <= 1; j++)
+                                                {
+                                                    if (i == 0 && j == 0) continue;
+                                                    _blockIDs[x + i, height + worldCreation.minHeight + y, z + j] =
+                                                        BlockTypes.Leave;
+                                                }
                                             }
                                         }
-                                    }
 
-                                    _blockIDs[x, height + worldCreation.minHeight + h + 1, z] = worldCreation.blockTypes.Leave;
+                                        _blockIDs[x, height + worldCreation.minHeight + h + 1, z] =
+                                            BlockTypes.Leave;
+                                    }
+                                    else if (biome.hasCactus)
+                                    {
+                                        var h = treeGen.Next(biome.minVegetationHeight, biome.maxVegetationHeight);;
+                                        for (var y = 1; y <= h; y++)
+                                        {
+                                            _blockIDs[x, height + worldCreation.minHeight + y, z] =
+                                                BlockTypes.Cactus;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -266,17 +308,17 @@ public class MeshCreation : MonoBehaviour
                                     (y + worldCreation.ironNoiseOffset.y) * 0.5f + worldCreation.Seed, (z + worldCreation.ironNoiseOffset.z) * 0.5f + worldCreation.Seed) <
                                 worldCreation.ironNoiseThreshold)
                             {
-                                _blockIDs[x, y, z] = worldCreation.blockTypes.Ironore;
+                                _blockIDs[x, y, z] = BlockTypes.Ironore;
                             }
                             else
-                                _blockIDs[x, y, z] = worldCreation.blockTypes.Stone;
+                                _blockIDs[x, y, z] = BlockTypes.Stone;
                         }
                         else
                             _blockIDs[x, y, z] = biome.secondaryBlock;
                         
                     }
                 }
-                _blockIDs[x, 0, z] = worldCreation.blockTypes.Bedrock;
+                _blockIDs[x, 0, z] = BlockTypes.Bedrock;
             }
         }
         chunck.BlockIDs = _blockIDs;

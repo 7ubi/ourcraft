@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
     [SerializeField] private float sprintMult;
+    [SerializeField] private float waterMult;
     [SerializeField] private Camera _camera;
     [SerializeField] private float speedH = 2.0f;
     [SerializeField] private  float speedV = 2.0f;
@@ -15,7 +16,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject selectGameObject;
     [SerializeField] private worldCreation worldCreation;
     [SerializeField] private int drag;
-    private bool _canPlaceBlock;
 
     private float forward;
     private float right;
@@ -25,6 +25,9 @@ public class PlayerController : MonoBehaviour
     
     private Rigidbody _rb;
     private PlayerInventory _playerInventory;
+    
+    public Camera Camera => _camera;
+    public bool CanPlaceBlock { get; set; }
 
     private void Start()
     {
@@ -48,9 +51,6 @@ public class PlayerController : MonoBehaviour
         forward = Input.GetAxis("Vertical") * moveSpeed;
         right = Input.GetAxis("Horizontal") * moveSpeed;
 
-        var mouseRight = Input.GetAxis("Mouse X");
-        var mouseUp = Input.GetAxis("Mouse Y");
-
         if (Input.GetKey(KeyCode.LeftShift))
         {
             forward *= sprintMult;
@@ -67,6 +67,14 @@ public class PlayerController : MonoBehaviour
 
         transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
         _camera.transform.eulerAngles = new Vector3(_pitch, _yaw, 0.0f);
+
+        if (worldCreation.GetUnderWater(transform.position + new Vector3(0, -0.5f, 0)))
+        {
+            forward *= waterMult;
+            right *= waterMult;
+        }
+
+
         if (worldCreation.GetUnderWater(transform.position))
         {
             _rb.drag = drag;
@@ -74,6 +82,8 @@ public class PlayerController : MonoBehaviour
             {
                 _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, _rb.velocity.z);
             }
+
+            
         }
         else
         {
@@ -122,7 +132,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject == selectGameObject)
         {
-            _canPlaceBlock = false;
+            CanPlaceBlock = false;
         }
     }
 
@@ -130,15 +140,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject == selectGameObject)
         {
-            _canPlaceBlock = true;
+            CanPlaceBlock = true;
         }
-    }
-
-    public Camera Camera => _camera;
-
-    public bool CanPlaceBlock
-    {
-        get => _canPlaceBlock;
-        set => _canPlaceBlock = value;
     }
 }

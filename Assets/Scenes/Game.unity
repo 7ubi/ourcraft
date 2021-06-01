@@ -2856,6 +2856,7 @@ MonoBehaviour:
     rightIndex: 0
     leftIndex: 0
     botIndex: 0
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
@@ -2868,6 +2869,7 @@ MonoBehaviour:
     rightIndex: 0
     leftIndex: 0
     botIndex: 0
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
@@ -2880,6 +2882,7 @@ MonoBehaviour:
     rightIndex: 0
     leftIndex: 0
     botIndex: 0
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
@@ -2892,6 +2895,7 @@ MonoBehaviour:
     rightIndex: 0
     leftIndex: 0
     botIndex: 0
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
@@ -2904,6 +2908,7 @@ MonoBehaviour:
     rightIndex: 0
     leftIndex: 0
     botIndex: 0
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
@@ -2916,6 +2921,7 @@ MonoBehaviour:
     rightIndex: 0
     leftIndex: 0
     botIndex: 0
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
@@ -2928,6 +2934,7 @@ MonoBehaviour:
     rightIndex: 0
     leftIndex: 0
     botIndex: 0
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
@@ -2940,6 +2947,7 @@ MonoBehaviour:
     rightIndex: 0
     leftIndex: 0
     botIndex: 0
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
@@ -2952,6 +2960,7 @@ MonoBehaviour:
     rightIndex: 0
     leftIndex: 0
     botIndex: 0
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
@@ -2964,6 +2973,7 @@ MonoBehaviour:
     rightIndex: 0
     leftIndex: 0
     botIndex: 0
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 0}
     isTransparent: 0
     destroyTime: 0
@@ -4473,6 +4483,8 @@ MonoBehaviour:
   destroyedBlock: {fileID: 4135905159320930976, guid: 172e7950ad0cc62458d8f3f28ae977d7,
     type: 3}
   renderDistance: 6
+  destroyedBlockShape: {fileID: 11400000, guid: e4d48d50a42ff1640b0814ea20ec00cb,
+    type: 2}
   meshesToUpdate: []
   waterMeshesToUpdate: []
   meshesToApply: []
@@ -4495,6 +4507,7 @@ MonoBehaviour:
     rightIndex: 2
     leftIndex: 2
     botIndex: 2
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 1173509292370233011, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
@@ -4507,6 +4520,7 @@ MonoBehaviour:
     rightIndex: 3
     leftIndex: 3
     botIndex: 2
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 2020866507082804010, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
@@ -4519,6 +4533,7 @@ MonoBehaviour:
     rightIndex: 1
     leftIndex: 1
     botIndex: 1
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 5922603432633689416, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
@@ -4531,6 +4546,7 @@ MonoBehaviour:
     rightIndex: 20
     leftIndex: 20
     botIndex: 21
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 5471422393896444001, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
@@ -4543,6 +4559,7 @@ MonoBehaviour:
     rightIndex: 52
     leftIndex: 52
     botIndex: 52
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: -8488667363120882930, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 1
     destroyTime: 0.2
@@ -4555,6 +4572,7 @@ MonoBehaviour:
     rightIndex: 68
     leftIndex: 68
     botIndex: 2
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: -8970435892597880737, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
@@ -4567,6 +4585,7 @@ MonoBehaviour:
     rightIndex: 18
     leftIndex: 18
     botIndex: 18
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: -7630100373914682455, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
@@ -4579,6 +4598,7 @@ MonoBehaviour:
     rightIndex: 33
     leftIndex: 33
     botIndex: 33
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 5371853929025790235, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: 1
@@ -4591,32 +4611,61 @@ MonoBehaviour:
     rightIndex: 17
     leftIndex: 17
     botIndex: 17
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: 7076371988945999865, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
     destroyTime: Infinity
     stackSize: 64
+  - name: Cactus
+    id: 10
+    topIndex: 69
+    frontIndex: 70
+    backIndex: 70
+    rightIndex: 70
+    leftIndex: 70
+    botIndex: 71
+    blockShape: {fileID: 11400000, guid: c94aaed61c51e10418d30c0894ad94aa, type: 2}
+    img: {fileID: 1834660379083056057, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
+    isTransparent: 1
+    destroyTime: 1
+    stackSize: 64
   biomes:
-  - noiseMult1: 0.01
+  - name: Grassland
+    noiseMult1: 0.01
     noiseMult2: 0.00001
     maxGeneratingHeight: 90
     offset: {x: 281947, y: 0.2}
     topBlock: 2
     secondaryBlock: 1
+    vegetationThreshold: 0.01
+    minVegetationHeight: 3
+    maxVegetationHeight: 7
     hasTree: 1
-  - noiseMult1: 0.05
+    hasCactus: 0
+  - name: Snowland
+    noiseMult1: 0.05
     noiseMult2: 0.0001
     maxGeneratingHeight: 125
     offset: {x: 5748, y: 43534}
     topBlock: 6
     secondaryBlock: 1
+    vegetationThreshold: 0.01
+    minVegetationHeight: 3
+    maxVegetationHeight: 8
     hasTree: 1
-  - noiseMult1: 0.01
+    hasCactus: 0
+  - name: Desert
+    noiseMult1: 0.01
     noiseMult2: 0.00001
     maxGeneratingHeight: 75
     offset: {x: 234, y: 545}
     topBlock: 7
     secondaryBlock: 7
+    vegetationThreshold: 0.023
+    minVegetationHeight: 2
+    maxVegetationHeight: 8
     hasTree: 0
+    hasCactus: 1
 --- !u!4 &1731320883
 Transform:
   m_ObjectHideFlags: 0
@@ -4685,8 +4734,9 @@ MonoBehaviour:
   waterChunck: {fileID: 8451236987504973569, guid: c34262576ff9a3e4888b17c5dce21dad,
     type: 3}
   worldCreation: {fileID: 1731320882}
-  waterBlocks: {fileID: 1731320888}
   waterAnimTime: 1
+  topWater: {fileID: 0}
+  normalWater: {fileID: 0}
   height: 60
 --- !u!114 &1731320888
 MonoBehaviour:
@@ -4935,10 +4985,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 4
   sprintMult: 1.5
+  waterMult: 0.6
   _camera: {fileID: 963194227}
   speedH: 2
   speedV: 2
-  jumpForce: 5
+  jumpForce: 4
   selectGameObject: {fileID: 1454945976}
   worldCreation: {fileID: 1731320882}
   drag: 10

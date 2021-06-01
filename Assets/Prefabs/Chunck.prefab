@@ -145,8 +145,9 @@ MonoBehaviour:
   waterChunck: {fileID: 8451236987504973569, guid: c34262576ff9a3e4888b17c5dce21dad,
     type: 3}
   worldCreation: {fileID: 0}
-  waterBlocks: {fileID: 1984993220019428441}
-  meshFilter: {fileID: 0}
+  waterAnimTime: 1
+  topWater: {fileID: 11400000, guid: 45a34acc0a3987c44a2c989d2ffd2781, type: 2}
+  normalWater: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
   height: 60
 --- !u!114 &1984993220019428441
 MonoBehaviour:
