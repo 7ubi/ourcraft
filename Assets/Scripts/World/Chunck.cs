@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,12 @@ public class Chunck : MonoBehaviour
 {
     private int[,,] _blockIDs;
     private int[,,] _waterIDs;
+    public Vector3 Pos { get; set; }
+
+    private void Awake()
+    {
+        Pos = transform.position;
+    }
 
     public int[,,] WaterIDs
     {

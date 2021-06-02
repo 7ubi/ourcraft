@@ -17,10 +17,11 @@ public class MeshCreation : MonoBehaviour
     private Vector3 _position;
     [SerializeField] private MeshFilter meshFilter;
     [SerializeField] private MeshCollider meshCollider;
-    [SerializeField] private Chunck chunck;
+    [SerializeField] public Chunck chunck;
     private Vector2 _offset;
     
     [SerializeField] public Water water;
+    [SerializeField] public WaterGeneration waterGeneration;
     public bool CanGenerateMesh { get; set; } = true;
     
     
@@ -33,6 +34,7 @@ public class MeshCreation : MonoBehaviour
         ResetMesh();
         
         water.worldCreation = worldCreation;
+        waterGeneration.worldCreation = worldCreation;
         water.CreateWater(_offset, transform);
         
         if (chunck.BlockIDs == null)
@@ -198,12 +200,12 @@ public class MeshCreation : MonoBehaviour
         worldCreation.meshesToApply.Add(this);
         if (water.CanGenerateMesh)
         {
-            var waterThread = new Thread(new ThreadStart(water.GenerateWater));
+            var waterThread = new Thread(new ThreadStart(waterGeneration.GenerateWater));
             waterThread.Start();
         }
         else
         {
-            worldCreation.waterMeshesToUpdate.Add(water);
+            worldCreation.waterMeshesToUpdate.Add(waterGeneration);
         }
     }
     

@@ -25,9 +25,9 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private BlockShape destroyedBlockShape;
     
     public List<MeshCreation> meshesToUpdate = new List<MeshCreation>();
-    public List<Water> waterMeshesToUpdate = new List<Water>();
+    public List<WaterGeneration> waterMeshesToUpdate = new List<WaterGeneration>();
     public List<MeshCreation> meshesToApply = new List<MeshCreation>();
-    public List<Water> waterMeshesToApply = new List<Water>();
+    public List<WaterGeneration> waterMeshesToApply = new List<WaterGeneration>();
     
     [Header("Tree")]
     [SerializeField]
@@ -117,7 +117,7 @@ public class worldCreation : MonoBehaviour
             for (var i = waterMeshesToUpdate.Count - 1; i >= 0; i--)
             {
                 var mesh = waterMeshesToUpdate[i];
-                if (!mesh.CanGenerateMesh) continue;
+                if (!mesh.water.CanGenerateMesh) continue;
                 
                 mesh.GenerateWater();
                 waterMeshesToUpdate.Remove(mesh);
@@ -129,7 +129,7 @@ public class worldCreation : MonoBehaviour
             var mesh = meshesToApply[0];
             mesh.ApplyMesh();
             meshesToApply.Remove(mesh);
-            saveManager.SaveChunck(mesh.gameObject.GetComponent<Chunck>());
+            saveManager.SaveChunck(mesh.chunck);
         }
         
         
@@ -138,7 +138,7 @@ public class worldCreation : MonoBehaviour
             var mesh = waterMeshesToApply[0];
             mesh.ApplyMesh();
             waterMeshesToApply.Remove(mesh);
-            saveManager.SaveChunck(mesh.gameObject.GetComponent<Chunck>());
+            saveManager.SaveChunck(mesh.chunck);
         }
         
         

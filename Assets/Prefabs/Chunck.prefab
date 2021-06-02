@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 363026983547850181}
   - component: {fileID: 4188751697912799454}
   - component: {fileID: 453490869700261606}
+  - component: {fileID: -6087875996157012617}
   - component: {fileID: 1984993220019428441}
   m_Layer: 6
   m_Name: Chunck
@@ -130,6 +131,7 @@ MonoBehaviour:
   meshCollider: {fileID: 6456060020923204623}
   chunck: {fileID: 363026983547850181}
   water: {fileID: 453490869700261606}
+  waterGeneration: {fileID: -6087875996157012617}
 --- !u!114 &453490869700261606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,9 +148,31 @@ MonoBehaviour:
     type: 3}
   worldCreation: {fileID: 0}
   waterAnimTime: 1
+  _meshFilter: {fileID: 0}
   topWater: {fileID: 11400000, guid: 45a34acc0a3987c44a2c989d2ffd2781, type: 2}
   normalWater: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
   height: 60
+  _newMesh: {fileID: 0}
+  _vertices: []
+  _normals: []
+  _uvs: []
+  _indices: 
+  _position: {x: 0, y: 0, z: 0}
+--- !u!114 &-6087875996157012617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8451236987504973569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec169133d48bc674a97ff34332d69835, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldCreation: {fileID: 0}
+  water: {fileID: 453490869700261606}
+  chunck: {fileID: 363026983547850181}
 --- !u!114 &1984993220019428441
 MonoBehaviour:
   m_ObjectHideFlags: 0

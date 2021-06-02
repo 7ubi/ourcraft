@@ -10,25 +10,25 @@ public class Water : MonoBehaviour
     [SerializeField] private GameObject waterChunck;
     public worldCreation worldCreation;
     [SerializeField] private float waterAnimTime = 1f;
-    private MeshFilter _meshFilter;
+    public MeshFilter _meshFilter;
 
-    [SerializeField] private BlockShape topWater;
-    [SerializeField] private BlockShape normalWater;
+    [SerializeField] public BlockShape topWater;
+    [SerializeField] public BlockShape normalWater;
     
     // water shader https://www.youtube.com/watch?v=gRq-IdShxpU
 
-    private int[,,] _waterIds;
+    public int[,,] _waterIds;
     [SerializeField] private int height;
     private Vector2 _offset;
     private Chunck _chunck;
     private GameObject _water;
-    
-    private Mesh _newMesh;
-    private List<Vector3> _vertices;
-    private List<Vector3> _normals;
-    private List<Vector2> _uvs;
-    private List<int> _indices;
-    private Vector3 _position;
+
+    public Mesh _newMesh;
+    public List<Vector3> _vertices;
+    public List<Vector3> _normals;
+    public List<Vector2> _uvs;
+    public List<int> _indices;
+    public Vector3 _position;
     
     public bool CanGenerateMesh { get; set; } = true;
 
@@ -77,7 +77,11 @@ public class Water : MonoBehaviour
     {
         yield return new WaitForSeconds(waterAnimTime);
         
-        if (worldCreation.GetBlock(block) != 0) yield break;
+        if (worldCreation.GetBlock(block) != 0)
+        {
+            DistributeWater(block);
+            yield break;
+        }
         
         var chunckPos = worldCreation.GetChunck(block).transform.position;
         
@@ -116,171 +120,68 @@ public class Water : MonoBehaviour
         c.ResetMesh();
         ResetMesh();
         c.GenerateMeshThreaded();
+        
+        
+        if (worldCreation.GetBlock(block + new Vector3(0, -1, 0)) != 0)
+        {
+            DistributeWater(block);
+            yield break;
+        }
+        
         StartCoroutine(UpdateWaterDownEnumerator(block + new Vector3(0, -1, 0)));
     }
-    
-    public void GenerateWater()
-    {
-        CanGenerateMesh = false;
-        if (_chunck.WaterIDs != null)
-            _waterIds = _chunck.WaterIDs;
-        else
-            _chunck.WaterIDs = _waterIds;
-        var currentIndex = 0;
 
-        for (var x = 0; x < worldCreation.Size; x++)
+    private void DistributeWater(Vector3 block)
+    {
+        if (worldCreation.GetBlock(block + new Vector3(0, 0, 1)) == 0 
+            || worldCreation.GetWater(block + new Vector3(0, 0, 1)) == 0)
         {
-            for(var y = 0; y < worldCreation.MAXHeight; y++)
-            {
-                for (var z = 0; z < worldCreation.Size; z++)
-                {
-                    var offset = new Vector3Int(x, y, z);
-                    if (_waterIds[x, y, z] == 0) continue;
-
-                    var shape = normalWater;
-                    
-                    if (y <= worldCreation.MAXHeight - 1)
-                    {
-                        if (_waterIds[x, y + 1, z] == 0)
-                        {
-                            shape = topWater;
-                            
-                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                _normals, _uvs, _indices, shape.faceData[2]);
-                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                _normals, _uvs, _indices, shape.faceData[6]);
-                        }
-                    }
-                    else
-                    {
-                        shape = topWater;
-                        
-                        worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                            _normals, _uvs, _indices, shape.faceData[2]);
-                        worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                            _normals, _uvs, _indices, shape.faceData[6]);
-                    }
-
-                    if (x < worldCreation.Size - 1)
-                    {
-                        if (_waterIds[x + 1, y, z] == 0)
-                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                _normals, _uvs, _indices, shape.faceData[5]);
-                    }
-                    else
-                    {
-                        if (worldCreation.GetWater(new Vector3(x + _position.x + 1, y + _position.y,
-                            z + _position.z)) == 0)
-                        {
-                            if (worldCreation.GetBlock(new Vector3(x + _position.x + 1, y + _position.y,
-                                z + _position.z)) == 0)
-                            {
-                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                    _normals, _uvs, _indices, shape.faceData[5]);
-                            }
-                            else if (worldCreation.Blocks[
-                                    worldCreation.GetBlock(new Vector3(x + _position.x + 1, y + _position.y,
-                                        z + _position.z))].isTransparent)
-                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                    _normals, _uvs, _indices, shape.faceData[5]);
-                        }
-                    }
-
-                    if (x >= 1)
-                    {
-                        if (_waterIds[x - 1, y, z] == 0)
-                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                _normals, _uvs, _indices, shape.faceData[4]);
-                    }
-                    else
-                    {
-                        if (worldCreation.GetWater(new Vector3(x + _position.x - 1, y + _position.y,
-                            z + _position.z)) == 0)
-                        {
-                            if (worldCreation.GetBlock(new Vector3(x + _position.x - 1, y + _position.y,
-                                z + _position.z)) == 0)
-                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                    _normals, _uvs, _indices, shape.faceData[4]);
-                            else if (worldCreation
-                                .Blocks[
-                                    worldCreation.GetBlock(new Vector3(x + _position.x - 1, y + _position.y,
-                                        z + _position.z))].isTransparent)
-                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                    _normals, _uvs, _indices, shape.faceData[4]);
-                        }
-                    }
-
-                    if (z < worldCreation.Size - 1)
-                    {
-                        if (_waterIds[x, y, z + 1] == 0)
-                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                _normals, _uvs, _indices, shape.faceData[1]);
-                    }
-                    else
-                    {
-                        if (worldCreation.GetWater(new Vector3(x + _position.x, y + _position.y,
-                            z + _position.z + 1)) == 0)
-                        {
-                            if (worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
-                                z + _position.z + 1)) == 0)
-                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                    _normals, _uvs, _indices, shape.faceData[1]);
-                            else if (worldCreation
-                                .Blocks[
-                                    worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
-                                        z + _position.z + 1))].isTransparent)
-                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                    _normals, _uvs, _indices, shape.faceData[1]);
-                        }
-                    }
-
-                    if (z >= 1)
-                    {
-                        if (_waterIds[x, y, z - 1] == 0)
-                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                _normals, _uvs, _indices, shape.faceData[0]);
-                    }
-                    else
-                    {
-                        if (worldCreation.GetWater(new Vector3(x + _position.x, y + _position.y,
-                            z + _position.z - 1)) == 0)
-                        {
-                            if (worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
-                                z + _position.z - 1)) == 0)
-                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                    _normals, _uvs, _indices, shape.faceData[0]);
-                            else if (worldCreation
-                                .Blocks[
-                                    worldCreation.GetBlock(new Vector3(x + _position.x, y + _position.y,
-                                        z + _position.z - 1))].isTransparent)
-                                worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                    _normals, _uvs, _indices, shape.faceData[0]);
-                        }
-                    }
-                    
-                    if (y != 0)
-                    {
-                        if (_waterIds[x, y - 1, z] == 0)
-                            worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, _vertices,
-                                _normals, _uvs, _indices, shape.faceData[3]);
-                    }
-                }
-            }
+            StartCoroutine(DistributeWater(block, new Vector3Int(0, 0, 1)));
         }
-
-        CanGenerateMesh = true;
-        worldCreation.waterMeshesToApply.Add(this);
+        
+        if (worldCreation.GetBlock(block + new Vector3(0, 0, -1)) == 0 
+            || worldCreation.GetWater(block + new Vector3(0, 0, -1)) == 0)
+        {
+            StartCoroutine(DistributeWater(block, new Vector3Int(0, 0, -1)));
+        }
+        
+        if (worldCreation.GetBlock(block + new Vector3(1, 0, 0)) == 0 
+            || worldCreation.GetWater(block + new Vector3(1, 0, 0)) == 0)
+        {
+            StartCoroutine(DistributeWater(block, new Vector3Int(1, 0, 0)));
+        }
+        
+        if (worldCreation.GetBlock(block + new Vector3(-1, 0, 0)) == 0 
+            || worldCreation.GetWater(block + new Vector3(-1, 0, 0)) == 0)
+        {
+            StartCoroutine(DistributeWater(block, new Vector3Int(-1, 0, 0)));
+        }
     }
-    
-    public void ApplyMesh()
-    {
-        _newMesh.SetVertices(_vertices);
-        _newMesh.SetNormals(_normals);
-        _newMesh.SetUVs(0, _uvs);
-        _newMesh.SetIndices(_indices, MeshTopology.Triangles, 0);
 
-        _newMesh.RecalculateTangents();
-        _meshFilter.mesh = _newMesh;
+    private IEnumerator DistributeWater(Vector3 block, Vector3Int dir)
+    {
+        yield return new WaitForSeconds(waterAnimTime);
+        
+
+        if (worldCreation.GetBlock(block + dir) != 0) yield break;
+        var c = worldCreation.GetChunck(block + dir);
+
+        var pos = block + dir;
+        
+        var bix = Mathf.FloorToInt(pos.x) - (int)c.Pos.x;
+        var biy = Mathf.FloorToInt(pos.y);
+        var biz = Mathf.FloorToInt(pos.z) - (int)c.Pos.z;
+
+        c.WaterIDs[bix, biy, biz] = 1;
+        
+        var cM = _chunck.GetComponent<MeshCreation>();
+        cM.ResetMesh();
+        cM.water.ResetMesh();
+        cM.GenerateMeshThreaded();
+        
+        if(worldCreation.GetBlock(pos + new Vector3(0, -1, 0)) != 0) yield break;
+
+        UpdateWaterDown(pos + new Vector3(0, -1, 0));
     }
 
     public int Height => height;
