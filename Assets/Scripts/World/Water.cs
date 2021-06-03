@@ -116,12 +116,26 @@ public class Water : MonoBehaviour
                 worldCreation.ReloadChunck(new Vector3(0, 0, 1) + block);
         }
         
+        
         var c = _chunck.GetComponent<MeshCreation>();
-        c.ResetMesh();
-        ResetMesh();
-        c.GenerateMeshThreaded();
         
-        
+        if (c.CanGenerateMesh)
+        {
+            c.ResetMesh();
+            ResetMesh();
+            var t = new Thread(c.GenerateMeshThreaded);
+            t.Start();
+        }
+        else
+        {
+            var alreadyExist = worldCreation.meshesToUpdate.Contains(c);
+            if (!alreadyExist)
+            {
+                worldCreation.meshesToUpdate.Add(c);
+            }
+        }
+
+
         if (worldCreation.GetBlock(block + new Vector3(0, -1, 0)) != 0)
         {
             DistributeWater(block);
@@ -131,39 +145,36 @@ public class Water : MonoBehaviour
         StartCoroutine(UpdateWaterDownEnumerator(block + new Vector3(0, -1, 0)));
     }
 
-    private void DistributeWater(Vector3 block)
+    public void DistributeWater(Vector3 block)
     {
-        if (worldCreation.GetBlock(block + new Vector3(0, 0, 1)) == 0 
-            || worldCreation.GetWater(block + new Vector3(0, 0, 1)) == 0)
+        if (worldCreation.GetBlock(block + new Vector3(0, 0, 1)) == 0)
         {
-            StartCoroutine(DistributeWater(block, new Vector3Int(0, 0, 1)));
+            StartCoroutine(DistributeWaterEnumerator(block, new Vector3Int(0, 0, 1)));
         }
         
-        if (worldCreation.GetBlock(block + new Vector3(0, 0, -1)) == 0 
-            || worldCreation.GetWater(block + new Vector3(0, 0, -1)) == 0)
+        if (worldCreation.GetBlock(block + new Vector3(0, 0, -1)) == 0)
         {
-            StartCoroutine(DistributeWater(block, new Vector3Int(0, 0, -1)));
+            StartCoroutine(DistributeWaterEnumerator(block, new Vector3Int(0, 0, -1)));
         }
         
-        if (worldCreation.GetBlock(block + new Vector3(1, 0, 0)) == 0 
-            || worldCreation.GetWater(block + new Vector3(1, 0, 0)) == 0)
+        if (worldCreation.GetBlock(block + new Vector3(1, 0, 0)) == 0)
         {
-            StartCoroutine(DistributeWater(block, new Vector3Int(1, 0, 0)));
+            StartCoroutine(DistributeWaterEnumerator(block, new Vector3Int(1, 0, 0)));
         }
         
-        if (worldCreation.GetBlock(block + new Vector3(-1, 0, 0)) == 0 
-            || worldCreation.GetWater(block + new Vector3(-1, 0, 0)) == 0)
+        if (worldCreation.GetBlock(block + new Vector3(-1, 0, 0)) == 0)
         {
-            StartCoroutine(DistributeWater(block, new Vector3Int(-1, 0, 0)));
+            StartCoroutine(DistributeWaterEnumerator(block, new Vector3Int(-1, 0, 0)));
         }
     }
 
-    private IEnumerator DistributeWater(Vector3 block, Vector3Int dir)
+    private IEnumerator DistributeWaterEnumerator(Vector3 block, Vector3Int dir)
     {
         yield return new WaitForSeconds(waterAnimTime);
         
 
         if (worldCreation.GetBlock(block + dir) != 0) yield break;
+        if (worldCreation.GetWater(block + dir) != 0) yield break;
         var c = worldCreation.GetChunck(block + dir);
 
         var pos = block + dir;
@@ -172,16 +183,29 @@ public class Water : MonoBehaviour
         var biy = Mathf.FloorToInt(pos.y);
         var biz = Mathf.FloorToInt(pos.z) - (int)c.Pos.z;
 
-        c.WaterIDs[bix, biy, biz] = 1;
+        c.WaterIDs[bix, biy, biz] = 2;
         
         var cM = _chunck.GetComponent<MeshCreation>();
-        cM.ResetMesh();
-        cM.water.ResetMesh();
-        cM.GenerateMeshThreaded();
         
-        if(worldCreation.GetBlock(pos + new Vector3(0, -1, 0)) != 0) yield break;
+        if (cM.CanGenerateMesh)
+        {
+            cM.ResetMesh();
+            ResetMesh();
+            var t = new Thread(cM.GenerateMeshThreaded);
+            t.Start();
+        }
+        else
+        {
+            var alreadyExist = worldCreation.meshesToUpdate.Contains(cM);
+            if (!alreadyExist)
+            {
+                worldCreation.meshesToUpdate.Add(cM);
+            }
+        }
+        
+        //if(worldCreation.GetBlock(pos + new Vector3(0, -1, 0)) != 0) yield break;
 
-        UpdateWaterDown(pos + new Vector3(0, -1, 0));
+        //UpdateWaterDown(pos + new Vector3(0, -1, 0));
     }
 
     public int Height => height;

@@ -105,6 +105,7 @@ public class worldCreation : MonoBehaviour
             for (var i = meshesToUpdate.Count - 1; i >= 0; i--)
             {
                 var mesh = meshesToUpdate[i];
+                
                 if (!mesh.CanGenerateMesh) continue;
                 
                 mesh.GenerateMesh();
@@ -227,9 +228,14 @@ public class worldCreation : MonoBehaviour
         if(m.CanGenerateMesh)
             m.GenerateMesh();
         else
-            meshesToUpdate.Add(m);
-        
-        saveManager.SaveChunck(chunck);
+        {
+            var alreadyExist = meshesToUpdate.Contains(m);
+            if (!alreadyExist)
+            {
+                meshesToUpdate.Add(m);
+            }
+        }
+
 
         if (bix == 0)
         {
@@ -253,31 +259,48 @@ public class worldCreation : MonoBehaviour
             if(GetBlock(new Vector3(0, 0, 1) + block) != 0 || GetWater(new Vector3(0, 0, 1) + block) == 1)
                 ReloadChunck(new Vector3(0, 0, 1) + block);
         }
+        
+        for (var x = -1; x <= 1; x++)
+        {
+            for (var z = -1; z <= 1; z++)
+            {
+                if (GetWater(block + new Vector3(x, 0, z)) == 0) continue;
+                GetChunck(block).GetComponent<Water>().DistributeWater(block + new Vector3(x, 0, z));
+                break;
+            }
+        }
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
     public void PlaceBlock(Vector3 block, int id)
     {
         var chunck = GetChunck(block);
-        
-        var bix = Mathf.FloorToInt(block.x) - (int)chunck.transform.position.x;
+
+        var bix = Mathf.FloorToInt(block.x) - (int) chunck.transform.position.x;
         var biy = Mathf.FloorToInt(block.y);
-        var biz = Mathf.FloorToInt(block.z) - (int)chunck.transform.position.z;
-        
+        var biz = Mathf.FloorToInt(block.z) - (int) chunck.transform.position.z;
+
         var c = chunck.GetComponent<Chunck>();
-        
+
         c.BlockIDs[bix, biy, biz] = id;
         c.WaterIDs[bix, biy, biz] = 0;
-        
+
         saveManager.SaveChunck(c);
 
         var m = chunck.GetComponent<MeshCreation>();
-        
-        if(m.CanGenerateMesh)
+
+        if (m.CanGenerateMesh)
             m.GenerateMesh();
         else
-            meshesToUpdate.Add(m);
+        {
+            var alreadyExist = meshesToUpdate.Contains(m);
+            if (!alreadyExist)
+            {
+                meshesToUpdate.Add(m);
+            }
+        }
     }
+
 
     public float Perlin3D(float x, float y, float z)
     {
@@ -363,7 +386,13 @@ public class worldCreation : MonoBehaviour
         if (m.CanGenerateMesh)
             m.GenerateMesh();
         else
-            meshesToUpdate.Add(m);
+        {
+            var alreadyExist = meshesToUpdate.Contains(m);
+            if (!alreadyExist)
+            {
+                meshesToUpdate.Add(m);
+            }
+        }
     }
 
     public Chunck GetChunck(Vector3 block)

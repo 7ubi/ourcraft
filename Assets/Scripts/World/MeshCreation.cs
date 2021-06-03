@@ -196,8 +196,12 @@ public class MeshCreation : MonoBehaviour
                 }
             }
         }
+
+        if (!worldCreation.meshesToApply.Contains(this))
+        {
+            worldCreation.meshesToApply.Add(this);
+        }
         
-        worldCreation.meshesToApply.Add(this);
         if (water.CanGenerateMesh)
         {
             var waterThread = new Thread(new ThreadStart(waterGeneration.GenerateWater));
@@ -227,10 +231,10 @@ public class MeshCreation : MonoBehaviour
 
                 var grassTop = true;
                 
-                if (height + worldCreation.minHeight - 1 < water.Height)
+                if (height + worldCreation.minHeight < water.Height)
                 {
-                    _blockIDs[x, height + worldCreation.minHeight - 1, z] = biome.secondaryBlock;
-                    for (var y = water.Height; y >= height + worldCreation.minHeight; y--)
+                    _blockIDs[x, height + worldCreation.minHeight, z] = biome.secondaryBlock;
+                    for (var y = water.Height; y >= height + worldCreation.minHeight + 1; y--)
                     {
                         water.AddWater(x, y, z);
                     }
@@ -331,7 +335,7 @@ public class MeshCreation : MonoBehaviour
 
     public void ApplyMesh()
     {
-        CanGenerateMesh = true;
+        
         _newMesh.SetVertices(_vertices);
         _newMesh.SetNormals(_normals);
         _newMesh.SetUVs(0, _uvs);
@@ -340,5 +344,6 @@ public class MeshCreation : MonoBehaviour
         _newMesh.RecalculateTangents();
         meshFilter.mesh = _newMesh;
         meshCollider.sharedMesh = _newMesh;
+        CanGenerateMesh = true;
     }
 }

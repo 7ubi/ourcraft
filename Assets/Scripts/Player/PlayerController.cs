@@ -83,6 +83,10 @@ public class PlayerController : MonoBehaviour
                 _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, _rb.velocity.z);
             }
 
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                _rb.velocity = new Vector3(_rb.velocity.x, -jumpForce, _rb.velocity.z);
+            }
             
         }
         else
