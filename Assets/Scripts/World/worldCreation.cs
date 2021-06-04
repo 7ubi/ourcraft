@@ -302,21 +302,6 @@ public class worldCreation : MonoBehaviour
     }
 
 
-    public float Perlin3D(float x, float y, float z)
-    {
-        var ab = Mathf.PerlinNoise(x, y);
-        var bc = Mathf.PerlinNoise(y, z);
-        var ac = Mathf.PerlinNoise(x, z);
-        
-        var ba = Mathf.PerlinNoise(y, x);
-        var cb = Mathf.PerlinNoise(z, y);
-        var ca = Mathf.PerlinNoise(z, x);
-
-        var abc = ab + bc + ac + ba + cb + ca;
-        
-        return abc / 6f;
-    }
-
     public void LoadData(int seed)
     {
         this.seed = seed;
@@ -344,7 +329,7 @@ public class worldCreation : MonoBehaviour
         if (block.y >= height + minHeight)
             return 0;
 
-        return Perlin3D((block.x) * 0.05f + seed, (float) (block.y) * 0.05f + seed,
+        return Noise.Perlin3D((block.x) * 0.05f + seed, (float) (block.y) * 0.05f + seed,
             (block.z) * 0.05f + seed) >= noiseThreshold
             ? 1
             : 0;
@@ -417,8 +402,9 @@ public class worldCreation : MonoBehaviour
         
         for (var i = 0; i < biomes.Length; i++)
         {
-            var weight = Mathf.PerlinNoise((x + biomes[i].offset.x) * 0.005f + seed,
-                (z + biomes[i].offset.y) * 0.005f + seed);
+            var t = biomes[i];
+            var weight = Mathf.PerlinNoise((x + t.offset.x  + seed) / t.scale * 0.5f,
+                (z + t.offset.y + seed) / t.scale * 0.5f);
 
             if (!(weight > strongestWeight)) continue;
             strongestWeight = weight;
@@ -431,23 +417,19 @@ public class worldCreation : MonoBehaviour
     public int GetHeight(float x, float z)
     {
         var height = 0;
-        var count = 0;
         
         foreach (var t in biomes)
         {
-            var weight = Mathf.PerlinNoise((x + t.offset.x) * 0.005f + seed,
-                (z + t.offset.y) * 0.005f + seed);
-            
-            var height0 = Mathf.PerlinNoise(x * t.noiseMult1 + seed, z * t.noiseMult1 + seed);
-            var height1 = Mathf.PerlinNoise(x * t.noiseMult2 + seed, z * t.noiseMult2 + seed);
-            var h = (int) ((height0 + height1) * t.maxGeneratingHeight * weight);
+            var weight = Mathf.PerlinNoise((x + t.offset.x  + seed) / t.scale * 0.5f,
+                (z + t.offset.y + seed) / t.scale * 0.5f);
+
+            var h = (int) (t.GetHeight(x, z, seed) * weight);
 
             if (h < 0) continue;
             height += h;
-            count++;
         }
 
-        height /= count;
+        height /= biomes.Length;
         return height;
     }
 

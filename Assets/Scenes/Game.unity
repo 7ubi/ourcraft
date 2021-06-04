@@ -4451,7 +4451,6 @@ GameObject:
   - component: {fileID: 1731320882}
   - component: {fileID: 1731320885}
   - component: {fileID: 1731320886}
-  - component: {fileID: 1731320887}
   - component: {fileID: 1731320888}
   - component: {fileID: 1731320884}
   m_Layer: 0
@@ -4630,42 +4629,10 @@ MonoBehaviour:
     destroyTime: 1
     stackSize: 64
   biomes:
-  - name: Grassland
-    noiseMult1: 0.01
-    noiseMult2: 0.00001
-    maxGeneratingHeight: 90
-    offset: {x: 281947, y: 0.2}
-    topBlock: 2
-    secondaryBlock: 1
-    vegetationThreshold: 0.01
-    minVegetationHeight: 3
-    maxVegetationHeight: 7
-    hasTree: 1
-    hasCactus: 0
-  - name: Snowland
-    noiseMult1: 0.05
-    noiseMult2: 0.0001
-    maxGeneratingHeight: 125
-    offset: {x: 5748, y: 43534}
-    topBlock: 6
-    secondaryBlock: 1
-    vegetationThreshold: 0.01
-    minVegetationHeight: 3
-    maxVegetationHeight: 8
-    hasTree: 1
-    hasCactus: 0
-  - name: Desert
-    noiseMult1: 0.01
-    noiseMult2: 0.00001
-    maxGeneratingHeight: 75
-    offset: {x: 234, y: 545}
-    topBlock: 7
-    secondaryBlock: 7
-    vegetationThreshold: 0.023
-    minVegetationHeight: 2
-    maxVegetationHeight: 8
-    hasTree: 0
-    hasCactus: 1
+  - {fileID: 11400000, guid: 0b42d1ee036fcb146ab5a0bab05c576c, type: 2}
+  - {fileID: 11400000, guid: 109345ddce309d24bb651d0ac0ad414b, type: 2}
+  - {fileID: 11400000, guid: 395e06bc58f962941b98aae9e0d537fd, type: 2}
+  - {fileID: 11400000, guid: 24dac4f41998bca40be4aef18ef05680, type: 2}
 --- !u!4 &1731320883
 Transform:
   m_ObjectHideFlags: 0
@@ -4719,25 +4686,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1743702924}
---- !u!114 &1731320887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1731320881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 557a86b045e63a34c8cc5fac7bb9112e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waterChunck: {fileID: 8451236987504973569, guid: c34262576ff9a3e4888b17c5dce21dad,
-    type: 3}
-  worldCreation: {fileID: 1731320882}
-  waterAnimTime: 1
-  topWater: {fileID: 0}
-  normalWater: {fileID: 0}
-  height: 60
 --- !u!114 &1731320888
 MonoBehaviour:
   m_ObjectHideFlags: 0

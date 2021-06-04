@@ -241,7 +241,7 @@ public class MeshCreation : MonoBehaviour
                 }
                 else
                 {
-                    if (worldCreation.Perlin3D((x + _offset.x) * 0.05f + worldCreation.Seed, height * 0.05f  + worldCreation.Seed,
+                    if (Noise.Perlin3D((x + _offset.x) * 0.05f + worldCreation.Seed, height * 0.05f  + worldCreation.Seed,
                         (z + _offset.y) * 0.05f + worldCreation.Seed) >= worldCreation.noiseThreshold)
                     {
                         _blockIDs[x, height + worldCreation.minHeight, z] = biome.topBlock;
@@ -295,9 +295,14 @@ public class MeshCreation : MonoBehaviour
 
                 for(var y = height + worldCreation.minHeight - 1; y >= 1; y--)
                 {
-                    if (worldCreation.Perlin3D((x + _offset.x) * 0.05f + worldCreation.Seed, (float) y * 0.05f + worldCreation.Seed,
+                    if (Noise.Perlin3D((x + _offset.x) * 0.05f + worldCreation.Seed, (float) y * 0.05f + worldCreation.Seed,
                         (z + _offset.y) * 0.05f + worldCreation.Seed) < worldCreation.noiseThreshold)
                     {
+                       // if (!grassTop)
+                      // {
+                       //     water.AddWater(x, y, z);
+                      //  }
+                        
                         continue;
                     }
 
@@ -308,9 +313,10 @@ public class MeshCreation : MonoBehaviour
                     }
                     else
                     {
+                        grassTop = true;
                         if (y <= height + worldCreation.minHeight - 4)
                         {
-                            if (worldCreation.Perlin3D((x + worldCreation.ironNoiseOffset.x) * 0.5f + worldCreation.Seed,
+                            if (Noise.Perlin3D((x + worldCreation.ironNoiseOffset.x) * 0.5f + worldCreation.Seed,
                                     (y + worldCreation.ironNoiseOffset.y) * 0.5f + worldCreation.Seed, (z + worldCreation.ironNoiseOffset.z) * 0.5f + worldCreation.Seed) <
                                 worldCreation.ironNoiseThreshold)
                             {

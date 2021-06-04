@@ -4,20 +4,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[Serializable]
-public class Biome
+[CreateAssetMenu(fileName = "Biome", menuName = "Ourcraft/Biome")]
+public class Biome : ScriptableObject
 {
-    [SerializeField] public string name;
+    public string name;
     
-    [SerializeField] public float noiseMult1;
-    [SerializeField] public float noiseMult2;
-    [SerializeField] public int maxGeneratingHeight;
-    [SerializeField] public Vector2 offset;
-    [SerializeField] public int topBlock;
-    [SerializeField] public int secondaryBlock;
-    [SerializeField] public float vegetationThreshold;
-    [SerializeField] public int minVegetationHeight;
-    [SerializeField] public int maxVegetationHeight;
-    [SerializeField] public bool hasTree = true;
-    [SerializeField] public bool hasCactus = false;
+    public float scale;
+    public int octaves;
+    public float persistance;
+    public float lacunarity;
+    public int maxGeneratingHeight;
+    public int amplitude;
+    public Vector2 offset;
+    public int topBlock;
+    public int secondaryBlock;
+    public float vegetationThreshold;
+    public int minVegetationHeight;
+    public int maxVegetationHeight;
+    public bool hasTree = true;
+    public bool hasCactus = false;
+
+    public float GetHeight(float x, float z, int seed)
+    {
+        return Noise.GetNoise(x, z, seed, amplitude, scale, 1, octaves, persistance, lacunarity) * maxGeneratingHeight;
+    }
 }
