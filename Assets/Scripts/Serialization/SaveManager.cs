@@ -98,29 +98,26 @@ public class SaveManager : MonoBehaviour
         m.worldCreation = _worldCreation;
 
         var bIds = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
-
+        var wIds = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
+        
         for (var i = 0; i < chunckInfo.blockIDs.Length; i++)
         {
             var z = i % _worldCreation.Size;
             var y = (i / _worldCreation.Size) % _worldCreation.MAXHeight;
             var x = i / (_worldCreation.Size * _worldCreation.MAXHeight);
 
-            bIds[x, y, z] = (int)chunckInfo.blockIDs[i];
+            if (chunckInfo.blockIDs[i] > 200)
+            {
+                wIds[x, y, z] = (int)(Math.Abs(chunckInfo.blockIDs[i] - 255));
+            }
+            else
+            {
+                bIds[x, y, z] = (int) chunckInfo.blockIDs[i];
+            }
         }
         var cChunck = c.GetComponent<Chunck>();
         cChunck.BlockIDs = bIds;
-        if (chunckInfo.waterIDs != null)
-        {
-            var wIds = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
-            for (var i = 0; i < chunckInfo.waterIDs.Length; i++)
-            {
-                var z = i % _worldCreation.Size;
-                var y = (i / _worldCreation.Size) % _worldCreation.MAXHeight;
-                var x = i / (_worldCreation.Size * _worldCreation.MAXHeight);
-                wIds[x, y, z] = (int)chunckInfo.waterIDs[i];
-            }
-            cChunck.WaterIDs = wIds;
-        }
+        cChunck.WaterIDs = wIds;
 
         _worldCreation.Chuncks.Add(c);
         _worldCreation._chuncks.Add(new Vector2(c.transform.position.x, c.transform.position.z), c);

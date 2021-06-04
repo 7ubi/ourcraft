@@ -375,7 +375,7 @@ public class worldCreation : MonoBehaviour
         var bix = Mathf.FloorToInt(pos.x) - (int)chunckPos.x;
         var biy = Mathf.FloorToInt(pos.y);
         var biz = Mathf.FloorToInt(pos.z) - (int)chunckPos.z;
-
+        if (chunck.WaterIDs == null) return false;
         return chunck.WaterIDs[bix, biy, biz] != 0;
     }
 
