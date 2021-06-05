@@ -300,6 +300,79 @@ public class PlayerInventory : MonoBehaviour
         saveManager.SavePlayerData();
     }
 
+    public bool HasRequirements(List<int[]> requirements)
+    {
+        var req = new Dictionary<int, int>();
+
+        foreach (var requirement in requirements)
+        {
+            if(requirement[0] == 0) continue;
+            if (req.ContainsKey(requirement[0]))
+            {
+                req[requirement[0]] += requirement[1];
+            }
+            else
+            {
+                req.Add(requirement[0], requirement[1]);
+            }
+        }
+
+        for (var i = 0; i < ItemIds.Length; i++)
+        {
+            if (req.ContainsKey(ItemIds[i]))
+            {
+                req[ItemIds[i]] -= ItemCount[i];
+            }
+        }
+
+        return req.All(r => r.Value <= 0);
+    }
+
+    public void RemoveRequirements(List<int[]> requirements)
+    {
+        var req = new Dictionary<int, int>();
+
+        foreach (var requirement in requirements)
+        {
+            if(requirement[0] == 0) continue;
+            if (req.ContainsKey(requirement[0]))
+            {
+                req[requirement[0]] += requirement[1];
+            }
+            else
+            {
+                req.Add(requirement[0], requirement[1]);
+            }
+        }
+
+        for (var j = 0; j < req.Count; j++)
+        {
+            var r = req.ElementAt(j);
+            
+            for (var i = 0; i < ItemIds.Length; i++)
+            {
+                if (ItemIds[i] == r.Key)
+                {
+                    ItemCount[i] -= r.Value;
+                    if (ItemCount[i] <= 0)
+                    {
+                        req[r.Key] = -ItemCount[i];
+                        ItemCount[i] = 0;
+                        ItemIds[i] = 0;
+                        itemImages[i].sprite = null;
+                        itemImages[i].color = new Color(255, 255, 255, 0);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        
+        UpdateUI();
+    }
+
     // ReSharper disable Unity.PerformanceAnalysis
     private void DestroyedBlockInRage()
     {

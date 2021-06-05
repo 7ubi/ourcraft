@@ -92,7 +92,6 @@ public class worldCreation : MonoBehaviour
             for (var i = waterMeshesToApply.Count - 1; i >= 0; i--)
             {
                 var mesh = waterMeshesToApply[i];
-                if(mesh == null){ waterMeshesToApply.Remove(mesh); continue;}
                 mesh.ApplyMesh();
                 waterMeshesToApply.Remove(mesh);
             }

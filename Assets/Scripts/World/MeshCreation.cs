@@ -298,11 +298,6 @@ public class MeshCreation : MonoBehaviour
                     if (Noise.Perlin3D((x + _offset.x) * 0.05f + worldCreation.Seed, (float) y * 0.05f + worldCreation.Seed,
                         (z + _offset.y) * 0.05f + worldCreation.Seed) < worldCreation.noiseThreshold)
                     {
-                       // if (!grassTop)
-                      // {
-                       //     water.AddWater(x, y, z);
-                      //  }
-                        
                         continue;
                     }
 

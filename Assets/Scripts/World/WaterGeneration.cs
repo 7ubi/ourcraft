@@ -33,8 +33,11 @@ public class WaterGeneration : MonoBehaviour
                     {
                         if (water._waterIds[x, y + 1, z] == 0)
                         {
-                            shape = water.topWater;
-                            
+                            if (water._waterIds[x, y, z] == 1)
+                            {
+                                shape = water.topWater;
+                            }
+
                             worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
                                 water. _normals, water._uvs, water._indices, shape.faceData[2]);
                             worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
@@ -43,7 +46,10 @@ public class WaterGeneration : MonoBehaviour
                     }
                     else
                     {
-                        shape = water.topWater;
+                        if (water._waterIds[x, y, z] == 1)
+                        {
+                            shape = water.topWater;
+                        }
                         
                         worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
                             water._normals, water._uvs, water._indices, shape.faceData[2]);
