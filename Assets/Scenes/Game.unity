@@ -1355,7 +1355,7 @@ RectTransform:
   - {fileID: 38486902}
   - {fileID: 514702102}
   m_Father: {fileID: 1743217748}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2481,7 +2481,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1731320886}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SaveManager, Assembly-CSharp
         m_MethodName: MainMenu
         m_Mode: 1
@@ -2563,7 +2563,7 @@ RectTransform:
   - {fileID: 1446842823}
   - {fileID: 101661989}
   m_Father: {fileID: 1743217748}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5550,6 +5550,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   img: {fileID: 0}
+--- !u!1 &1399727394
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1399727395}
+  m_Layer: 5
+  m_Name: Hearts
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1399727395
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399727394}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1743217748}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: -432.5, y: 175}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1425479865
 GameObject:
   m_ObjectHideFlags: 0
@@ -5844,7 +5879,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1731320886}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SaveManager, Assembly-CSharp
         m_MethodName: SavePlayerData
         m_Mode: 1
@@ -6294,9 +6329,9 @@ GameObject:
   - component: {fileID: 1731320883}
   - component: {fileID: 1731320882}
   - component: {fileID: 1731320885}
-  - component: {fileID: 1731320886}
   - component: {fileID: 1731320888}
   - component: {fileID: 1731320884}
+  - component: {fileID: 1731320886}
   m_Layer: 0
   m_Name: World Manager
   m_TagString: Untagged
@@ -6326,8 +6361,6 @@ MonoBehaviour:
   destroyedBlock: {fileID: 4135905159320930976, guid: 172e7950ad0cc62458d8f3f28ae977d7,
     type: 3}
   renderDistance: 6
-  destroyedBlockShape: {fileID: 11400000, guid: e4d48d50a42ff1640b0814ea20ec00cb,
-    type: 2}
   meshesToUpdate: []
   waterMeshesToUpdate: []
   meshesToApply: []
@@ -6487,12 +6520,12 @@ MonoBehaviour:
     stackSize: 64
   - name: Furnace
     id: 12
-    topIndex: 45
-    frontIndex: 43
-    backIndex: 44
-    rightIndex: 44
-    leftIndex: 44
-    botIndex: 44
+    topIndex: 46
+    frontIndex: 44
+    backIndex: 45
+    rightIndex: 45
+    leftIndex: 45
+    botIndex: 45
     blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
     img: {fileID: -200806180839949805, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
     isTransparent: 0
@@ -6662,6 +6695,7 @@ RectTransform:
   - {fileID: 1289300103}
   - {fileID: 1129948192}
   - {fileID: 1648547695}
+  - {fileID: 1399727395}
   - {fileID: 326017185}
   - {fileID: 477995637}
   m_Father: {fileID: 0}
@@ -6687,6 +6721,7 @@ GameObject:
   - component: {fileID: 1743702930}
   - component: {fileID: 1743702931}
   - component: {fileID: 1743702932}
+  - component: {fileID: 1743702933}
   - component: {fileID: 1743702925}
   m_Layer: 0
   m_Name: Player
@@ -7003,6 +7038,33 @@ MonoBehaviour:
   - {fileID: 180348346}
   result: {fileID: 1239667012}
   worldCreation: {fileID: 1731320882}
+--- !u!114 &1743702933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1743702924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52dcc731007e0aa4b9fcdf3372471c12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveManager: {fileID: 1731320886}
+  maxHealth: 20
+  maxFallRange: 3
+  regenerationTime: 3
+  heartGameObject: {fileID: 6767010444201417666, guid: f31c8fc6a8aeeb74e82a28c2c1bb1caa,
+    type: 3}
+  heartParent: {fileID: 1399727395}
+  startPos: {x: 0, y: 0}
+  xOffset: 40
+  emptyHeart: {fileID: 1564688358316481467, guid: 6e7c6ddf13496a04abd30fcac904e8bc,
+    type: 3}
+  halfHeart: {fileID: 5726080727020278575, guid: 6e7c6ddf13496a04abd30fcac904e8bc,
+    type: 3}
+  fullHeart: {fileID: 8522625820373494394, guid: 6e7c6ddf13496a04abd30fcac904e8bc,
+    type: 3}
 --- !u!1 &1758825552
 GameObject:
   m_ObjectHideFlags: 0

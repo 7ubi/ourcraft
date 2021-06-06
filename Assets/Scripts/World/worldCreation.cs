@@ -22,7 +22,6 @@ public class worldCreation : MonoBehaviour
     [SerializeField] public GameObject chunckGameObject;
     [SerializeField] private GameObject destroyedBlock;
     [SerializeField] private float renderDistance;
-    [SerializeField] private BlockShape destroyedBlockShape;
     
     public List<MeshCreation> meshesToUpdate = new List<MeshCreation>();
     public List<WaterGeneration> waterMeshesToUpdate = new List<WaterGeneration>();
@@ -438,10 +437,10 @@ public class worldCreation : MonoBehaviour
         block.GetComponent<DestroyedBlock>().ID = id;
 
         var newMesh = new Mesh();
-        var _vertices = new List<Vector3>();
-        var _normals = new List<Vector3>();
-        var _uvs = new List<Vector2>();
-        var _indices = new List<int>();
+        var vertices = new List<Vector3>();
+        var normals = new List<Vector3>();
+        var uvs = new List<Vector2>();
+        var indices = new List<int>();
 
         var currentIndex = 0;
 
@@ -449,23 +448,23 @@ public class worldCreation : MonoBehaviour
 
         var offset = new Vector3Int(0, 0, 0);
         
-        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-                                    destroyedBlockShape.faceData[2], b.GETRect(b.topIndex));
-        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            destroyedBlockShape.faceData[5], b.GETRect(b.rightIndex));
-        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            destroyedBlockShape.faceData[4], b.GETRect(b.leftIndex));
-        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            destroyedBlockShape.faceData[1], b.GETRect(b.frontIndex));
-        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            destroyedBlockShape.faceData[0], b.GETRect(b.backIndex));
-        blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            destroyedBlockShape.faceData[3], b.GETRect(b.botIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                                    b.blockShape.faceData[2], b.GETRect(b.topIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+            b.blockShape.faceData[5], b.GETRect(b.rightIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+            b.blockShape.faceData[4], b.GETRect(b.leftIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+            b.blockShape.faceData[1], b.GETRect(b.frontIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+            b.blockShape.faceData[0], b.GETRect(b.backIndex));
+        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+            b.blockShape.faceData[3], b.GETRect(b.botIndex));
         
-        newMesh.SetVertices(_vertices);
-        newMesh.SetNormals(_normals);
-        newMesh.SetUVs(0, _uvs);
-        newMesh.SetIndices(_indices, MeshTopology.Triangles, 0);
+        newMesh.SetVertices(vertices);
+        newMesh.SetNormals(normals);
+        newMesh.SetUVs(0, uvs);
+        newMesh.SetIndices(indices, MeshTopology.Triangles, 0);
 
         newMesh.RecalculateTangents();
         block.GetComponent<MeshFilter>().mesh = newMesh;

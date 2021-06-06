@@ -15,4 +15,9 @@ public class BlockTypes : MonoBehaviour
     public static int Bedrock => 9;
     public static int Cactus => 10;
 
+    public static int Plank => 11;
+
+    public static int Furnace => 12;
+    
+    
 }

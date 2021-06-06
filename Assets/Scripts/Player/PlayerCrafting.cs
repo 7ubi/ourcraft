@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PlayerCrafting : MonoBehaviour
@@ -47,17 +48,25 @@ public class PlayerCrafting : MonoBehaviour
             var req = craftableItems[i].GetRequirements();
             _craftableItemsObjects[i].color = _playerInventory.HasRequirements(req) ? Color.black : Color.red;
         }
+
+        if (_resultID != 0)
+        {
+            result.color = _playerInventory.HasRequirements(craftableItems[_resultIndex].GetRequirements()) ? Color.white : Color.red;
+        }
     }
 
     public void SetRecipe(int index)
     {
-        if(!_playerInventory.HasRequirements(craftableItems[index].GetRequirements())) return;
-        
         _resultID = craftableItems[index].resultID;
         _resultIndex = index;
         for (var i = 0; i < craftableItems[index].recipe.Length; i++)
         {
-            if(craftableItems[index].recipe[i] == 0) continue;
+            if (craftableItems[index].recipe[i] == 0)
+            {
+                craftingSlots[i].sprite = null;
+                craftingSlots[i].color = new Color(255, 255, 255, 0);
+                continue;
+            }
             
             craftingSlots[i].sprite = worldCreation.Blocks[craftableItems[index].recipe[i]].img;
             craftingSlots[i].color = new Color(255, 255, 255, 100);
@@ -70,9 +79,23 @@ public class PlayerCrafting : MonoBehaviour
 
     public void Craft()
     {
-        if(!_playerInventory.HasRequirements(craftableItems[_resultIndex].GetRequirements())) return;
-        
-        _playerInventory.RemoveRequirements(craftableItems[_resultIndex].GetRequirements());
-        _playerInventory.AddItem(_resultID, 1);
+        var count = 1;
+        while (true)
+        {
+            if (!_playerInventory.HasRequirements(craftableItems[_resultIndex].GetRequirements())) return;
+
+            _playerInventory.RemoveRequirements(craftableItems[_resultIndex].GetRequirements());
+            _playerInventory.AddItem(_resultID, 1);
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                if (count <= worldCreation.Blocks[_resultID].stackSize)
+                {
+                    count++;
+                    continue;
+                }
+            }
+
+            break;
+        }
     }
 }

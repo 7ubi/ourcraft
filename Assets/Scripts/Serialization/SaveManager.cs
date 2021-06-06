@@ -12,6 +12,7 @@ public class SaveManager : MonoBehaviour
     private worldCreation _worldCreation;
     private PlayerController _playerController;
     private PlayerInventory _playerInventory;
+    private PlayerSurvival _playerSurvival;
     private string _worldName;
 
     private List<MeshCreation> _chuncks = new List<MeshCreation>();
@@ -20,6 +21,7 @@ public class SaveManager : MonoBehaviour
     {
         _playerController = player.GetComponent<PlayerController>();
         _playerInventory = player.GetComponent<PlayerInventory>();
+        _playerSurvival = player.GetComponent<PlayerSurvival>();
         _worldCreation = GetComponent<worldCreation>();
         _worldName = PlayerPrefs.GetString("world");
         if (Directory.Exists(Application.persistentDataPath + "/saves/" + _worldName))
@@ -31,14 +33,7 @@ public class SaveManager : MonoBehaviour
         {
             _worldCreation.GenerateFirst();
             _playerController.SetPos();
-            SavePlayerData();
-        }
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
+            _playerSurvival.SetHealth();
             SavePlayerData();
         }
     }
@@ -46,7 +41,7 @@ public class SaveManager : MonoBehaviour
     public void SavePlayerData()
     {
         var saveData = new PlayerInfo(_playerController.transform.position, _playerController.Camera.transform.rotation,
-            _playerInventory.ItemCount, _playerInventory.ItemIds, _worldCreation.Seed);
+            _playerInventory.ItemCount, _playerInventory.ItemIds, _worldCreation.Seed, _playerSurvival.Health);
         SerializationManager.SavePlayerData(_worldName, saveData);
     }
 
@@ -56,6 +51,7 @@ public class SaveManager : MonoBehaviour
         
         _playerController.LoadData(data.pos, data.rotation);
         _playerInventory.LoadData(data.itemCount, data.itemIds);
+        _playerSurvival.LoadData(data.health);
         _worldCreation.LoadData(data.seed);
     }
 
