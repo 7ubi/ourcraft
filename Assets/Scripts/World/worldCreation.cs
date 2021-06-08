@@ -72,16 +72,20 @@ public class worldCreation : MonoBehaviour
         {
             Blocks.Add(b.id, b);    
         }
-
+        
         _chunckTread = new Thread(UpdateChunck);
-        _chunckTread.Start();
+        
     }
+
+    
 
     public void GenerateFirst()
     {
         seed = Random.Range(10000, 100000);
-        GenerateChunck();
+        CreateNearestChuncks();
+        _chunckTread.Start();
     }
+    
 
     private void UpdateChunck()
     {
@@ -91,6 +95,12 @@ public class worldCreation : MonoBehaviour
             {
                 for (var i = meshesToCreate.Count - 1; i >= 0; i--)
                 {
+                    if (meshesToCreate.Count <= i)
+                    {
+                        i = meshesToCreate.Count - 1;
+                        continue;
+                    }
+
                     var mesh = meshesToCreate[i];
                     if(mesh == null) continue;                    
                     mesh.GenerateBlocks();
@@ -102,6 +112,12 @@ public class worldCreation : MonoBehaviour
             {
                 for (var i = meshesToUpdate.Count - 1; i >= 0; i--)
                 {
+                    if (meshesToUpdate.Count <= i)
+                    {
+                        i = meshesToUpdate.Count - 1;
+                        continue;
+                    }
+                    
                     var mesh = meshesToUpdate[i];
                     if(mesh == null) continue;   
                     mesh.GenerateMesh();
@@ -113,6 +129,12 @@ public class worldCreation : MonoBehaviour
             {
                 for (var i = waterMeshesToUpdate.Count - 1; i >= 0; i--)
                 {
+                    if (waterMeshesToUpdate.Count <= i)
+                    {
+                        i = waterMeshesToUpdate.Count - 1;
+                        continue;
+                    }
+                    
                     var mesh = waterMeshesToUpdate[i];
                     if(mesh == null) continue;   
 
@@ -130,19 +152,14 @@ public class worldCreation : MonoBehaviour
 
     private void Update()
     {
-        Time.timeScale = _firstGen ? 0 : 1;
+        var position = Vector3Int.FloorToInt(player.transform.position);
+        
         
         if (meshesToApply.Count > 0)
         {
             var mesh = meshesToApply[0];
             mesh.ApplyMesh();
-            if (_firstGen)
-            {
-                if (GetChunck(mesh.transform.position) == GetChunck(player.transform.position))
-                {
-                    _firstGen = false;
-                }
-            }
+            
 
             meshesToApply.Remove(mesh);
             saveManager.SaveChunck(mesh.chunck);
@@ -156,7 +173,7 @@ public class worldCreation : MonoBehaviour
             saveManager.SaveChunck(mesh.chunck);
         }
         
-        var position = Vector3Int.FloorToInt(player.transform.position);
+        
         var currentChunck = (position.x - (position.x % 8) + position.z - (position.z % 8));
         if (currentChunck != _lastChunck)
         {
@@ -164,6 +181,115 @@ public class worldCreation : MonoBehaviour
         }
 
         _lastChunck = currentChunck;
+    }
+
+    public void LoadNearestChuncks()
+    {
+        var position = Vector3Int.FloorToInt(player.transform.position);
+        
+        var playerX = position.x - (position.x % 16);
+        var playerZ = position.z - (position.z % 16);
+        
+        var minX = Convert.ToInt32(playerX - size * renderDistance);
+        var maxX = Convert.ToInt32(playerX + size * renderDistance);
+        var minZ = Convert.ToInt32(playerZ - size * renderDistance);
+        var maxZ = Convert.ToInt32(playerZ + size * renderDistance);
+
+        for (var x = minX; x <= maxX; x += size)
+        {
+            for (var z = minZ; z <= maxZ; z += size)
+            {
+                var c = GetChunck(new Vector3(x, 0, z));
+                if (c == null)
+                {
+                    var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
+                    var m = newChunck.GetComponent<MeshCreation>();
+                    m.worldCreation = this;
+                    m.Init();
+                    Chuncks.Add(newChunck);
+                    var position1 = newChunck.transform.position;
+                    _chuncks.Add(new Vector2(position1.x, position1.z), newChunck);
+                    _chuncksChunck.Add(new Vector2(position1.x, position1.z), newChunck.GetComponent<Chunck>());
+                
+                    var water = newChunck.GetComponent<WaterGeneration>();
+                
+                    m.GenerateBlocks();
+                
+                    m.GenerateMesh();
+                    water.GenerateWater();
+                
+                    m.ApplyMesh();
+                    water.ApplyMesh();
+                
+                    waterMeshesToUpdate.Remove(water);
+                    waterMeshesToApply.Remove(water);
+                    meshesToCreate.Remove(m);
+                    meshesToUpdate.Remove(m);
+                    meshesToApply.Remove(m);
+                }
+                else
+                {
+                    var mesh = c.GetComponent<MeshCreation>();
+                    var water = c.GetComponent<WaterGeneration>();
+
+                    mesh.GenerateMesh();
+                    water.GenerateWater();
+
+                    mesh.ApplyMesh();
+                    water.ApplyMesh();
+
+                    waterMeshesToUpdate.Remove(water);
+                    waterMeshesToApply.Remove(water);
+                    meshesToUpdate.Remove(mesh);
+                    meshesToApply.Remove(mesh);
+                }
+            }
+        }
+        _chunckTread.Start();
+    }
+    
+    public void CreateNearestChuncks()
+    {
+        var position = Vector3Int.FloorToInt(player.transform.position);
+        
+        var playerX = position.x - (position.x % 16);
+        var playerZ = position.z - (position.z % 16);
+        
+        var minX = Convert.ToInt32(playerX - size * renderDistance);
+        var maxX = Convert.ToInt32(playerX + size * renderDistance);
+        var minZ = Convert.ToInt32(playerZ - size * renderDistance);
+        var maxZ = Convert.ToInt32(playerZ + size * renderDistance);
+
+        for (var x = minX; x <= maxX; x += size)
+        {
+            for (var z = minZ; z <= maxZ; z += size)
+            {
+                var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
+                var m = newChunck.GetComponent<MeshCreation>();
+                m.worldCreation = this;
+                m.Init();
+                Chuncks.Add(newChunck);
+                var position1 = newChunck.transform.position;
+                _chuncks.Add(new Vector2(position1.x, position1.z), newChunck);
+                _chuncksChunck.Add(new Vector2(position1.x, position1.z), newChunck.GetComponent<Chunck>());
+                
+                var water = newChunck.GetComponent<WaterGeneration>();
+                
+                m.GenerateBlocks();
+                
+                m.GenerateMesh();
+                water.GenerateWater();
+                
+                m.ApplyMesh();
+                water.ApplyMesh();
+                
+                waterMeshesToUpdate.Remove(water);
+                waterMeshesToApply.Remove(water);
+                meshesToCreate.Remove(m);
+                meshesToUpdate.Remove(m);
+                meshesToApply.Remove(m);
+            }
+        }
     }
 
 

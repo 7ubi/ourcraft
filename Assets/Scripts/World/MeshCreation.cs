@@ -64,6 +64,7 @@ public class MeshCreation : MonoBehaviour
     {
         var currentIndex = 0;
 
+        
         for (var x = 0; x < worldCreation.Size; x++)
         {
             for (var y = 0; y < worldCreation.MAXHeight; y++)
@@ -206,7 +207,7 @@ public class MeshCreation : MonoBehaviour
     {
         _blockIDs = new int[worldCreation.Size, worldCreation.MAXHeight, worldCreation.Size];
         var treeGen = new System.Random((int)(_offset.x * 1000 + _offset.y));
-        
+
         for (var x = 0; x < worldCreation.Size; x++)
         {
             for (var z = 0; z < worldCreation.Size; z++)
@@ -332,7 +333,7 @@ public class MeshCreation : MonoBehaviour
     public void ApplyMesh()
     {
         _newMesh.SetVertices(_vertices);
-        _newMesh.SetNormals(_normals);
+         _newMesh.SetNormals(_normals);
         _newMesh.SetUVs(0, _uvs);
         _newMesh.SetIndices(_indices, MeshTopology.Triangles, 0);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -75,6 +76,8 @@ public class SaveManager : MonoBehaviour
         {
             chunck.Init();
         }
+        
+        _worldCreation.LoadNearestChuncks();
     }
     
     private void LoadChunck(string file)
@@ -116,8 +119,10 @@ public class SaveManager : MonoBehaviour
         cChunck.WaterIDs = wIds;
 
         _worldCreation.Chuncks.Add(c);
-        _worldCreation._chuncks.Add(new Vector2(c.transform.position.x, c.transform.position.z), c);
-        _worldCreation._chuncksChunck.Add(new Vector2(c.transform.position.x, c.transform.position.z), c.GetComponent<Chunck>());
+        if(!_worldCreation._chuncks.ContainsKey(new Vector2(c.transform.position.x, c.transform.position.z)))
+            _worldCreation._chuncks.Add(new Vector2(c.transform.position.x, c.transform.position.z), c);
+        if(!_worldCreation._chuncksChunck.ContainsKey(new Vector2(c.transform.position.x, c.transform.position.z)))
+            _worldCreation._chuncksChunck.Add(new Vector2(c.transform.position.x, c.transform.position.z), c.GetComponent<Chunck>());
         
         _chuncks.Add(c.GetComponent<MeshCreation>());
     }
