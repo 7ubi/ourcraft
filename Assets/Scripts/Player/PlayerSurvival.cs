@@ -41,9 +41,6 @@ public class PlayerSurvival : MonoBehaviour
         _lastPosition = transform.position;
         
         _rb = GetComponent<Rigidbody>();
-        
-        
-
         StartCoroutine(RegenerateHealth());
     }
 
@@ -87,7 +84,10 @@ public class PlayerSurvival : MonoBehaviour
         {
             for (var i = _currentHealth / 2; i < maxHealth / 2; i++)
             {
-                _hearts[i].sprite = emptyHeart;
+                try
+                {
+                    _hearts[i].sprite = emptyHeart;
+                }catch{}
             }
         }
     }

@@ -18,6 +18,6 @@ public class BlockTypes : MonoBehaviour
     public static int Plank => 11;
 
     public static int Furnace => 12;
-    
-    
+
+    public static int Coalore => 13;
 }

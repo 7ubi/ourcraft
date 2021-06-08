@@ -119,22 +119,9 @@ public class Water : MonoBehaviour
         
         var c = _chunck.GetComponent<MeshCreation>();
         
-        if (c.CanGenerateMesh)
-        {
-            c.ResetMesh();
-            ResetMesh();
-            var t = new Thread(c.GenerateMeshThreaded);
-            t.Start();
-        }
-        else
-        {
-            var alreadyExist = worldCreation.meshesToUpdate.Contains(c);
-            if (!alreadyExist)
-            {
-                worldCreation.meshesToUpdate.Add(c);
-            }
-        }
-
+        if (!worldCreation.meshesToUpdate.Contains(c))
+            worldCreation.meshesToUpdate.Add(c);
+       
 
         if (worldCreation.GetBlock(block + new Vector3(0, -1, 0)) != 0)
         {
@@ -186,22 +173,9 @@ public class Water : MonoBehaviour
         c.WaterIDs[bix, biy, biz] = 2;
         
         var cM = _chunck.GetComponent<MeshCreation>();
-        
-        if (cM.CanGenerateMesh)
-        {
-            cM.ResetMesh();
-            ResetMesh();
-            var t = new Thread(cM.GenerateMeshThreaded);
-            t.Start();
-        }
-        else
-        {
-            var alreadyExist = worldCreation.meshesToUpdate.Contains(cM);
-            if (!alreadyExist)
-            {
-                worldCreation.meshesToUpdate.Add(cM);
-            }
-        }
+      
+        if (!worldCreation.meshesToUpdate.Contains(cM))
+            worldCreation.meshesToUpdate.Add(cM);
         
         //if(worldCreation.GetBlock(pos + new Vector3(0, -1, 0)) != 0) yield break;
 

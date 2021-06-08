@@ -6,16 +6,24 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Movement")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float sprintMult;
     [SerializeField] private float waterMult;
+    
+    [Header("Camera")]
     [SerializeField] private Camera _camera;
     [SerializeField] private float speedH = 2.0f;
     [SerializeField] private  float speedV = 2.0f;
+    
+    [Header("Jumping")]
     [SerializeField] private float jumpForce;
+    [SerializeField] private int drag;
+    
+    [Header("Extra")]
     [SerializeField] private GameObject selectGameObject;
     [SerializeField] private worldCreation worldCreation;
-    [SerializeField] private int drag;
+    
 
     private float forward;
     private float right;
@@ -28,6 +36,8 @@ public class PlayerController : MonoBehaviour
     
     public Camera Camera => _camera;
     public bool CanPlaceBlock { get; set; }
+    
+    public bool InPause { get; set; }
 
     private void Start()
     {
@@ -46,8 +56,15 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        _rb.constraints = RigidbodyConstraints.None;
-        
+        if (InPause)
+        {
+            _rb.constraints = RigidbodyConstraints.FreezeAll;
+        }
+        else
+        {
+            _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        }
+
         forward = Input.GetAxis("Vertical") * moveSpeed;
         right = Input.GetAxis("Horizontal") * moveSpeed;
 
@@ -126,10 +143,15 @@ public class PlayerController : MonoBehaviour
         for (var y = worldCreation.MAXHeight - 1; y >= 0; y--)
         {
             if (worldCreation.GetBlock(new Vector3(position.x, y, position.z)) == 0) continue;
-            position = new Vector3(position.x, y + 2, position.z);
+            position = new Vector3(position.x, y + 4, position.z);
             transform.position = position;
             return;
         }
+    }
+
+    public void Pause()
+    {
+        _rb.constraints = RigidbodyConstraints.FreezeAll;
     }
 
     private void OnTriggerEnter(Collider other)

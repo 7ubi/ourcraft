@@ -18,6 +18,7 @@ public class PlayerActionController : MonoBehaviour
     [SerializeField] private PlayerController playerController;
     [SerializeField] private DestroyBlock destroyBlock;
     [SerializeField] private PlayerInventory playerInventory;
+    [SerializeField] private InteractableBlocks interactableBlocks;
     
     private void Update()
     {
@@ -26,33 +27,7 @@ public class PlayerActionController : MonoBehaviour
         var leftClick = Input.GetMouseButton(0);
         var rightClick = Input.GetMouseButtonDown(1);
 
-        if (!leftClick)
-        {
-            destroyBlock.IsDestroyingBlock = false;
-        }
         RaycastHit hit;
-        if (leftClick || rightClick)
-        {   
-            if (!Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, range,
-                layerMask))
-            {
-                destroyBlock.IsDestroyingBlock = false;
-                return;
-            }
-            if (leftClick)
-            {
-                destroyBlock.IsDestroyingBlock = true;
-                destroyBlock.Block = Vector3Int.FloorToInt(hit.point + transform.forward * .01f);
-            }
-            
-            if(rightClick)
-            {
-                if (!inventory.CanPlaceBlock()) return;
-                if (!playerController.CanPlaceBlock) return;
-                worldCreation.PlaceBlock(hit.point + transform.forward * -.01f, inventory.ItemIds[inventory.Current]);
-                inventory.RemoveItem(inventory.Current);
-            }
-        }
         
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, range, layerMask))
         {
@@ -69,5 +44,43 @@ public class PlayerActionController : MonoBehaviour
         }
         
         underWater.SetActive(worldCreation.GetUnderWater(transform.position));
+        
+        if (!leftClick)
+        {
+            destroyBlock.IsDestroyingBlock = false;
+        }
+        
+        if (leftClick || rightClick)
+        {   
+            if (!Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, range,
+                layerMask))
+            {
+                destroyBlock.IsDestroyingBlock = false;
+                return;
+            }
+            if (leftClick)
+            {
+                destroyBlock.IsDestroyingBlock = true;
+                destroyBlock.Block = Vector3Int.FloorToInt(hit.point + transform.forward * .01f);
+            }
+            
+            if(rightClick)
+            {
+                if (worldCreation.Blocks[worldCreation.GetBlock(hit.point + transform.forward * .01f)].isInteractable)
+                {
+                    interactableBlocks.Interact(worldCreation.Blocks[worldCreation.GetBlock(hit.point + transform.forward * .01f)].id);
+                }
+                else
+                {
+                    if (inventory.ItemIds[inventory.Current] >= playerInventory.itemIndexStart) return;
+                    if (!inventory.CanPlaceBlock()) return;
+                    if (!playerController.CanPlaceBlock) return;
+
+                    worldCreation.PlaceBlock(hit.point + transform.forward * -.01f,
+                        inventory.ItemIds[inventory.Current]);
+                    inventory.RemoveItem(inventory.Current);
+                }
+            }
+        }
     }
 }

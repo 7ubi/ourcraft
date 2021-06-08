@@ -9,6 +9,7 @@ public class CraftableItem : ScriptableObject
     public string name;
 
     public int resultID;
+    public int resultAmount;
     public int[] recipe; //size always 9
 
 

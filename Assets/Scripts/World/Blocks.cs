@@ -18,9 +18,14 @@ public class Blocks
     [SerializeField] public int botIndex;
     [SerializeField] public BlockShape blockShape;
     [SerializeField] public Sprite img;
-    [SerializeField] public bool isTransparent = false;
+    [SerializeField] public bool isTransparent;
     [SerializeField] public float destroyTime = 1f;
     [SerializeField] public int stackSize = 64;
+    [SerializeField] private int dropID;
+    [SerializeField] public bool isInteractable;
+    [SerializeField] public bool meltable;
+    [SerializeField] public bool melter;
+    [SerializeField] public int meltedId;
     private static int _size = 16;
     private float _normalized = 1 / (float) _size;
 
@@ -36,4 +41,6 @@ public class Blocks
         
         return new Vector2(x, y);
     }
+
+    public int DropID => dropID == 0 ? id : dropID;
 }

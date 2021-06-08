@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ public class PlayerCrafting : MonoBehaviour
     private readonly List<Image> _craftableItemsObjects = new List<Image>();
     [SerializeField] private Image[] craftingSlots;
     [SerializeField] private Image result;
+    [SerializeField] private TMP_Text resultAmount;
     [SerializeField] private worldCreation worldCreation;
 
     private PlayerInventory _playerInventory;
@@ -71,8 +73,8 @@ public class PlayerCrafting : MonoBehaviour
             craftingSlots[i].sprite = worldCreation.Blocks[craftableItems[index].recipe[i]].img;
             craftingSlots[i].color = new Color(255, 255, 255, 100);
         }
-        
-        
+
+        resultAmount.text = "" + craftableItems[index].resultAmount;
         result.sprite = worldCreation.Blocks[craftableItems[index].resultID].img;
         result.color = new Color(255, 255, 255, 100);
     }
@@ -85,7 +87,7 @@ public class PlayerCrafting : MonoBehaviour
             if (!_playerInventory.HasRequirements(craftableItems[_resultIndex].GetRequirements())) return;
 
             _playerInventory.RemoveRequirements(craftableItems[_resultIndex].GetRequirements());
-            _playerInventory.AddItem(_resultID, 1);
+            _playerInventory.AddItem(_resultID, craftableItems[_resultIndex].resultAmount);
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 if (count <= worldCreation.Blocks[_resultID].stackSize)

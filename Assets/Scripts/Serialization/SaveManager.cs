@@ -73,7 +73,7 @@ public class SaveManager : MonoBehaviour
 
         foreach (var chunck in _chuncks)
         {
-            chunck.GenerateMesh();
+            chunck.Init();
         }
     }
     

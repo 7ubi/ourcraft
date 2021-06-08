@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Assertions.Comparers;
 using UnityEngine.Serialization;
@@ -21,8 +22,10 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private int seed;
     [SerializeField] public GameObject chunckGameObject;
     [SerializeField] private GameObject destroyedBlock;
+    [SerializeField] private GameObject destroyedItem;
     [SerializeField] private float renderDistance;
-    
+
+    public List<MeshCreation> meshesToCreate = new List<MeshCreation>();
     public List<MeshCreation> meshesToUpdate = new List<MeshCreation>();
     public List<WaterGeneration> waterMeshesToUpdate = new List<WaterGeneration>();
     public List<MeshCreation> meshesToApply = new List<MeshCreation>();
@@ -35,9 +38,10 @@ public class worldCreation : MonoBehaviour
     [SerializeField] public int maxTreeHeight;
 
     [Header("Ores")]
-    [SerializeField]
-    public Vector3 ironNoiseOffset;
+    [SerializeField] public Vector3 ironNoiseOffset;
     [SerializeField] public float ironNoiseThreshold;
+    [SerializeField] public Vector3 coalNoiseOffset;
+    [SerializeField] public float coalNoiseThreshold;
     
     [Header("Player")]
     [SerializeField] private GameObject player;
@@ -57,7 +61,8 @@ public class worldCreation : MonoBehaviour
     public Dictionary<Vector2, Chunck> _chuncksChunck = new Dictionary<Vector2, Chunck>();
     private int _lastChunck = 0;
     private bool _firstGen = true;
-    
+
+    Thread _chunckTread; 
 
     private void Start()
     {
@@ -67,6 +72,9 @@ public class worldCreation : MonoBehaviour
         {
             Blocks.Add(b.id, b);    
         }
+
+        _chunckTread = new Thread(UpdateChunck);
+        _chunckTread.Start();
     }
 
     public void GenerateFirst()
@@ -74,72 +82,79 @@ public class worldCreation : MonoBehaviour
         seed = Random.Range(10000, 100000);
         GenerateChunck();
     }
-    
-    private void Update()
+
+    private void UpdateChunck()
     {
-        if (_firstGen)
+        while (true)
         {
-            for (var i = meshesToApply.Count - 1; i >= 0; i--)
+            if (meshesToCreate.Count > 0)
             {
-                var mesh = meshesToApply[i];
-                if(mesh == null){ meshesToApply.Remove(mesh); continue;}
-                mesh.ApplyMesh();
-                meshesToApply.Remove(mesh);
-                saveManager.SaveChunck(mesh.gameObject.GetComponent<Chunck>());
+                for (var i = meshesToCreate.Count - 1; i >= 0; i--)
+                {
+                    var mesh = meshesToCreate[i];
+                    if(mesh == null) continue;                    
+                    mesh.GenerateBlocks();
+                    meshesToCreate.Remove(mesh);
+                }
             }
             
-            for (var i = waterMeshesToApply.Count - 1; i >= 0; i--)
+            if (meshesToUpdate.Count > 0)
             {
-                var mesh = waterMeshesToApply[i];
-                mesh.ApplyMesh();
-                waterMeshesToApply.Remove(mesh);
+                for (var i = meshesToUpdate.Count - 1; i >= 0; i--)
+                {
+                    var mesh = meshesToUpdate[i];
+                    if(mesh == null) continue;   
+                    mesh.GenerateMesh();
+                    meshesToUpdate.Remove(mesh);
+                }
             }
 
-            _firstGen = false;
-        }
-        
-        if(meshesToUpdate.Count > 0)
-        {
-            for (var i = meshesToUpdate.Count - 1; i >= 0; i--)
+            if (waterMeshesToUpdate.Count > 0)
             {
-                var mesh = meshesToUpdate[i];
-                
-                if (!mesh.CanGenerateMesh) continue;
-                
-                mesh.GenerateMesh();
-                meshesToUpdate.Remove(mesh);
+                for (var i = waterMeshesToUpdate.Count - 1; i >= 0; i--)
+                {
+                    var mesh = waterMeshesToUpdate[i];
+                    if(mesh == null) continue;   
+
+                    mesh.GenerateWater();
+                    waterMeshesToUpdate.Remove(mesh);
+                }
             }
         }
+    }
+
+    private void OnDisable()
+    {
+        _chunckTread.Abort();
+    }
+
+    private void Update()
+    {
+        Time.timeScale = _firstGen ? 0 : 1;
         
-        if(waterMeshesToUpdate.Count > 0)
-        {
-            for (var i = waterMeshesToUpdate.Count - 1; i >= 0; i--)
-            {
-                var mesh = waterMeshesToUpdate[i];
-                if (!mesh.water.CanGenerateMesh) continue;
-                
-                mesh.GenerateWater();
-                waterMeshesToUpdate.Remove(mesh);
-            }
-        }
-        
-        if(meshesToApply.Count > 0)
+        if (meshesToApply.Count > 0)
         {
             var mesh = meshesToApply[0];
             mesh.ApplyMesh();
+            if (_firstGen)
+            {
+                if (GetChunck(mesh.transform.position) == GetChunck(player.transform.position))
+                {
+                    _firstGen = false;
+                }
+            }
+
             meshesToApply.Remove(mesh);
             saveManager.SaveChunck(mesh.chunck);
         }
         
-        
-        if(waterMeshesToApply.Count > 0)
+        if (waterMeshesToApply.Count > 0)
         {
             var mesh = waterMeshesToApply[0];
             mesh.ApplyMesh();
             waterMeshesToApply.Remove(mesh);
             saveManager.SaveChunck(mesh.chunck);
         }
-        
         
         var position = Vector3Int.FloorToInt(player.transform.position);
         var currentChunck = (position.x - (position.x % 8) + position.z - (position.z % 8));
@@ -175,7 +190,7 @@ public class worldCreation : MonoBehaviour
                     var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
                     var m = newChunck.GetComponent<MeshCreation>();
                     m.worldCreation = this;
-                    m.GenerateMesh();
+                    m.Init();
                     Chuncks.Add(newChunck);
                     _chuncks.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z), newChunck);
                     _chuncksChunck.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z), newChunck.GetComponent<Chunck>());
@@ -223,16 +238,7 @@ public class worldCreation : MonoBehaviour
 
         var m = chunck.GetComponent<MeshCreation>();
         
-        if(m.CanGenerateMesh)
-            m.GenerateMesh();
-        else
-        {
-            var alreadyExist = meshesToUpdate.Contains(m);
-            if (!alreadyExist)
-            {
-                meshesToUpdate.Add(m);
-            }
-        }
+        m.Init();
 
 
         if (bix == 0)
@@ -287,16 +293,8 @@ public class worldCreation : MonoBehaviour
 
         var m = chunck.GetComponent<MeshCreation>();
 
-        if (m.CanGenerateMesh)
-            m.GenerateMesh();
-        else
-        {
-            var alreadyExist = meshesToUpdate.Contains(m);
-            if (!alreadyExist)
-            {
-                meshesToUpdate.Add(m);
-            }
-        }
+        m.Init();
+        
     }
 
 
@@ -343,39 +341,27 @@ public class worldCreation : MonoBehaviour
         var bix = Mathf.FloorToInt(block.x) - chunkPosX;
         var biy = Mathf.FloorToInt(block.y);
         var biz = Mathf.FloorToInt(block.z) - chunkPosZ;
-        if (chunck.WaterIDs != null)
+        try
         {
-            return chunck.WaterIDs[bix, biy, biz];
-        }
+            if (chunck.WaterIDs != null)
+            {
+                return chunck.WaterIDs[bix, biy, biz];
+            }
+        }catch{}
 
         return 1;
     }
 
     public bool GetUnderWater(Vector3 pos)
     {
-        var chunck = GetChunck(pos);
-        var chunckPos = chunck.transform.position;
-        var bix = Mathf.FloorToInt(pos.x) - (int)chunckPos.x;
-        var biy = Mathf.FloorToInt(pos.y);
-        var biz = Mathf.FloorToInt(pos.z) - (int)chunckPos.z;
-        if (chunck.WaterIDs == null) return false;
-        return chunck.WaterIDs[bix, biy, biz] != 0;
+        return GetWater(pos) != 0;
     }
 
     public void ReloadChunck(Vector3 block)
     {
         var m = GetChunck(block).GetComponent<MeshCreation>();
         
-        if (m.CanGenerateMesh)
-            m.GenerateMesh();
-        else
-        {
-            var alreadyExist = meshesToUpdate.Contains(m);
-            if (!alreadyExist)
-            {
-                meshesToUpdate.Add(m);
-            }
-        }
+        m.Init();
     }
 
     public Chunck GetChunck(Vector3 block)
@@ -433,44 +419,56 @@ public class worldCreation : MonoBehaviour
 
     private GameObject CreateDestroyedBlock(int id, Vector3 pos)
     {
-        var block = Instantiate(destroyedBlock, pos, Quaternion.identity);
-        block.GetComponent<DestroyedBlock>().ID = id;
+        if (Blocks[id].DropID < _playerInventory.itemIndexStart)
+        {
+            var block = Instantiate(destroyedBlock, pos, Quaternion.identity);
+            block.GetComponent<DestroyedBlock>().ID = Blocks[id].DropID;
 
-        var newMesh = new Mesh();
-        var vertices = new List<Vector3>();
-        var normals = new List<Vector3>();
-        var uvs = new List<Vector2>();
-        var indices = new List<int>();
+            var newMesh = new Mesh();
+            var vertices = new List<Vector3>();
+            var normals = new List<Vector3>();
+            var uvs = new List<Vector2>();
+            var indices = new List<int>();
 
-        var currentIndex = 0;
+            var currentIndex = 0;
 
-        var b = Blocks[id];
+            var b = Blocks[Blocks[id].DropID];
 
-        var offset = new Vector3Int(0, 0, 0);
-        
-        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-                                    b.blockShape.faceData[2], b.GETRect(b.topIndex));
-        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            b.blockShape.faceData[5], b.GETRect(b.rightIndex));
-        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            b.blockShape.faceData[4], b.GETRect(b.leftIndex));
-        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            b.blockShape.faceData[1], b.GETRect(b.frontIndex));
-        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            b.blockShape.faceData[0], b.GETRect(b.backIndex));
-        blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            b.blockShape.faceData[3], b.GETRect(b.botIndex));
-        
-        newMesh.SetVertices(vertices);
-        newMesh.SetNormals(normals);
-        newMesh.SetUVs(0, uvs);
-        newMesh.SetIndices(indices, MeshTopology.Triangles, 0);
+            var offset = new Vector3Int(0, 0, 0);
 
-        newMesh.RecalculateTangents();
-        block.GetComponent<MeshFilter>().mesh = newMesh;
-        block.GetComponent<MeshCollider>().sharedMesh = newMesh;
-        
-        return block;
+            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[2], b.GETRect(b.topIndex));
+            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[5], b.GETRect(b.rightIndex));
+            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[4], b.GETRect(b.leftIndex));
+            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[1], b.GETRect(b.frontIndex));
+            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[0], b.GETRect(b.backIndex));
+            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[3], b.GETRect(b.botIndex));
+
+            newMesh.SetVertices(vertices);
+            newMesh.SetNormals(normals);
+            newMesh.SetUVs(0, uvs);
+            newMesh.SetIndices(indices, MeshTopology.Triangles, 0);
+
+            newMesh.RecalculateTangents();
+            block.GetComponent<MeshFilter>().mesh = newMesh;
+            block.GetComponent<MeshCollider>().sharedMesh = newMesh;
+            
+            return block;
+        }
+        else
+        {
+            var item = Instantiate(destroyedItem, pos, Quaternion.identity);
+
+            item.GetComponent<SpriteRenderer>().sprite = _playerInventory.Items[Blocks[id].DropID].img;
+            item.GetComponent<DestroyedBlock>().ID = Blocks[id].DropID;
+            
+            return item;
+        }
     }
     
     public int Seed

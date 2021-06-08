@@ -9,16 +9,18 @@ using UnityEngine.Serialization;
 
 public class PlayerInventory : MonoBehaviour
 {
+    [Header("Prefabs")]
     [SerializeField] private RectTransform selector;
     [SerializeField] private worldCreation worldCreation;
     [SerializeField] private SaveManager saveManager;
-
     [SerializeField] private InventoryCell itemCell;
     [SerializeField] private GameObject cell;
     [SerializeField] private Transform cellParent;
-    private const int Rows = 9;
-    private const int Cols = 4;
-    public bool InInventory { get; set; } = false;
+
+
+    [Header("UI")] 
+    [SerializeField] private GameObject furnace;
+    [SerializeField] private GameObject crafting;
     
     [SerializeField] private int xStartInventory;
     [SerializeField] private int yStartInventory;
@@ -29,9 +31,17 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private TMP_Text[] itemCountText = new TMP_Text[5 * 9];
     [SerializeField] private Image[] itemImages = new Image[5 * 9];
 
+    [Header("Const")]
     [SerializeField] private int destroyedBlockReach;
-
+    private const int Rows = 9;
+    private const int Cols = 4;
+    public bool InInventory { get; set; } = false;
     private readonly List<GameObject> _destroyedBlocks = new List<GameObject>();
+
+    [Header("Items")] 
+    [SerializeField] private Item[] itemsArr;
+    public Dictionary<int, Item> Items { get; set; } = new Dictionary<int, Item>();
+    public int itemIndexStart = 230;
     
     public int Current { get; private set; } = 0;
 
@@ -40,6 +50,11 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
+        foreach (var item in itemsArr)
+        {
+            Items.Add(item.id, item);
+        }
+        
         for (var x = 0; x < Rows; x++)
         {
             for (var y = 0; y < Cols; y++)
@@ -79,6 +94,8 @@ public class PlayerInventory : MonoBehaviour
         if(InInventory)
             itemCell.ResetToOriginalPos();
         InInventory = !InInventory;
+        if(InInventory)
+            OpenCrafting();
         Cursor.visible = InInventory;
         Cursor.lockState = InInventory ? CursorLockMode.None : CursorLockMode.Locked;
     }
@@ -90,8 +107,15 @@ public class PlayerInventory : MonoBehaviour
         for (var i = 0; i < ItemIds.Length; i++)
         {
             if (ItemIds[i] != id) continue;
-            if (ItemCount[i] >= worldCreation.Blocks[ItemIds[i]].stackSize) continue;
-            
+            if (id < itemIndexStart)
+            {
+                if (ItemCount[i] >= worldCreation.Blocks[ItemIds[i]].stackSize) continue;
+            }
+            else
+            {
+                if (ItemCount[i] >= Items[ItemIds[i]].stackSize) continue;
+            }
+
             index = i;
             break;
         }
@@ -103,7 +127,7 @@ public class PlayerInventory : MonoBehaviour
                 if (ItemIds[i] != 0) continue;
                 ItemIds[i] = id;
                 index = i;
-                itemImages[i].sprite = worldCreation.Blocks[id].img;
+                itemImages[i].sprite = id < itemIndexStart ? worldCreation.Blocks[id].img : Items[id].img;
                 itemImages[i].color = new Color(255, 255, 255, 100);
                 break;
             }
@@ -174,8 +198,7 @@ public class PlayerInventory : MonoBehaviour
             UpdateText(i);
             if (ItemIds[i] == 0) continue;
             
-            itemImages[i].sprite = worldCreation.Blocks[ItemIds[i]].img;
-            
+            itemImages[i].sprite = ItemIds[i] < itemIndexStart ? worldCreation.Blocks[ItemIds[i]].img : Items[ItemIds[i]].img;
             itemImages[i].color = new Color(255, 255, 255, 100);
         }
     }
@@ -196,13 +219,17 @@ public class PlayerInventory : MonoBehaviour
             {
                 ItemCount[index] += itemCell.Count;
 
-                if (ItemCount[index] <= worldCreation.Blocks[ItemIds[index]].stackSize)
+                var stackSize = ItemIds[index] < itemIndexStart
+                    ? worldCreation.Blocks[ItemIds[index]].stackSize
+                    : Items[ItemIds[index]].stackSize;
+                
+                if (ItemCount[index] <= stackSize)
                 {
                     itemCell.Reset();
                 }
                 else
                 {
-                    var dCount = ItemCount[index] % worldCreation.Blocks[ItemIds[index]].stackSize;
+                    var dCount = ItemCount[index] % stackSize;
                     ItemCount[index] -= dCount;
                     itemCell.Count = dCount;
                     itemCell.UpdateText();
@@ -217,7 +244,7 @@ public class PlayerInventory : MonoBehaviour
             {
                 id = itemCell.Id;
                 count = itemCell.Count;
-                itemCell.SetSprite(worldCreation.Blocks[ItemIds[index]].img, ItemIds[index], ItemCount[index], index);
+                itemCell.SetSprite(ItemIds[index] < itemIndexStart ? worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img, ItemIds[index], ItemCount[index], index);
 
 
                 ItemIds[index] = 0;
@@ -233,7 +260,9 @@ public class PlayerInventory : MonoBehaviour
             {
                 if (itemCell.Id == 0) return;
                 ItemIds[index] = itemCell.Id;
-                itemImages[index].sprite = worldCreation.Blocks[ItemIds[index]].img;
+                itemImages[index].sprite = ItemIds[index] < itemIndexStart
+                    ? worldCreation.Blocks[ItemIds[index]].img
+                    : Items[ItemIds[index]].img;
                 ItemCount[index] = itemCell.Count;
                 itemImages[index].color = new Color(255, 255, 255, 100);
                 itemCell.Reset();
@@ -243,7 +272,7 @@ public class PlayerInventory : MonoBehaviour
             {
                 if (id == 0) return;
                 ItemIds[index] = id;
-                itemImages[index].sprite = worldCreation.Blocks[id].img;
+                itemImages[index].sprite = ItemIds[index] < itemIndexStart ? worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img;
                 ItemCount[index] = count;
                 itemImages[index].color = new Color(255, 255, 255, 100);
                 UpdateText(index);
@@ -257,7 +286,7 @@ public class PlayerInventory : MonoBehaviour
                 var c = ItemCount[index];
                 ItemCount[index] /= 2;
                 
-                itemCell.SetSprite(worldCreation.Blocks[ItemIds[index]].img, ItemIds[index], c - ItemCount[index], index);
+                itemCell.SetSprite(ItemIds[index] < itemIndexStart ? worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img, ItemIds[index], c - ItemCount[index], index);
                 
                 if (ItemCount[index] == 0)
                 {
@@ -276,11 +305,14 @@ public class PlayerInventory : MonoBehaviour
                 if (ItemIds[index] == 0)
                 {
                     ItemIds[index] = itemCell.Id;
-                    itemImages[index].sprite = worldCreation.Blocks[ItemIds[index]].img;
+                    itemImages[index].sprite = ItemIds[index] < itemIndexStart ? worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img;
                     itemImages[index].color = new Color(255, 255, 255, 100);
                 }
 
-                if (ItemCount[index] < worldCreation.Blocks[ItemIds[index]].stackSize)
+                var stack = ItemIds[index] < itemIndexStart
+                    ? worldCreation.Blocks[ItemIds[index]].stackSize
+                    : Items[ItemIds[index]].stackSize;
+                if (ItemCount[index] < stack)
                 {
                     itemCell.Count -= 1;
                     ItemCount[index] += 1;
@@ -385,5 +417,21 @@ public class PlayerInventory : MonoBehaviour
             Destroy(destroyed);
             _destroyedBlocks.Remove(destroyed);
         }
+    }
+
+    private void OpenCrafting()
+    {
+        crafting.SetActive(true);
+        furnace.SetActive(false);
+    }
+
+    public void OpenFurnace()
+    {
+        InInventory = true;
+        cellParent.gameObject.SetActive(true);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        crafting.SetActive(false);
+        furnace.SetActive(true);
     }
 }

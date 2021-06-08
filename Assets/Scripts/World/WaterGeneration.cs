@@ -164,15 +164,14 @@ public class WaterGeneration : MonoBehaviour
             }
         }
 
-        water.CanGenerateMesh = true;
+        
         if (!worldCreation.waterMeshesToApply.Contains(this))
-        {
             worldCreation.waterMeshesToApply.Add(this);
-        }
     }
     
     public void ApplyMesh()
     {
+        water.CanGenerateMesh = true;
         water._newMesh.SetVertices(water._vertices);
         water._newMesh.SetNormals(water._normals);
         water._newMesh.SetUVs(0, water._uvs);

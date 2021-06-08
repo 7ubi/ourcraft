@@ -26,7 +26,7 @@ public class MeshCreation : MonoBehaviour
     
     
     // ReSharper disable Unity.PerformanceAnalysis
-    public void GenerateMesh()
+    public void Init()
     {
         _position = transform.position;
         _offset = new Vector2(_position.x, _position.z);
@@ -39,15 +39,14 @@ public class MeshCreation : MonoBehaviour
         
         if (chunck.BlockIDs == null)
         {
-            var t = new Thread(new ThreadStart(GenerateBlocks));
-            t.Start();
+            worldCreation.meshesToCreate.Add(this);
         }
         else
         {
             _blockIDs = chunck.BlockIDs;
-        
-            var t = new Thread(new ThreadStart(GenerateMeshThreaded));
-            t.Start();
+            
+            if (!worldCreation.meshesToUpdate.Contains(this))
+                worldCreation.meshesToUpdate.Add(this);
         }
     }
 
@@ -61,9 +60,8 @@ public class MeshCreation : MonoBehaviour
         CanGenerateMesh = false;
     }
 
-    public void GenerateMeshThreaded()
+    public void GenerateMesh()
     {
-
         var currentIndex = 0;
 
         for (var x = 0; x < worldCreation.Size; x++)
@@ -75,7 +73,6 @@ public class MeshCreation : MonoBehaviour
                     var offset = new Vector3Int(x, y, z);
                     if (_blockIDs[x, y, z] == 0) continue;
                     var b = worldCreation.Blocks[_blockIDs[x, y, z]];
-
                     if (b.isTransparent)
                     {
                         worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
@@ -198,22 +195,14 @@ public class MeshCreation : MonoBehaviour
         }
 
         if (!worldCreation.meshesToApply.Contains(this))
-        {
             worldCreation.meshesToApply.Add(this);
-        }
         
-        if (water.CanGenerateMesh)
-        {
-            var waterThread = new Thread(new ThreadStart(waterGeneration.GenerateWater));
-            waterThread.Start();
-        }
-        else
-        {
+        
+        if(!worldCreation.waterMeshesToUpdate.Contains(waterGeneration))
             worldCreation.waterMeshesToUpdate.Add(waterGeneration);
-        }
     }
     
-    private void GenerateBlocks()
+    public void GenerateBlocks()
     {
         _blockIDs = new int[worldCreation.Size, worldCreation.MAXHeight, worldCreation.Size];
         var treeGen = new System.Random((int)(_offset.x * 1000 + _offset.y));
@@ -311,7 +300,13 @@ public class MeshCreation : MonoBehaviour
                         grassTop = true;
                         if (y <= height + worldCreation.minHeight - 4)
                         {
-                            if (Noise.Perlin3D((x + worldCreation.ironNoiseOffset.x) * 0.5f + worldCreation.Seed,
+                            if (Noise.Perlin3D((x + worldCreation.coalNoiseOffset.x) * 0.5f + worldCreation.Seed,
+                                    (y + worldCreation.coalNoiseOffset.y) * 0.5f + worldCreation.Seed, (z + worldCreation.coalNoiseOffset.z) * 0.5f + worldCreation.Seed) <
+                                worldCreation.coalNoiseThreshold)
+                            {
+                                _blockIDs[x, y, z] = BlockTypes.Coalore;
+                            }
+                            else if (Noise.Perlin3D((x + worldCreation.ironNoiseOffset.x) * 0.5f + worldCreation.Seed,
                                     (y + worldCreation.ironNoiseOffset.y) * 0.5f + worldCreation.Seed, (z + worldCreation.ironNoiseOffset.z) * 0.5f + worldCreation.Seed) <
                                 worldCreation.ironNoiseThreshold)
                             {
@@ -330,13 +325,12 @@ public class MeshCreation : MonoBehaviour
         }
         chunck.BlockIDs = _blockIDs;
         
-        var t2 = new Thread(new ThreadStart(GenerateMeshThreaded));
-        t2.Start();
+        if (!worldCreation.meshesToUpdate.Contains(this))
+            worldCreation.meshesToUpdate.Add(this);
     }
 
     public void ApplyMesh()
     {
-        
         _newMesh.SetVertices(_vertices);
         _newMesh.SetNormals(_normals);
         _newMesh.SetUVs(0, _uvs);

@@ -33,10 +33,15 @@ public class PauseMenu : MonoBehaviour
     public void Pause()
     {
         playerActionController.enabled = panel.activeInHierarchy;
+        
+        if(!panel.activeInHierarchy)
+            _playerController.Pause();
+        
         _playerController.enabled = panel.activeInHierarchy;
         _playerInventory.enabled = panel.activeInHierarchy;
         panel.SetActive(!panel.activeInHierarchy);
         Time.timeScale = panel.activeInHierarchy ? 0 : 1;
+        _playerController.InPause = panel.activeInHierarchy;
         Cursor.visible = _playerInventory.InInventory || panel.activeInHierarchy;
         Cursor.lockState = _playerInventory.InInventory ? CursorLockMode.None : panel.activeInHierarchy ? CursorLockMode.None : CursorLockMode.Locked;
     }
