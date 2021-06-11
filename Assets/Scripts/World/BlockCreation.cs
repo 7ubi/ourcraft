@@ -43,4 +43,23 @@ public class BlockCreation : MonoBehaviour
 
         currentIndex += 4;
     }
+
+    public void GenerateSpriteToVoxel(ref int currentIndex, Vector3Int offset, List<Vector3> vertices,
+        List<Vector3> normals, List<Color32> colors, Color32 color, List<Vector2> uvs, List<int> indices, FaceData face)
+    {
+        foreach (var vert in face.vertData)
+        {
+            vertices.Add(vert.position + offset + face.faceOffset);
+            colors.Add(color);
+            uvs.Add(vert.uv);
+            normals.Add(face.normal);
+        }
+
+        foreach (var tri in face.triangles)
+        {
+            indices.Add(currentIndex + tri);
+        }
+
+        currentIndex += 4;
+    }
 }

@@ -107,14 +107,8 @@ public class PlayerInventory : MonoBehaviour
         for (var i = 0; i < ItemIds.Length; i++)
         {
             if (ItemIds[i] != id) continue;
-            if (id < itemIndexStart)
-            {
-                if (ItemCount[i] >= worldCreation.Blocks[ItemIds[i]].stackSize) continue;
-            }
-            else
-            {
-                if (ItemCount[i] >= Items[ItemIds[i]].stackSize) continue;
-            }
+            if (ItemCount[i] >= (id < itemIndexStart ?
+                worldCreation.Blocks[id].stackSize: Items[id].stackSize)) continue;
 
             index = i;
             break;

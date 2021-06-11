@@ -10,6 +10,7 @@ public class Item
     [SerializeField] public int id;
     [SerializeField] public int stackSize;
     [SerializeField] public Sprite img;
+    [SerializeField] public Texture2D texture2d;
     [SerializeField] public bool meltable;
     [SerializeField] public bool melter;
     [SerializeField] public int meltedId;

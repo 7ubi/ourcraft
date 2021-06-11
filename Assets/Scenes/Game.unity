@@ -7191,6 +7191,7 @@ GameObject:
   - component: {fileID: 1731320884}
   - component: {fileID: 1731320886}
   - component: {fileID: 1731320887}
+  - component: {fileID: 1731320889}
   m_Layer: 0
   m_Name: World Manager
   m_TagString: Untagged
@@ -7238,6 +7239,7 @@ MonoBehaviour:
   blockTypes: {fileID: 1731320885}
   blockCreation: {fileID: 1731320884}
   saveManager: {fileID: 1731320886}
+  voxelizer: {fileID: 1731320889}
   blocks:
   - name: Dirt
     id: 1
@@ -7478,6 +7480,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 109345ddce309d24bb651d0ac0ad414b, type: 2}
   - {fileID: 11400000, guid: 395e06bc58f962941b98aae9e0d537fd, type: 2}
   - {fileID: 11400000, guid: 24dac4f41998bca40be4aef18ef05680, type: 2}
+  standardBlockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
 --- !u!4 &1731320883
 Transform:
   m_ObjectHideFlags: 0
@@ -7555,6 +7558,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6eb08400d1079d34b858ee78a6705a75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1731320889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731320881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d5f6a982dc1f4d47b5a0be4ac077c3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1743217744
@@ -7971,14 +7986,16 @@ MonoBehaviour:
   - name: Coal
     id: 231
     stackSize: 64
-    img: {fileID: 8033092973025764044, guid: b4ae7298977657b45ba0f4c610db77fa, type: 3}
+    img: {fileID: 21300000, guid: b4ae7298977657b45ba0f4c610db77fa, type: 3}
+    texture2d: {fileID: 2800000, guid: b4ae7298977657b45ba0f4c610db77fa, type: 3}
     meltable: 0
     melter: 1
     meltedId: 0
   - name: Iron
     id: 232
     stackSize: 64
-    img: {fileID: 4337684191699249041, guid: b4ae7298977657b45ba0f4c610db77fa, type: 3}
+    img: {fileID: 21300000, guid: f2175b2096b7b9448b7ddc12ed26cc3d, type: 3}
+    texture2d: {fileID: 2800000, guid: f2175b2096b7b9448b7ddc12ed26cc3d, type: 3}
     meltable: 0
     melter: 0
     meltedId: 0

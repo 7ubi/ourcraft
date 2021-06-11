@@ -52,11 +52,13 @@ public class worldCreation : MonoBehaviour
     public BlockTypes blockTypes;
     [SerializeField] public BlockCreation blockCreation;
     [SerializeField] public SaveManager saveManager;
+    [SerializeReference] private Voxelizer voxelizer;
     
     
     [Header("Blocks and Biomes")]
     [SerializeField] private Blocks[] blocks;
     [SerializeField] public Biome[] biomes;
+    [SerializeField] private BlockShape standardBlockShape;
     public readonly Dictionary<Vector2, GameObject> _chuncks = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, Chunck> _chuncksChunck = new Dictionary<Vector2, Chunck>();
     private int _lastChunck = 0;
@@ -601,9 +603,13 @@ public class worldCreation : MonoBehaviour
         else
         {
             var item = Instantiate(destroyedItem, pos, Quaternion.identity);
-
-            item.GetComponent<SpriteRenderer>().sprite = _playerInventory.Items[Blocks[id].DropID].img;
             item.GetComponent<DestroyedBlock>().ID = Blocks[id].DropID;
+            
+            var mesh = voxelizer.SpriteToVoxel(_playerInventory.Items[Blocks[id].DropID].texture2d,
+                standardBlockShape, blockCreation);
+
+            item.GetComponent<MeshFilter>().mesh = mesh;
+            item.GetComponent<MeshCollider>().sharedMesh = mesh;
             
             return item;
         }
