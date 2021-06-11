@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,17 +6,17 @@ using UnityEngine;
 public class InteractableBlocks : MonoBehaviour
 {
     [SerializeField] private PlayerInventory playerInventory;
+    [SerializeField] private PlayerFurnace playerFurnace;
+    private worldCreation _worldCreation;
 
-    public void Interact(int id)
+    private void Start()
     {
-        if (id == BlockTypes.Furnace)
-        {
-            Furnace();
-        }
+        _worldCreation = GetComponent<worldCreation>();
     }
 
-    private void Furnace()
+    public void Furnace(Furnace furnace, Chunck chunck)
     {   
         playerInventory.OpenFurnace();
+        playerFurnace.SetFurnace(furnace, chunck);
     }
 }

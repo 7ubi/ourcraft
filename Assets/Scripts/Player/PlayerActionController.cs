@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
@@ -68,7 +69,14 @@ public class PlayerActionController : MonoBehaviour
             {
                 if (worldCreation.Blocks[worldCreation.GetBlock(hit.point + transform.forward * .01f)].isInteractable)
                 {
-                    interactableBlocks.Interact(worldCreation.Blocks[worldCreation.GetBlock(hit.point + transform.forward * .01f)].id);
+                    var pos = hit.point + transform.forward * .01f;
+                    var chunck = worldCreation.GetChunck(pos);
+                    var chunckPos = chunck.transform.position;
+                    var block = Vector3Int.FloorToInt(new Vector3(Mathf.FloorToInt(pos.x) - chunckPos.x, 
+                        Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z) - chunckPos.z));
+
+                    if(worldCreation.Blocks[worldCreation.GetBlock(pos)].id == BlockTypes.Furnace)
+                        interactableBlocks.Furnace(chunck.furnaces[block], chunck);
                 }
                 else
                 {

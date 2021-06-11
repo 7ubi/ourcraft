@@ -1,14 +1,17 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 [System.Serializable]
 public class ChunckInfo
 {
     public Vector3 pos;
     public byte[] blockIDs;
+    public FurnaceInfo[] furnaceInfos;
     private int _size = 16;
     private int _maxHeight = 256;
     
-    public ChunckInfo(Vector3 pos, int[,,] blockIDsChunck, int[,,] waterIDsChunck)
+    public ChunckInfo(Vector3 pos, int[,,] blockIDsChunck, int[,,] waterIDsChunck, Dictionary<Vector3Int, Furnace> furnaces)
     {
         this.pos = pos;
 
@@ -40,6 +43,12 @@ public class ChunckInfo
         }
 
         this.blockIDs = blockIds;
-        
+
+        furnaceInfos = new FurnaceInfo[furnaces.Count];
+        var furn = furnaces.ToArray();
+        for (var i = 0; i < furnaceInfos.Length; i++)
+        {
+            furnaceInfos[i] = new FurnaceInfo(furn[i].Value);
+        }
     }
 }

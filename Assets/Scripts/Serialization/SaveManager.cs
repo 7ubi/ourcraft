@@ -60,7 +60,7 @@ public class SaveManager : MonoBehaviour
     {
         SavePlayerData();
         var pos = chunck.transform.position;
-        var data = new ChunckInfo(pos, chunck.BlockIDs, chunck.WaterIDs);
+        var data = new ChunckInfo(pos, chunck.BlockIDs, chunck.WaterIDs, chunck.furnaces);
         
         SerializationManager.SaveChunckData(_worldName, new Vector2(pos.x, pos.z), data);
     }
@@ -115,6 +115,7 @@ public class SaveManager : MonoBehaviour
             }
         }
         var cChunck = c.GetComponent<Chunck>();
+        cChunck.worldCreation = _worldCreation;
         cChunck.BlockIDs = bIds;
         cChunck.WaterIDs = wIds;
 
@@ -124,6 +125,14 @@ public class SaveManager : MonoBehaviour
         if(!_worldCreation._chuncksChunck.ContainsKey(new Vector2(c.transform.position.x, c.transform.position.z)))
             _worldCreation._chuncksChunck.Add(new Vector2(c.transform.position.x, c.transform.position.z), c.GetComponent<Chunck>());
         
+        if (chunckInfo.furnaceInfos != null)
+        {
+            foreach (var furnace in chunckInfo.furnaceInfos)
+            {
+                cChunck.furnaces.Add(Vector3Int.FloorToInt(furnace.position), new Furnace(furnace));
+            }
+        }
+
         _chuncks.Add(c.GetComponent<MeshCreation>());
     }
     

@@ -198,7 +198,8 @@ public class PlayerInventory : MonoBehaviour
             UpdateText(i);
             if (ItemIds[i] == 0) continue;
             
-            itemImages[i].sprite = ItemIds[i] < itemIndexStart ? worldCreation.Blocks[ItemIds[i]].img : Items[ItemIds[i]].img;
+            itemImages[i].sprite = ItemIds[i] < itemIndexStart ?
+                worldCreation.Blocks[ItemIds[i]].img : Items[ItemIds[i]].img;
             itemImages[i].color = new Color(255, 255, 255, 100);
         }
     }
@@ -215,7 +216,7 @@ public class PlayerInventory : MonoBehaviour
         var changed = false;
         if (mouseBtn == 0)
         {
-            if (itemCell.Id == ItemIds[index])
+            if (itemCell.Id == ItemIds[index] && itemCell.Id != 0)
             {
                 ItemCount[index] += itemCell.Count;
 
@@ -244,7 +245,9 @@ public class PlayerInventory : MonoBehaviour
             {
                 id = itemCell.Id;
                 count = itemCell.Count;
-                itemCell.SetSprite(ItemIds[index] < itemIndexStart ? worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img, ItemIds[index], ItemCount[index], index);
+                itemCell.SetSprite(ItemIds[index] < itemIndexStart ? 
+                    worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img,
+                    ItemIds[index], ItemCount[index], index);
 
 
                 ItemIds[index] = 0;
@@ -272,7 +275,8 @@ public class PlayerInventory : MonoBehaviour
             {
                 if (id == 0) return;
                 ItemIds[index] = id;
-                itemImages[index].sprite = ItemIds[index] < itemIndexStart ? worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img;
+                itemImages[index].sprite = ItemIds[index] < itemIndexStart ?
+                    worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img;
                 ItemCount[index] = count;
                 itemImages[index].color = new Color(255, 255, 255, 100);
                 UpdateText(index);
@@ -286,7 +290,9 @@ public class PlayerInventory : MonoBehaviour
                 var c = ItemCount[index];
                 ItemCount[index] /= 2;
                 
-                itemCell.SetSprite(ItemIds[index] < itemIndexStart ? worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img, ItemIds[index], c - ItemCount[index], index);
+                itemCell.SetSprite(ItemIds[index] < itemIndexStart ?
+                    worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img,
+                    ItemIds[index], c - ItemCount[index], index);
                 
                 if (ItemCount[index] == 0)
                 {
@@ -305,7 +311,8 @@ public class PlayerInventory : MonoBehaviour
                 if (ItemIds[index] == 0)
                 {
                     ItemIds[index] = itemCell.Id;
-                    itemImages[index].sprite = ItemIds[index] < itemIndexStart ? worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img;
+                    itemImages[index].sprite = ItemIds[index] < itemIndexStart ?
+                        worldCreation.Blocks[ItemIds[index]].img : Items[ItemIds[index]].img;
                     itemImages[index].color = new Color(255, 255, 255, 100);
                 }
 

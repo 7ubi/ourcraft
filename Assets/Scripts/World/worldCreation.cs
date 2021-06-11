@@ -210,7 +210,9 @@ public class worldCreation : MonoBehaviour
                     var position1 = newChunck.transform.position;
                     _chuncks.Add(new Vector2(position1.x, position1.z), newChunck);
                     _chuncksChunck.Add(new Vector2(position1.x, position1.z), newChunck.GetComponent<Chunck>());
-                
+
+                    newChunck.GetComponent<Chunck>().worldCreation = this;
+                    
                     var water = newChunck.GetComponent<WaterGeneration>();
                 
                     m.GenerateBlocks();
@@ -272,6 +274,8 @@ public class worldCreation : MonoBehaviour
                 var position1 = newChunck.transform.position;
                 _chuncks.Add(new Vector2(position1.x, position1.z), newChunck);
                 _chuncksChunck.Add(new Vector2(position1.x, position1.z), newChunck.GetComponent<Chunck>());
+
+                newChunck.GetComponent<Chunck>().worldCreation = this;
                 
                 var water = newChunck.GetComponent<WaterGeneration>();
                 
@@ -320,7 +324,7 @@ public class worldCreation : MonoBehaviour
                     Chuncks.Add(newChunck);
                     _chuncks.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z), newChunck);
                     _chuncksChunck.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z), newChunck.GetComponent<Chunck>());
-                    
+                    newChunck.GetComponent<Chunck>().worldCreation = this;
                 }
                 else
                 {
@@ -406,15 +410,23 @@ public class worldCreation : MonoBehaviour
     {
         var chunck = GetChunck(block);
 
-        var bix = Mathf.FloorToInt(block.x) - (int) chunck.transform.position.x;
+        var position = chunck.transform.position;
+        
+        var bix = Mathf.FloorToInt(block.x) - (int) position.x;
         var biy = Mathf.FloorToInt(block.y);
-        var biz = Mathf.FloorToInt(block.z) - (int) chunck.transform.position.z;
+        var biz = Mathf.FloorToInt(block.z) - (int) position.z;
 
         var c = chunck.GetComponent<Chunck>();
 
         c.BlockIDs[bix, biy, biz] = id;
         c.WaterIDs[bix, biy, biz] = 0;
 
+        if (id == BlockTypes.Furnace)
+        {
+            var pos = new Vector3Int(bix, biy, biz);
+            c.furnaces.Add(pos, new Furnace(pos));
+        }
+        
         saveManager.SaveChunck(c);
 
         var m = chunck.GetComponent<MeshCreation>();
