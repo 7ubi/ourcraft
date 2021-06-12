@@ -92,56 +92,35 @@ public class worldCreation : MonoBehaviour
     {
         while (true)
         {
-            if (meshesToCreate.Count > 0)
-            {
-                for (var i = meshesToCreate.Count - 1; i >= 0; i--)
-                {
-                    if (meshesToCreate.Count <= i)
-                    {
-                        i = meshesToCreate.Count - 1;
-                        continue;
-                    }
-
-                    var mesh = meshesToCreate[i];
-                    if(mesh == null) continue;                    
-                    mesh.GenerateBlocks();
-                    meshesToCreate.Remove(mesh);
-                }
-            }
-            
             if (meshesToUpdate.Count > 0)
             {
-                for (var i = meshesToUpdate.Count - 1; i >= 0; i--)
-                {
-                    if (meshesToUpdate.Count <= i)
-                    {
-                        i = meshesToUpdate.Count - 1;
-                        continue;
-                    }
-                    
-                    var mesh = meshesToUpdate[i];
-                    if(mesh == null) continue;   
-                    mesh.GenerateMesh();
-                    meshesToUpdate.Remove(mesh);
-                }
+                
+                var mesh = meshesToUpdate[meshesToUpdate.Count - 1];
+                if(mesh == null) continue;   
+                mesh.GenerateMesh();
+                meshesToUpdate.Remove(mesh);
+                
             }
 
             if (waterMeshesToUpdate.Count > 0)
             {
-                for (var i = waterMeshesToUpdate.Count - 1; i >= 0; i--)
-                {
-                    if (waterMeshesToUpdate.Count <= i)
-                    {
-                        i = waterMeshesToUpdate.Count - 1;
-                        continue;
-                    }
-                    
-                    var mesh = waterMeshesToUpdate[i];
-                    if(mesh == null) continue;   
+                
+                var mesh = waterMeshesToUpdate[waterMeshesToUpdate.Count - 1];
+                if(mesh == null) continue;   
 
-                    mesh.GenerateWater();
-                    waterMeshesToUpdate.Remove(mesh);
-                }
+                mesh.GenerateWater();
+                waterMeshesToUpdate.Remove(mesh);
+            
+            }
+            
+            if (meshesToCreate.Count > 0)
+            {
+                
+                var mesh = meshesToCreate[meshesToCreate.Count - 1];
+                if(mesh == null) continue;                    
+                mesh.GenerateBlocks();
+                meshesToCreate.Remove(mesh);
+            
             }
         }
     }

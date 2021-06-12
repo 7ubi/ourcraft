@@ -191,7 +191,7 @@ public class PlayerInventory : MonoBehaviour
 
     public void SetItem(int i, int id, int count)
     {
-        itemImages[i].sprite = worldCreation.Blocks[id].img;
+        itemImages[i].sprite = id < itemIndexStart ? worldCreation.Blocks[id].img : Items[id].img;
         itemImages[i].color = new Color(255, 255, 255, 100);
         ItemCount[i] = count;
         ItemIds[i] = id;
@@ -438,15 +438,16 @@ public class PlayerInventory : MonoBehaviour
     {
         if (ItemIds[Current] == 0)
         {
+            _currentHandel = ItemIds[Current];
             _itemHandelMesh.mesh = null;
             _blockHandelMesh.mesh = null;
             return;
         }
 
-        if (_currentHandel == Current)
+        if (_currentHandel == ItemIds[Current])
             return;
 
-        _currentHandel = Current;
+        _currentHandel = ItemIds[Current];
         
         if (ItemIds[Current] < itemIndexStart)
         {

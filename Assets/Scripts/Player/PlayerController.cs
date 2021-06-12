@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Camera _camera;
     [SerializeField] private float speedH = 2.0f;
     [SerializeField] private  float speedV = 2.0f;
+    [SerializeField] private GameObject head;
     
     [Header("Jumping")]
     [SerializeField] private float jumpForce;
@@ -27,8 +28,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private worldCreation worldCreation;
     
 
-    private float forward;
-    private float right;
+    private float _forward;
+    private float _right;
     
     private float _yaw = 0.0f;
     private float _pitch = 0.0f;
@@ -70,10 +71,10 @@ public class PlayerController : MonoBehaviour
             _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         }
 
-        forward = Input.GetAxis("Vertical") * moveSpeed;
-        right = Input.GetAxis("Horizontal") * moveSpeed;
+        _forward = Input.GetAxis("Vertical") * moveSpeed;
+        _right = Input.GetAxis("Horizontal") * moveSpeed;
 
-        if (forward != 0 || right != 0)
+        if (_forward != 0 || _right != 0)
         {
             animator.SetBool("IsWalking", true);
         }
@@ -84,8 +85,8 @@ public class PlayerController : MonoBehaviour
         
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            forward *= sprintMult;
-            right *= sprintMult;
+            _forward *= sprintMult;
+            _right *= sprintMult;
         }
    
         _yaw += speedH * Input.GetAxis("Mouse X");
@@ -97,12 +98,14 @@ public class PlayerController : MonoBehaviour
             _pitch = -90;
 
         transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
-        _camera.transform.eulerAngles = new Vector3(_pitch, _yaw, 0.0f);
+        _camera.transform.eulerAngles = new Vector3(_camera.transform.eulerAngles.x, _yaw, 0.0f);
+        head.transform.eulerAngles = new Vector3(_pitch, head.transform.eulerAngles.y, 0);
+        
 
         if (worldCreation.GetUnderWater(transform.position + new Vector3(0, -0.5f, 0)))
         {
-            forward *= waterMult;
-            right *= waterMult;
+            _forward *= waterMult;
+            _right *= waterMult;
         }
 
 
@@ -131,7 +134,7 @@ public class PlayerController : MonoBehaviour
         var velocity = _rb.velocity;
         var yVel = velocity.y;
         var transform1 = transform;
-        velocity = transform1.forward * forward + transform1.right * right;
+        velocity = transform1.forward * _forward + transform1.right * _right;
         velocity = new Vector3(velocity.x, yVel, velocity.z);
         _rb.velocity = velocity;
     }
