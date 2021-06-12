@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed;
     [SerializeField] private float sprintMult;
     [SerializeField] private float waterMult;
+    [SerializeField] private Animator animator;
     
     [Header("Camera")]
     [SerializeField] private Camera _camera;
@@ -19,6 +20,7 @@ public class PlayerController : MonoBehaviour
     [Header("Jumping")]
     [SerializeField] private float jumpForce;
     [SerializeField] private int drag;
+    [SerializeField] private Transform groundCheck;
     
     [Header("Extra")]
     [SerializeField] private GameObject selectGameObject;
@@ -47,12 +49,15 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        _rb.angularVelocity = new Vector3(0, 0, 0);
+        
         if (_playerInventory.InInventory)
         {
             transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
             _camera.transform.eulerAngles = new Vector3(_pitch, _yaw, 0.0f);
             _rb.velocity = new Vector3(0, _rb.velocity.y, 0);
             _rb.constraints = RigidbodyConstraints.FreezeAll;
+            animator.SetBool("IsWalking", false);
             return;
         }
 
@@ -68,6 +73,15 @@ public class PlayerController : MonoBehaviour
         forward = Input.GetAxis("Vertical") * moveSpeed;
         right = Input.GetAxis("Horizontal") * moveSpeed;
 
+        if (forward != 0 || right != 0)
+        {
+            animator.SetBool("IsWalking", true);
+        }
+        else
+        {
+            animator.SetBool("IsWalking", false);
+        }
+        
         if (Input.GetKey(KeyCode.LeftShift))
         {
             forward *= sprintMult;
@@ -112,10 +126,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKey(KeyCode.Space) && IsGrounded())
                 _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, _rb.velocity.z);
         }
-    }
-
-    private void LateUpdate()
-    {
+        
         if (_playerInventory.InInventory) return;
         var velocity = _rb.velocity;
         var yVel = velocity.y;
@@ -127,7 +138,7 @@ public class PlayerController : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics.Raycast(transform.position, -Vector3.up, 1.25f + .1f);
+        return Physics.Raycast(groundCheck.position, -Vector3.up, .1f);
     }
 
     public void LoadData(Vector3 pos, Quaternion rotation)

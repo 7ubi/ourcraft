@@ -38,6 +38,14 @@ public class PlayerInventory : MonoBehaviour
     public bool InInventory { get; set; } = false;
     private readonly List<GameObject> _destroyedBlocks = new List<GameObject>();
 
+    [Header("ItemHandel")] 
+    [SerializeField] private GameObject itemHandel;
+    [SerializeField] private GameObject blockHandel;
+    [SerializeField] private Voxelizer voxelizer;
+    private MeshFilter _itemHandelMesh;
+    private MeshFilter _blockHandelMesh;
+    private int _currentHandel = -1;
+    
     [Header("Items")] 
     [SerializeField] private Item[] itemsArr;
     public Dictionary<int, Item> Items { get; set; } = new Dictionary<int, Item>();
@@ -50,6 +58,9 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
+        _itemHandelMesh = itemHandel.GetComponent<MeshFilter>();
+        _blockHandelMesh = blockHandel.GetComponent<MeshFilter>();
+        
         foreach (var item in itemsArr)
         {
             Items.Add(item.id, item);
@@ -82,13 +93,16 @@ public class PlayerInventory : MonoBehaviour
     {
         DestroyedBlockInRage();
         
+        CreateHandel();
+        
         Current = (Current - (int)Input.mouseScrollDelta.y) % 9;
         if (Current < 0)
             Current = 8;
         
         selector.localPosition = new Vector2(-400 + Current * 100, selector.localPosition.y);
 
-
+        
+        
         if (!Input.GetKeyDown(KeyCode.E)) return;
         cellParent.gameObject.SetActive(!cellParent.gameObject.activeInHierarchy);
         if(InInventory)
@@ -417,6 +431,69 @@ public class PlayerInventory : MonoBehaviour
             AddItem(destroyed.GetComponent<DestroyedBlock>().ID, 1);
             Destroy(destroyed);
             _destroyedBlocks.Remove(destroyed);
+        }
+    }
+
+    private void CreateHandel()
+    {
+        if (ItemIds[Current] == 0)
+        {
+            _itemHandelMesh.mesh = null;
+            _blockHandelMesh.mesh = null;
+            return;
+        }
+
+        if (_currentHandel == Current)
+            return;
+
+        _currentHandel = Current;
+        
+        if (ItemIds[Current] < itemIndexStart)
+        {
+            var newMesh = new Mesh();
+            var vertices = new List<Vector3>();
+            var normals = new List<Vector3>();
+            var uvs = new List<Vector2>();
+            var indices = new List<int>();
+
+            var currentIndex = 0;
+
+            var b = worldCreation.Blocks[ItemIds[Current]];
+
+            var offset = new Vector3Int(0, 0, 0);
+
+            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[2], b.GETRect(b.topIndex));
+            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[5], b.GETRect(b.rightIndex));
+            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[4], b.GETRect(b.leftIndex));
+            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[1], b.GETRect(b.frontIndex));
+            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[0], b.GETRect(b.backIndex));
+            worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
+                b.blockShape.faceData[3], b.GETRect(b.botIndex));
+
+            newMesh.SetVertices(vertices);
+            newMesh.SetNormals(normals);
+            newMesh.SetUVs(0, uvs);
+            newMesh.SetIndices(indices, MeshTopology.Triangles, 0);
+
+            newMesh.RecalculateTangents();
+            _blockHandelMesh.mesh = newMesh;
+            
+            _itemHandelMesh.mesh = null;
+        }
+        else
+        {
+            
+            var mesh = voxelizer.SpriteToVoxel(Items[ItemIds[Current]].texture2d,
+                worldCreation.standardBlockShape, worldCreation.blockCreation);
+
+            _itemHandelMesh.mesh = mesh;
+            
+            _blockHandelMesh.mesh = null;
         }
     }
 

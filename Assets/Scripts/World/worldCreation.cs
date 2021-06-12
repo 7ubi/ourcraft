@@ -58,13 +58,12 @@ public class worldCreation : MonoBehaviour
     [Header("Blocks and Biomes")]
     [SerializeField] private Blocks[] blocks;
     [SerializeField] public Biome[] biomes;
-    [SerializeField] private BlockShape standardBlockShape;
+    [SerializeField] public BlockShape standardBlockShape;
     public readonly Dictionary<Vector2, GameObject> _chuncks = new Dictionary<Vector2, GameObject>();
     public Dictionary<Vector2, Chunck> _chuncksChunck = new Dictionary<Vector2, Chunck>();
     private int _lastChunck = 0;
-    private bool _firstGen = true;
 
-    Thread _chunckTread; 
+    private Thread _chunckTread; 
 
     private void Start()
     {

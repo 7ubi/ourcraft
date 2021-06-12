@@ -38,7 +38,9 @@ public class PlayerCrafting : MonoBehaviour
                 var craft = Instantiate(craftableGameObject, panel);
                 _craftableItemsObjects.Add(craft.GetComponent<Image>());
                 craft.GetComponent<SetRecipe>().Index = index;
-                craft.transform.GetChild(0).GetComponent<Image>().sprite = worldCreation.Blocks[craftable.resultID].img;
+                craft.transform.GetChild(0).GetComponent<Image>().sprite =
+                    craftable.resultID < _playerInventory.itemIndexStart ? worldCreation.Blocks[craftable.resultID].img
+                        : _playerInventory.Items[craftable.resultID].img;
                 index++;
             }
 
@@ -53,7 +55,8 @@ public class PlayerCrafting : MonoBehaviour
 
         if (_resultID != 0)
         {
-            result.color = _playerInventory.HasRequirements(craftableItems[_resultIndex].GetRequirements()) ? Color.white : Color.red;
+            result.color = _playerInventory.HasRequirements(craftableItems[_resultIndex].GetRequirements()) ?
+                Color.white : Color.red;
         }
     }
 
@@ -70,12 +73,16 @@ public class PlayerCrafting : MonoBehaviour
                 continue;
             }
             
-            craftingSlots[i].sprite = worldCreation.Blocks[craftableItems[index].recipe[i]].img;
+            craftingSlots[i].sprite = craftableItems[index].recipe[i] < _playerInventory.itemIndexStart ?
+                worldCreation.Blocks[craftableItems[index].recipe[i]].img :
+                _playerInventory.Items[craftableItems[index].recipe[i]].img;
             craftingSlots[i].color = new Color(255, 255, 255, 100);
         }
 
         resultAmount.text = "" + craftableItems[index].resultAmount;
-        result.sprite = worldCreation.Blocks[craftableItems[index].resultID].img;
+        result.sprite = craftableItems[index].resultID < _playerInventory.itemIndexStart ?
+            worldCreation.Blocks[craftableItems[index].resultID].img :
+            _playerInventory.Items[craftableItems[index].resultID].img;
         result.color = new Color(255, 255, 255, 100);
     }
 
