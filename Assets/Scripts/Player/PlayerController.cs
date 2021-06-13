@@ -97,6 +97,8 @@ public class PlayerController : MonoBehaviour
         if (_pitch < -90)
             _pitch = -90;
 
+        
+        
         transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
         _camera.transform.eulerAngles = new Vector3(_camera.transform.eulerAngles.x, _yaw, 0.0f);
         head.transform.eulerAngles = new Vector3(_pitch, head.transform.eulerAngles.y, 0);
@@ -137,6 +139,14 @@ public class PlayerController : MonoBehaviour
         velocity = transform1.forward * _forward + transform1.right * _right;
         velocity = new Vector3(velocity.x, yVel, velocity.z);
         _rb.velocity = velocity;
+    }
+
+    private void LateUpdate()
+    {
+        if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
+        {
+            worldCreation.GenerateChunck();
+        }
     }
 
     private bool IsGrounded()

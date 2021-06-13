@@ -83,7 +83,7 @@ public class worldCreation : MonoBehaviour
     public void GenerateFirst()
     {
         seed = Random.Range(10000, 100000);
-        CreateNearestChuncks();
+        LoadNearestChuncks();
         _chunckTread.Start();
     }
     
@@ -155,10 +155,9 @@ public class worldCreation : MonoBehaviour
         
         
         var currentChunck = (position.x - (position.x % 8) + position.z - (position.z % 8));
-        if (currentChunck != _lastChunck)
-        {
-            GenerateChunck();
-        }
+        //if (currentChunck != _lastChunck)
+        //GenerateChunck();
+        
 
         _lastChunck = currentChunck;
     }
@@ -175,11 +174,16 @@ public class worldCreation : MonoBehaviour
         var minZ = Convert.ToInt32(playerZ - size * renderDistance);
         var maxZ = Convert.ToInt32(playerZ + size * renderDistance);
 
-        for (var x = minX; x <= maxX; x += size)
+        for (var _x = minX + size / 2; _x <= maxX + size / 2; _x += size)
         {
-            for (var z = minZ; z <= maxZ; z += size)
+            for (var _z = minZ + size / 2; _z <= maxZ + size / 2; _z += size)
             {
+                var x = _x - size / 2;
+                var z = _z - size / 2;
                 var c = GetChunck(new Vector3(x, 0, z));
+                
+                var target = player.transform.position - new Vector3(x, 0, z);
+            
                 if (c == null)
                 {
                     var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
@@ -192,17 +196,17 @@ public class worldCreation : MonoBehaviour
                     _chuncksChunck.Add(new Vector2(position1.x, position1.z), newChunck.GetComponent<Chunck>());
 
                     newChunck.GetComponent<Chunck>().worldCreation = this;
-                    
+
                     var water = newChunck.GetComponent<WaterGeneration>();
-                
+
                     m.GenerateBlocks();
-                
+
                     m.GenerateMesh();
                     water.GenerateWater();
-                
+
                     m.ApplyMesh();
                     water.ApplyMesh();
-                
+
                     waterMeshesToUpdate.Remove(water);
                     waterMeshesToApply.Remove(water);
                     meshesToCreate.Remove(m);
@@ -230,55 +234,9 @@ public class worldCreation : MonoBehaviour
         _chunckTread.Start();
     }
     
-    public void CreateNearestChuncks()
-    {
-        var position = Vector3Int.FloorToInt(player.transform.position);
-        
-        var playerX = position.x - (position.x % 16);
-        var playerZ = position.z - (position.z % 16);
-        
-        var minX = Convert.ToInt32(playerX - size * renderDistance);
-        var maxX = Convert.ToInt32(playerX + size * renderDistance);
-        var minZ = Convert.ToInt32(playerZ - size * renderDistance);
-        var maxZ = Convert.ToInt32(playerZ + size * renderDistance);
-
-        for (var x = minX; x <= maxX; x += size)
-        {
-            for (var z = minZ; z <= maxZ; z += size)
-            {
-                var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
-                var m = newChunck.GetComponent<MeshCreation>();
-                m.worldCreation = this;
-                m.Init();
-                Chuncks.Add(newChunck);
-                var position1 = newChunck.transform.position;
-                _chuncks.Add(new Vector2(position1.x, position1.z), newChunck);
-                _chuncksChunck.Add(new Vector2(position1.x, position1.z), newChunck.GetComponent<Chunck>());
-
-                newChunck.GetComponent<Chunck>().worldCreation = this;
-                
-                var water = newChunck.GetComponent<WaterGeneration>();
-                
-                m.GenerateBlocks();
-                
-                m.GenerateMesh();
-                water.GenerateWater();
-                
-                m.ApplyMesh();
-                water.ApplyMesh();
-                
-                waterMeshesToUpdate.Remove(water);
-                waterMeshesToApply.Remove(water);
-                meshesToCreate.Remove(m);
-                meshesToUpdate.Remove(m);
-                meshesToApply.Remove(m);
-            }
-        }
-    }
-
 
     // ReSharper disable Unity.PerformanceAnalysis
-    private void GenerateChunck()
+    public void GenerateChunck()
     {
         var position = player.transform.position;
         var playerX = position.x - (position.x % 16);
@@ -289,26 +247,47 @@ public class worldCreation : MonoBehaviour
         var minZ = Convert.ToInt32(playerZ - size * renderDistance);
         var maxZ = Convert.ToInt32(playerZ + size * renderDistance);
 
-        for (var x = minX; x <= maxX; x += size)
+        for (var _x = minX + size / 2; _x <= maxX + size / 2; _x += size)
         {
-            for (var z = minZ; z <= maxZ; z += size)
+            for (var _z = minZ + size / 2; _z <= maxZ + size / 2; _z += size)
             {
+                var x = _x - size / 2;
+                var z = _z - size / 2;
+                
                 var c = GetChunck(new Vector3(x, 0, z));
 
-                if (c == null)
+                var target = player.transform.position - new Vector3(x, 0, z);
+                
+                var angle = Vector3.Angle(target, player.transform.forward);
+
+                if (angle > 90 || Vector3.Distance(player.transform.position,
+                    new Vector3(x, player.transform.position.y, z)) < Size * 1.5f)
                 {
-                    var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
-                    var m = newChunck.GetComponent<MeshCreation>();
-                    m.worldCreation = this;
-                    m.Init();
-                    Chuncks.Add(newChunck);
-                    _chuncks.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z), newChunck);
-                    _chuncksChunck.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z), newChunck.GetComponent<Chunck>());
-                    newChunck.GetComponent<Chunck>().worldCreation = this;
+
+                    if (c == null)
+                    {
+                        var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
+                        var m = newChunck.GetComponent<MeshCreation>();
+                        m.worldCreation = this;
+                        m.Init();
+                        Chuncks.Add(newChunck);
+                        _chuncks.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z),
+                            newChunck);
+                        _chuncksChunck.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z),
+                            newChunck.GetComponent<Chunck>());
+                        newChunck.GetComponent<Chunck>().worldCreation = this;
+                    }
+                    else
+                    {
+                        c.gameObject.SetActive(true);
+                    }
                 }
                 else
                 {
-                    c.gameObject.SetActive(true);
+                    if (c != null)
+                    {
+                        c.gameObject.SetActive(false);
+                    }
                 }
             }
         }
@@ -324,6 +303,8 @@ public class worldCreation : MonoBehaviour
                 chunck.SetActive(false);
             }
         }
+        
+        
     }
 
     // ReSharper disable Unity.PerformanceAnalysis

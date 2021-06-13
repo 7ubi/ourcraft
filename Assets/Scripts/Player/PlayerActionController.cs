@@ -20,6 +20,8 @@ public class PlayerActionController : MonoBehaviour
     [SerializeField] private DestroyBlock destroyBlock;
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private InteractableBlocks interactableBlocks;
+
+    [SerializeField] private Animator animator;
     
     private void Update()
     {
@@ -29,6 +31,11 @@ public class PlayerActionController : MonoBehaviour
         var rightClick = Input.GetMouseButtonDown(1);
 
         RaycastHit hit;
+
+        if ((rightClick || leftClick) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Build"))
+        {
+            animator.SetTrigger("Build");
+        }
         
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, range, layerMask))
         {

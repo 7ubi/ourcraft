@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditorInternal;
 using UnityEngine;
 
 public class Chunck : MonoBehaviour
@@ -26,16 +25,18 @@ public class Chunck : MonoBehaviour
 
     private void Update()
     {
+        
+        if (furnaces.Count <= 0) return;
         foreach (var furnace in furnaces)
         {
             if (furnace.Value.meltingCount > 0 && furnace.Value.melterCount > 0
-            && (furnace.Value.resultID == 0 || 
-                (furnace.Value.resultID == (furnace.Value.meltingID < _playerInventory.itemIndexStart ? 
-                worldCreation.Blocks[furnace.Value.meltingID].meltedId :
-                _playerInventory.Items[furnace.Value.meltingID].meltedId) 
-                 && furnace.Value.resultCount < (furnace.Value.meltingID < _playerInventory.itemIndexStart ? 
-                     worldCreation.Blocks[furnace.Value.meltingID].stackSize :
-                     _playerInventory.Items[furnace.Value.meltingID].stackSize))))
+               && (furnace.Value.resultID == 0 || 
+                   (furnace.Value.resultID == (furnace.Value.meltingID < _playerInventory.itemIndexStart ? 
+                        worldCreation.Blocks[furnace.Value.meltingID].meltedId :
+                        _playerInventory.Items[furnace.Value.meltingID].meltedId) 
+                    && furnace.Value.resultCount < (furnace.Value.meltingID < _playerInventory.itemIndexStart ? 
+                        worldCreation.Blocks[furnace.Value.meltingID].stackSize :
+                        _playerInventory.Items[furnace.Value.meltingID].stackSize))))
             {
                 furnace.Value.time += Time.deltaTime;
             }
@@ -44,35 +45,31 @@ public class Chunck : MonoBehaviour
                 furnace.Value.time = 0f;
             }
 
-            if (furnace.Value.time >= 2)
+            if (!(furnace.Value.time >= 2)) continue;
+            furnace.Value.resultID = furnace.Value.meltingID < _playerInventory.itemIndexStart
+                ? worldCreation.Blocks[furnace.Value.meltingID].meltedId
+                : _playerInventory.Items[furnace.Value.meltingID].meltedId;
+            furnace.Value.resultCount += 1;
+            furnace.Value.meltingCount -= 1;
+            if (furnace.Value.meltingCount == 0)
             {
-                furnace.Value.resultID = furnace.Value.meltingID < _playerInventory.itemIndexStart
-                    ? worldCreation.Blocks[furnace.Value.meltingID].meltedId
-                    : _playerInventory.Items[furnace.Value.meltingID].meltedId;
-                furnace.Value.resultCount += 1;
-                furnace.Value.meltingCount -= 1;
-                if (furnace.Value.meltingCount == 0)
-                {
-                    furnace.Value.meltingID = 0;
-                }
-                
-                furnace.Value.melterCount -= 1;
-                if (furnace.Value.melterCount == 0)
-                {
-                    furnace.Value.melterID = 0;
-                }
-
-                if (_playerFurnace.Furnace == furnace.Value)
-                {
-                    _playerFurnace.UpdateUI();
-                }
+                furnace.Value.meltingID = 0;
             }
-            
+                    
+            furnace.Value.melterCount -= 1;
+            if (furnace.Value.melterCount == 0)
+            {
+                furnace.Value.melterID = 0;
+            }
+
+            if (_playerFurnace.Furnace == furnace.Value)
+            {
+                _playerFurnace.UpdateUI();
+            }
+
         }
 
-        if (furnaces.Count > 0)
-        {
-            worldCreation.saveManager.SaveChunck(this);
-        }
+        
+        worldCreation.saveManager.SaveChunck(this);
     }    
 }

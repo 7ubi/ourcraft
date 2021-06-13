@@ -50,7 +50,7 @@ public class MeshCreation : MonoBehaviour
         }
     }
 
-    public void ResetMesh()
+    private void ResetMesh()
     {
         _newMesh = new Mesh();
         _vertices = new List<Vector3>();

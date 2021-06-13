@@ -32,6 +32,6 @@ public class LoadWorldButton : MonoBehaviour
     private void Delete()
     {
         Destroy(gameObject);
-        FileUtil.DeleteFileOrDirectory(Application.persistentDataPath + "/saves/" + _worldName);
+        Directory.Delete(Application.persistentDataPath + "/saves/" + _worldName, true);
     }
 }
