@@ -14,6 +14,7 @@ public class SaveManager : MonoBehaviour
     private PlayerController _playerController;
     private PlayerInventory _playerInventory;
     private PlayerSurvival _playerSurvival;
+    private DayNightCycle _dayNight;
     private string _worldName;
 
     private List<MeshCreation> _chuncks = new List<MeshCreation>();
@@ -24,6 +25,7 @@ public class SaveManager : MonoBehaviour
         _playerInventory = player.GetComponent<PlayerInventory>();
         _playerSurvival = player.GetComponent<PlayerSurvival>();
         _worldCreation = GetComponent<worldCreation>();
+        _dayNight = GetComponent<DayNightCycle>();
         _worldName = PlayerPrefs.GetString("world");
         if (Directory.Exists(Application.persistentDataPath + "/saves/" + _worldName))
         {
@@ -42,7 +44,7 @@ public class SaveManager : MonoBehaviour
     public void SavePlayerData()
     {
         var saveData = new PlayerInfo(_playerController.transform.position, _playerController.Camera.transform.rotation,
-            _playerInventory.ItemCount, _playerInventory.ItemIds, _worldCreation.Seed, _playerSurvival.Health);
+            _playerInventory.ItemCount, _playerInventory.ItemIds, _worldCreation.Seed, _playerSurvival.Health, _dayNight.CurrentTime);
         SerializationManager.SavePlayerData(_worldName, saveData);
     }
 
@@ -54,6 +56,7 @@ public class SaveManager : MonoBehaviour
         _playerInventory.LoadData(data.itemCount, data.itemIds);
         _playerSurvival.LoadData(data.health);
         _worldCreation.LoadData(data.seed);
+        _dayNight.CurrentTime = data.currentTime;
     }
 
     public void SaveChunck(Chunck chunck)
