@@ -101,22 +101,33 @@ public class SaveManager : MonoBehaviour
 
         var bIds = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
         var wIds = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
-        
-        for (var i = 0; i < chunckInfo.blockIDs.Length; i++)
-        {
-            var z = i % _worldCreation.Size;
-            var y = (i / _worldCreation.Size) % _worldCreation.MAXHeight;
-            var x = i / (_worldCreation.Size * _worldCreation.MAXHeight);
 
-            if (chunckInfo.blockIDs[i] > 200)
+
+        var count = 0;
+
+        for (var i = 0; i < chunckInfo.blockIDs.Length; i += 2)
+        {
+            for (var j = 0; j < chunckInfo.blockIDs[i + 1]; j++)
             {
-                wIds[x, y, z] = (int)(Math.Abs(chunckInfo.blockIDs[i] - 255));
-            }
-            else
-            {
-                bIds[x, y, z] = (int) chunckInfo.blockIDs[i];
+                var z = count % _worldCreation.Size;
+                var y = (count / _worldCreation.Size) % _worldCreation.MAXHeight;
+                var x = count / (_worldCreation.Size * _worldCreation.MAXHeight);
+
+                if (chunckInfo.blockIDs[i] > 200)
+                {
+                    wIds[x, y, z] = Math.Abs(chunckInfo.blockIDs[i] - 255);
+                }
+                else
+                {
+                    bIds[x, y, z] = chunckInfo.blockIDs[i];
+                }
+                
+                
+                
+                count++;
             }
         }
+        
         var cChunck = c.GetComponent<Chunck>();
         cChunck.worldCreation = _worldCreation;
         cChunck.BlockIDs = bIds;

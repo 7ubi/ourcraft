@@ -6,7 +6,7 @@ using UnityEngine;
 public class ChunckInfo
 {
     public Vector3 pos;
-    public byte[] blockIDs;
+    public int[] blockIDs;
     public FurnaceInfo[] furnaceInfos;
     private int _size = 16;
     private int _maxHeight = 256;
@@ -15,7 +15,7 @@ public class ChunckInfo
     {
         this.pos = pos;
 
-        var blockIds = new byte[_size * _maxHeight * _size];
+        var blockIdsList = new List<int>();
 
         for (var x = 0; x < _size; x++)
         {
@@ -27,23 +27,69 @@ public class ChunckInfo
                     {
                         if (waterIDsChunck[x, y, z] != 0)
                         {
-                            blockIds[x * _maxHeight * _size + y * _size + z] = (byte) (255 - waterIDsChunck[x, y, z]);
+                            if (blockIdsList.Count > 2)
+                            {
+                                if (blockIdsList[blockIdsList.Count - 2] == (255 - waterIDsChunck[x, y, z]))
+                                {
+                                    blockIdsList[blockIdsList.Count - 1] += 1;
+                                }
+                                else
+                                {
+                                    blockIdsList.Add((255 - waterIDsChunck[x, y, z]));
+                                    blockIdsList.Add(1);
+                                }
+                            }
+                            else
+                            {
+                                blockIdsList.Add((255 - waterIDsChunck[x, y, z]));
+                                blockIdsList.Add(1);
+                            }
                         }
                         else
                         {
-                            blockIds[x * _maxHeight * _size + y * _size + z] = (byte) blockIDsChunck[x, y, z];
+                            if (blockIdsList.Count > 2)
+                            {
+                                if (blockIdsList[blockIdsList.Count - 2] == blockIDsChunck[x, y, z])
+                                {
+                                    blockIdsList[blockIdsList.Count - 1] += 1;
+                                }else
+                                {
+                                    blockIdsList.Add(blockIDsChunck[x, y, z]);
+                                    blockIdsList.Add(1);
+                                }
+                            }
+                            else
+                            {
+                                blockIdsList.Add(blockIDsChunck[x, y, z]);
+                                blockIdsList.Add(1);
+                            }
                         }
                     }
                     else
                     {
-                        blockIds[x * _maxHeight * _size + y * _size + z] = (byte) blockIDsChunck[x, y, z];
+                        if (blockIdsList.Count > 2)
+                        {
+                            if (blockIdsList[blockIdsList.Count - 2] == blockIDsChunck[x, y, z])
+                            {
+                                blockIdsList[blockIdsList.Count - 1] += 1;
+                            }else
+                            {
+                                blockIdsList.Add(blockIDsChunck[x, y, z]);
+                                blockIdsList.Add(1);
+                            }
+                        }
+                        else
+                        {
+                            blockIdsList.Add(blockIDsChunck[x, y, z]);
+                            blockIdsList.Add(1);
+                        }
                     }
                 }
             }
         }
-
-        this.blockIDs = blockIds;
-
+        
+        blockIDs = blockIdsList.ToArray();
+        
         furnaceInfos = new FurnaceInfo[furnaces.Count];
         var furn = furnaces.ToArray();
         for (var i = 0; i < furnaceInfos.Length; i++)

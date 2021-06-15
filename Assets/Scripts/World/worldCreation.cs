@@ -84,7 +84,6 @@ public class worldCreation : MonoBehaviour
     {
         seed = Random.Range(10000, 100000);
         LoadNearestChuncks();
-        _chunckTread.Start();
     }
     
 
@@ -212,6 +211,7 @@ public class worldCreation : MonoBehaviour
                     meshesToCreate.Remove(m);
                     meshesToUpdate.Remove(m);
                     meshesToApply.Remove(m);
+                    saveManager.SaveChunck(m.chunck);
                 }
                 else
                 {
@@ -228,6 +228,7 @@ public class worldCreation : MonoBehaviour
                     waterMeshesToApply.Remove(water);
                     meshesToUpdate.Remove(mesh);
                     meshesToApply.Remove(mesh);
+                    saveManager.SaveChunck(mesh.chunck);
                 }
             }
         }

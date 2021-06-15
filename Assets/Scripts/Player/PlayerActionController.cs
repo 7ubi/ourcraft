@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
@@ -31,10 +32,19 @@ public class PlayerActionController : MonoBehaviour
         var rightClick = Input.GetMouseButtonDown(1);
 
         RaycastHit hit;
-
+        
         if ((rightClick || leftClick) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Build"))
         {
-            animator.SetTrigger("Build");
+            if (leftClick && !Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward),
+                out hit, range, layerMask))
+            {
+                if(Input.GetMouseButtonDown(0))
+                    animator.SetTrigger("Build");
+            }
+            else
+            {
+                animator.SetTrigger("Build");
+            }
         }
         
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, range, layerMask))
