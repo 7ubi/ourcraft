@@ -779,6 +779,41 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &174670712
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 174670713}
+  m_Layer: 5
+  m_Name: Air
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &174670713
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 174670712}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1743217748}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: -432.5, y: 175}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &180348344
 GameObject:
   m_ObjectHideFlags: 0
@@ -1360,7 +1395,7 @@ RectTransform:
   - {fileID: 38486902}
   - {fileID: 1349031928}
   m_Father: {fileID: 1743217748}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2733,7 +2768,7 @@ RectTransform:
   - {fileID: 1446842823}
   - {fileID: 101661989}
   m_Father: {fileID: 1743217748}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4580,7 +4615,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 7
-  coolDown: 1
   worldCreation: {fileID: 1731320882}
   underWater: {fileID: 1289300102}
   inventory: {fileID: 1743702931}
@@ -8081,6 +8115,7 @@ RectTransform:
   - {fileID: 1129948192}
   - {fileID: 1648547695}
   - {fileID: 1399727395}
+  - {fileID: 174670713}
   - {fileID: 326017185}
   - {fileID: 477995637}
   m_Father: {fileID: 0}
@@ -8434,20 +8469,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   saveManager: {fileID: 1731320886}
+  worldCreation: {fileID: 1731320882}
   maxHealth: 20
   maxFallRange: 3
   regenerationTime: 3
+  head: {fileID: 1732302732}
+  breathStrength: 1
+  maxAir: 10
   heartGameObject: {fileID: 6767010444201417666, guid: f31c8fc6a8aeeb74e82a28c2c1bb1caa,
     type: 3}
   heartParent: {fileID: 1399727395}
+  airParent: {fileID: 174670713}
   startPos: {x: 0, y: 0}
   xOffset: 40
+  yAirOffset: 50
   emptyHeart: {fileID: 1564688358316481467, guid: 6e7c6ddf13496a04abd30fcac904e8bc,
     type: 3}
   halfHeart: {fileID: 5726080727020278575, guid: 6e7c6ddf13496a04abd30fcac904e8bc,
     type: 3}
   fullHeart: {fileID: 8522625820373494394, guid: 6e7c6ddf13496a04abd30fcac904e8bc,
     type: 3}
+  airBubble: {fileID: 21300000, guid: 3b7ec8edbe52c104d80f678e2c8ba0a8, type: 3}
 --- !u!114 &1743702934
 MonoBehaviour:
   m_ObjectHideFlags: 0

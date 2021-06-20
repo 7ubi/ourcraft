@@ -257,7 +257,7 @@ public class worldCreation : MonoBehaviour
                 
                 var c = GetChunck(new Vector3(x, 0, z));
 
-                var target = player.transform.position - new Vector3(x, 0, z);
+                var target = player.transform.position - new Vector3(_x, 0, _z);
                 
                 var angle = Vector3.Angle(target, player.transform.forward);
 

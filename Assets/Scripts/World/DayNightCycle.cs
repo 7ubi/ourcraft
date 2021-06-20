@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DayNightCycle : MonoBehaviour
 {
-    [SerializeField] private float dayLength;
+    [SerializeField] public float dayLength;
     [SerializeField] private Gradient directionalColor;
     [SerializeField] private Light sunLight;
 

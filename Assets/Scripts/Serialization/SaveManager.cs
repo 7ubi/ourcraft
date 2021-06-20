@@ -38,13 +38,16 @@ public class SaveManager : MonoBehaviour
             _playerController.SetPos();
             _playerSurvival.SetHealth();
             SavePlayerData();
+            
+            _dayNight.CurrentTime = _dayNight.dayLength * 30f;
         }
     }
 
     public void SavePlayerData()
     {
         var saveData = new PlayerInfo(_playerController.transform.position, _playerController.Camera.transform.rotation,
-            _playerInventory.ItemCount, _playerInventory.ItemIds, _worldCreation.Seed, _playerSurvival.Health, _dayNight.CurrentTime);
+            _playerInventory.ItemCount, _playerInventory.ItemIds, _worldCreation.Seed,
+            _playerSurvival.Health, _dayNight.CurrentTime, _playerSurvival.Air, _playerSurvival.UnderWaterTime);
         SerializationManager.SavePlayerData(_worldName, saveData);
     }
 
@@ -54,7 +57,7 @@ public class SaveManager : MonoBehaviour
         
         _playerController.LoadData(data.pos, data.rotation);
         _playerInventory.LoadData(data.itemCount, data.itemIds);
-        _playerSurvival.LoadData(data.health);
+        _playerSurvival.LoadData(data.health, data.air, data.underWaterTime);
         _worldCreation.LoadData(data.seed);
         _dayNight.CurrentTime = data.currentTime;
     }
@@ -102,17 +105,15 @@ public class SaveManager : MonoBehaviour
         var bIds = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
         var wIds = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
 
-
-        var count = 0;
-
-        for (var i = 0; i < chunckInfo.blockIDs.Length; i += 2)
+        var count = 0; 
+        for (var i = 0; i < chunckInfo.blockIDs.Length; i++)
         {
-            for (var j = 0; j < chunckInfo.blockIDs[i + 1]; j++)
+            for (var j = 0; j < chunckInfo.blockCount[i]; j++)
             {
                 var z = count % _worldCreation.Size;
                 var y = (count / _worldCreation.Size) % _worldCreation.MAXHeight;
                 var x = count / (_worldCreation.Size * _worldCreation.MAXHeight);
-
+            
                 if (chunckInfo.blockIDs[i] > 200)
                 {
                     wIds[x, y, z] = Math.Abs(chunckInfo.blockIDs[i] - 255);
@@ -121,9 +122,7 @@ public class SaveManager : MonoBehaviour
                 {
                     bIds[x, y, z] = chunckInfo.blockIDs[i];
                 }
-                
-                
-                
+
                 count++;
             }
         }
