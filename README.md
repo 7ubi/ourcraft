@@ -1,5 +1,5 @@
 # ourcraft
-minecraft clone
+minecraft like game
 
 Ourcraft is a game made in Unity based on Minecraft.
 
