@@ -8,6 +8,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.Assertions.Comparers;
 using UnityEngine.Serialization;
+using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class worldCreation : MonoBehaviour
@@ -25,6 +26,7 @@ public class worldCreation : MonoBehaviour
     [SerializeField] private GameObject destroyedItem;
     [SerializeField] private float renderDistance;
 
+    public List<Chunck> chunksInRange = new List<Chunck>();
     public List<MeshCreation> meshesToCreate = new List<MeshCreation>();
     public List<MeshCreation> meshesToUpdate = new List<MeshCreation>();
     public List<WaterGeneration> waterMeshesToUpdate = new List<WaterGeneration>();
@@ -151,11 +153,11 @@ public class worldCreation : MonoBehaviour
             waterMeshesToApply.Remove(mesh);
             saveManager.SaveChunck(mesh.chunck);
         }
-        
-        
+
         var currentChunck = (position.x - (position.x % 8) + position.z - (position.z % 8));
-        //if (currentChunck != _lastChunck)
-        //GenerateChunck();
+        if (currentChunck != _lastChunck)
+            GenerateChunck();
+        
         
 
         _lastChunck = currentChunck;
@@ -230,6 +232,8 @@ public class worldCreation : MonoBehaviour
                     meshesToApply.Remove(mesh);
                     saveManager.SaveChunck(mesh.chunck);
                 }
+
+                chunksInRange.Add(c);
             }
         }
         _chunckTread.Start();
@@ -248,6 +252,8 @@ public class worldCreation : MonoBehaviour
         var minZ = Convert.ToInt32(playerZ - size * renderDistance);
         var maxZ = Convert.ToInt32(playerZ + size * renderDistance);
 
+        chunksInRange.Clear();
+        
         for (var _x = minX + size / 2; _x <= maxX + size / 2; _x += size)
         {
             for (var _z = minZ + size / 2; _z <= maxZ + size / 2; _z += size)
@@ -257,39 +263,32 @@ public class worldCreation : MonoBehaviour
                 
                 var c = GetChunck(new Vector3(x, 0, z));
 
-                var target = player.transform.position - new Vector3(_x, 0, _z);
-                
-                var angle = Vector3.Angle(target, player.transform.forward);
-
-                if (angle > 90 || Vector3.Distance(player.transform.position,
-                    new Vector3(x, player.transform.position.y, z)) < Size * 1.5f)
+                if (c == null)
                 {
-
-                    if (c == null)
-                    {
-                        var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
-                        var m = newChunck.GetComponent<MeshCreation>();
-                        m.worldCreation = this;
-                        m.Init();
-                        Chuncks.Add(newChunck);
-                        _chuncks.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z),
-                            newChunck);
-                        _chuncksChunck.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z),
-                            newChunck.GetComponent<Chunck>());
-                        newChunck.GetComponent<Chunck>().worldCreation = this;
-                    }
-                    else
-                    {
-                        c.gameObject.SetActive(true);
-                    }
+                    var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
+                    var m = newChunck.GetComponent<MeshCreation>();
+                    m.worldCreation = this;
+                    m.Init();
+                    Chuncks.Add(newChunck);
+                    _chuncks.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z),
+                        newChunck);
+                    _chuncksChunck.Add(new Vector2(newChunck.transform.position.x, newChunck.transform.position.z),
+                        newChunck.GetComponent<Chunck>());
+                    newChunck.GetComponent<Chunck>().worldCreation = this;
+                    c = newChunck.GetComponent<Chunck>();
                 }
                 else
                 {
-                    if (c != null)
+                    if (!c.GetComponent<MeshCreation>().InRange)
                     {
-                        c.gameObject.SetActive(false);
+                        meshesToUpdate.Add(c.GetComponent<MeshCreation>());
+                        c.GetComponent<MeshCreation>().InRange = true;
                     }
+
+                    c.gameObject.SetActive(true);
                 }
+
+                chunksInRange.Add(c);
             }
         }
         
@@ -517,7 +516,7 @@ public class worldCreation : MonoBehaviour
         return height;
     }
 
-    private GameObject CreateDestroyedBlock(int id, Vector3 pos)
+    public GameObject CreateDestroyedBlock(int id, Vector3 pos)
     {
         if (Blocks[id].DropID < _playerInventory.itemIndexStart)
         {
@@ -586,6 +585,8 @@ public class worldCreation : MonoBehaviour
     public int MAXHeight => maxHeight;
 
     public int Size => size;
+
+    public float RenderDistance => renderDistance;
 
     public Dictionary<int, Blocks> Blocks { get; } = new Dictionary<int, Blocks>();
 }

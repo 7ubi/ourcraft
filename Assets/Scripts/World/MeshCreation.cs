@@ -23,6 +23,7 @@ public class MeshCreation : MonoBehaviour
     [SerializeField] public Water water;
     [SerializeField] public WaterGeneration waterGeneration;
     public bool CanGenerateMesh { get; set; } = true;
+    public bool InRange { get; set; } = true;
     
     
     // ReSharper disable Unity.PerformanceAnalysis
@@ -44,9 +45,9 @@ public class MeshCreation : MonoBehaviour
         else
         {
             _blockIDs = chunck.BlockIDs;
-            
-            if (!worldCreation.meshesToUpdate.Contains(this))
-                worldCreation.meshesToUpdate.Add(this);
+            if(InRange)
+                if (!worldCreation.meshesToUpdate.Contains(this)) 
+                    worldCreation.meshesToUpdate.Add(this);
         }
     }
 

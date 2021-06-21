@@ -25,7 +25,6 @@ public class Chunck : MonoBehaviour
 
     private void Update()
     {
-        
         if (furnaces.Count <= 0) return;
         foreach (var furnace in furnaces)
         {

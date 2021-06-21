@@ -146,6 +146,12 @@ public class SaveManager : MonoBehaviour
             }
         }
 
+        if (Vector3.Distance(c.transform.position, player.transform.position) >
+            _worldCreation.Size * _worldCreation.RenderDistance)
+        {
+            c.GetComponent<MeshCreation>().InRange = false;
+        }
+
         _chuncks.Add(c.GetComponent<MeshCreation>());
     }
     

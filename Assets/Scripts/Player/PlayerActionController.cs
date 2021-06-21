@@ -91,9 +91,11 @@ public class PlayerActionController : MonoBehaviour
                     var chunckPos = chunck.transform.position;
                     var block = Vector3Int.FloorToInt(new Vector3(Mathf.FloorToInt(pos.x) - chunckPos.x, 
                         Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z) - chunckPos.z));
-
-                    if(worldCreation.Blocks[worldCreation.GetBlock(pos)].id == BlockTypes.Furnace)
+                    var id = worldCreation.Blocks[worldCreation.GetBlock(pos)].id;
+                    if(id == BlockTypes.Furnace)
                         interactableBlocks.Furnace(chunck.furnaces[block], chunck);
+                    else if(id == BlockTypes.TNT)
+                        interactableBlocks.Explode(5, pos);
                 }
                 else
                 {

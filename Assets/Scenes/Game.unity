@@ -7868,6 +7868,24 @@ MonoBehaviour:
     meltable: 0
     melter: 0
     meltedId: 0
+  - name: TNT
+    id: 14
+    topIndex: 9
+    frontIndex: 8
+    backIndex: 8
+    rightIndex: 8
+    leftIndex: 8
+    botIndex: 9
+    blockShape: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
+    img: {fileID: -7496845917885078160, guid: e33cf753d368a6143ac35f9e02cbae93, type: 3}
+    isTransparent: 0
+    destroyTime: 1
+    stackSize: 64
+    dropID: 14
+    isInteractable: 1
+    meltable: 0
+    melter: 0
+    meltedId: 0
   biomes:
   - {fileID: 11400000, guid: 0b42d1ee036fcb146ab5a0bab05c576c, type: 2}
   - {fileID: 11400000, guid: 109345ddce309d24bb651d0ac0ad414b, type: 2}
@@ -7941,6 +7959,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInventory: {fileID: 1743702931}
   playerFurnace: {fileID: 1743702934}
+  tntPrefab: {fileID: 5286874965590212060, guid: 531617dc41895d84c931b100ffa673fc,
+    type: 3}
+  explosion: {fileID: 100006, guid: e076683e0305e35498b8e8834978c0fa, type: 3}
 --- !u!114 &1731320888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8423,6 +8444,14 @@ MonoBehaviour:
     meltable: 0
     melter: 0
     meltedId: 0
+  - name: Gunpowder
+    id: 234
+    stackSize: 64
+    img: {fileID: 21300000, guid: ba62dd713eafa0340a0cd4af022c4d1b, type: 3}
+    texture2d: {fileID: 2800000, guid: ba62dd713eafa0340a0cd4af022c4d1b, type: 3}
+    meltable: 0
+    melter: 0
+    meltedId: 0
   itemIndexStart: 230
 --- !u!114 &1743702932
 MonoBehaviour:
@@ -8443,6 +8472,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b2449a22edec1b34eaec1b20ec738087, type: 2}
   - {fileID: 11400000, guid: 68ab8587c881a024ab4e7b572db81c79, type: 2}
   - {fileID: 11400000, guid: b01f67a3fa40ed84da365ea035ed2c64, type: 2}
+  - {fileID: 11400000, guid: 351ba68566208b5428f9acf5fde2fca4, type: 2}
+  - {fileID: 11400000, guid: c94ffe202e4bfa746b337184e88bc36e, type: 2}
   craftingSlots:
   - {fileID: 804741762}
   - {fileID: 1218825996}

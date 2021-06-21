@@ -20,4 +20,6 @@ public class BlockTypes : MonoBehaviour
     public static int Furnace => 12;
 
     public static int Coalore => 13;
+
+    public static int TNT => 14;
 }

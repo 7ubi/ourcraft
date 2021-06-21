@@ -98,7 +98,7 @@ public class PlayerSurvival : MonoBehaviour
             _currentAir = maxAir;
             _underWaterTime = 0f;
             UpdateAirBar();
-            saveManager.SavePlayerData();
+           // saveManager.SavePlayerData();
         }
     }
 
