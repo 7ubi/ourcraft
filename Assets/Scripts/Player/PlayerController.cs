@@ -97,24 +97,36 @@ public class PlayerController : MonoBehaviour
             _pitch = 90;
         if (_pitch < -90)
             _pitch = -90;
+        
         var transform2 = _camera.transform;
+        
+        
+
+        transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
+        transform2.eulerAngles = new Vector3(transform2.eulerAngles.x, _yaw, 0.0f);
+        head.transform.eulerAngles = new Vector3(_pitch, head.transform.eulerAngles.y, 0);
+        
         if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
         {
             foreach (var chunk in worldCreation.chunksInRange)
             {
-                
-                chunk.gameObject.SetActive(Vector3.Angle(chunk.transform.position - transform2.position,
+                if (Vector3.Distance(chunk.transform.position + 
+                        new Vector3(worldCreation.Size / 2f, transform2.position.y, worldCreation.Size / 2f),
+                    transform2.position) < worldCreation.Size)
+                {
+                    Debug.Log("YES");
+                    chunk.gameObject.SetActive(true);
+                }
+                else
+                    chunk.gameObject.SetActive(Vector3.Angle(chunk.transform.position + 
+                     new Vector3(worldCreation.Size / 2f, transform2.position.y, worldCreation.Size / 2f)
+                     - transform2.position,
                     transform2.forward) < 90.0f);
             }
             
-            worldCreation.GetChunck(transform.position).gameObject.SetActive(true);
+            worldCreation.GetChunck(transform2.position).gameObject.SetActive(true);
         }
-
-        transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
-        transform2.eulerAngles = new Vector3(_camera.transform.eulerAngles.x, _yaw, 0.0f);
-        head.transform.eulerAngles = new Vector3(_pitch, head.transform.eulerAngles.y, 0);
         
-
         if (worldCreation.GetUnderWater(transform.position + new Vector3(0, -0.5f, 0)))
         {
             _forward *= waterMult;

@@ -5425,7 +5425,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 75, y: 75}
+  m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1129948193
 MonoBehaviour:
@@ -7616,6 +7616,7 @@ MonoBehaviour:
   destroyedItem: {fileID: 5357458505095433284, guid: e3d8da96deb09064f82c4a46d15cd2ff,
     type: 3}
   renderDistance: 10
+  chunksInRange: []
   meshesToCreate: []
   meshesToUpdate: []
   waterMeshesToUpdate: []
