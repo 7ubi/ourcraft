@@ -114,7 +114,6 @@ public class PlayerController : MonoBehaviour
                         new Vector3(worldCreation.Size / 2f, transform2.position.y, worldCreation.Size / 2f),
                     transform2.position) < worldCreation.Size)
                 {
-                    Debug.Log("YES");
                     chunk.gameObject.SetActive(true);
                 }
                 else

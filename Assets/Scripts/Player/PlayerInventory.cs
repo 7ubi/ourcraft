@@ -36,7 +36,7 @@ public class PlayerInventory : MonoBehaviour
     private const int Rows = 9;
     private const int Cols = 4;
     public bool InInventory { get; set; } = false;
-    private readonly List<GameObject> _destroyedBlocks = new List<GameObject>();
+    private readonly List<DestroyedBlock> _destroyedBlocks = new List<DestroyedBlock>();
 
     [Header("ItemHandel")] 
     [SerializeField] private GameObject itemHandel;
@@ -214,7 +214,8 @@ public class PlayerInventory : MonoBehaviour
 
     public void AddDestroyedBlock(GameObject block)
     {
-        _destroyedBlocks.Add(block);
+        _destroyedBlocks.Add(block.GetComponent<DestroyedBlock>());
+        saveManager.SaveDestroyedBlocks(_destroyedBlocks);
     }
 
     public void ReplaceItem(int index, int mouseBtn)
@@ -426,11 +427,11 @@ public class PlayerInventory : MonoBehaviour
         for (var i = _destroyedBlocks.Count - 1; i >= 0; i--)
         {
             var destroyed = _destroyedBlocks[i];
-            
             if (Vector3.Distance(transform.position, destroyed.transform.position) > destroyedBlockReach) continue;
             AddItem(destroyed.GetComponent<DestroyedBlock>().ID, 1);
             Destroy(destroyed);
             _destroyedBlocks.Remove(destroyed);
+            saveManager.SaveDestroyedBlocks(_destroyedBlocks);
         }
     }
 

@@ -31,6 +31,7 @@ public class SaveManager : MonoBehaviour
         {
             LoadPlayerData();
             LoadChuncks();
+            LoadDestroyedBlocks();
         }
         else
         {
@@ -153,6 +154,24 @@ public class SaveManager : MonoBehaviour
         }
 
         _chuncks.Add(c.GetComponent<MeshCreation>());
+    }
+
+    public void SaveDestroyedBlocks(List<DestroyedBlock> destroyedBlocks)
+    {
+        var data = new DestroyedInfo(destroyedBlocks);
+        SerializationManager.SaveDestroyedData(_worldName, data);
+    }
+
+    private void LoadDestroyedBlocks()
+    {
+        var data = SerializationManager.LoadChunckData(Application.persistentDataPath 
+                                                       + "/saves/" + _worldName + "/destroyed.blocks")as DestroyedInfo;
+
+        if (data == null) return;
+        foreach (var destroyed in data.destroyedBlockInfos)
+        {
+            _worldCreation.CreateDestroyedBlock((int) destroyed.id, destroyed.pos);
+        }
     }
     
     public void MainMenu()

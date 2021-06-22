@@ -520,7 +520,8 @@ public class worldCreation : MonoBehaviour
     {
         if (Blocks[id].DropID < _playerInventory.itemIndexStart)
         {
-            var block = Instantiate(destroyedBlock, pos, Quaternion.identity);
+            var block = Instantiate(destroyedBlock, pos, Quaternion.identity, GetChunck(pos).transform);
+            
             block.GetComponent<DestroyedBlock>().ID = Blocks[id].DropID;
 
             var newMesh = new Mesh();
@@ -561,9 +562,8 @@ public class worldCreation : MonoBehaviour
         }
         else
         {
-            var item = Instantiate(destroyedItem, pos, Quaternion.identity);
+            var item = Instantiate(destroyedItem, pos, Quaternion.identity, GetChunck(pos).transform);
             item.GetComponent<DestroyedBlock>().ID = Blocks[id].DropID;
-            
             var mesh = voxelizer.SpriteToVoxel(_playerInventory.Items[Blocks[id].DropID].texture2d,
                 standardBlockShape, blockCreation);
 

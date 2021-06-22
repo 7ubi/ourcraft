@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 
 public class Water : MonoBehaviour
 {
-    [SerializeField] private GameObject waterChunck;
+    [SerializeField] private GameObject water;
     public worldCreation worldCreation;
     [SerializeField] private float waterAnimTime = 1f;
     public MeshFilter _meshFilter;
@@ -21,7 +21,7 @@ public class Water : MonoBehaviour
     [SerializeField] private int height;
     private Vector2 _offset;
     private Chunck _chunck;
-    private GameObject _water;
+    
 
     public Mesh _newMesh;
     public List<Vector3> _vertices;
@@ -37,18 +37,9 @@ public class Water : MonoBehaviour
         _waterIds = new int[worldCreation.Size,  worldCreation.MAXHeight,worldCreation.Size];
         _offset = offset;
         _position = transform.position;
-         
-        if (chunckParent.childCount > 0)
-        {
-            for (var i = chunckParent.childCount - 1; i >= 0; i--)
-            {
-                Destroy(chunckParent.GetChild(i).gameObject);
-            }
-        }
         
-        _water = Instantiate(waterChunck, chunckParent);
         _chunck = chunckParent.GetComponent<Chunck>();
-        _meshFilter = _water.GetComponent<MeshFilter>();
+        _meshFilter = water.GetComponent<MeshFilter>();
         
         ResetMesh();
     }

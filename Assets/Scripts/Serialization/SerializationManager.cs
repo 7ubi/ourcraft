@@ -84,6 +84,44 @@ public class SerializationManager
             return null;
         }
     }
+    
+    public static void SaveDestroyedData(string saveName, DestroyedInfo saveData)
+    {
+        var formatter = GetBinaryForrmatter();
+
+        if (!Directory.Exists(_save + saveName))
+        {
+            Directory.CreateDirectory(_save + saveName);
+        }
+
+        var path = _save + saveName + "/destroyed.blocks";
+
+        var file = File.Create(path);
+
+        formatter.Serialize(file, saveData);
+        file.Close();
+    }
+
+    public static object LoadDestroyedData(string fileName)
+    {
+        if (!File.Exists(fileName))
+            return null;
+
+        var formatter = GetBinaryForrmatter();
+        var file = File.Open(fileName, FileMode.Open);
+        try
+        {
+            var save = formatter.Deserialize(file);
+            file.Close();
+
+            return save;
+        }
+        catch
+        {
+            file.Close();
+            return null;
+        }
+    }
 
     public static BinaryFormatter GetBinaryForrmatter()
     {
