@@ -46,17 +46,19 @@ public class SaveManager : MonoBehaviour
 
     public void SavePlayerData()
     {
-        var saveData = new PlayerInfo(_playerController.transform.position, _playerController.Camera.transform.rotation,
-            _playerInventory.ItemCount, _playerInventory.ItemIds, _worldCreation.Seed,
+        var saveData = new PlayerInfo(_playerController.transform.position, _playerController.Yaw,
+            _playerController.Pitch, _playerInventory.ItemCount, _playerInventory.ItemIds, _worldCreation.Seed,
             _playerSurvival.Health, _dayNight.CurrentTime, _playerSurvival.Air, _playerSurvival.UnderWaterTime);
         SerializationManager.SavePlayerData(_worldName, saveData);
     }
 
     private void LoadPlayerData()
     {
-        var data = SerializationManager.LoadPlayerData(Application.persistentDataPath + "/saves/" + _worldName + "/player.world") as PlayerInfo;
-        
-        _playerController.LoadData(data.pos, data.rotation);
+        var data = SerializationManager.LoadPlayerData(
+            Application.persistentDataPath + "/saves/" + _worldName + "/player.world") as PlayerInfo;
+
+        if (data == null) return;
+        _playerController.LoadData(data.pos, data.yaw, data.pitch);
         _playerInventory.LoadData(data.itemCount, data.itemIds);
         _playerSurvival.LoadData(data.health, data.air, data.underWaterTime);
         _worldCreation.LoadData(data.seed);
@@ -74,7 +76,8 @@ public class SaveManager : MonoBehaviour
 
     private void LoadChuncks()
     {
-        foreach (var file in System.IO.Directory.GetFiles(Application.persistentDataPath + "/saves/" + _worldName + "/chuncks/"))
+        foreach (var file in System.IO.Directory.GetFiles(
+            Application.persistentDataPath + "/saves/" + _worldName + "/chuncks/"))
         {
             LoadChunck(file);
         }
@@ -137,7 +140,8 @@ public class SaveManager : MonoBehaviour
         if(!_worldCreation._chuncks.ContainsKey(new Vector2(c.transform.position.x, c.transform.position.z)))
             _worldCreation._chuncks.Add(new Vector2(c.transform.position.x, c.transform.position.z), c);
         if(!_worldCreation._chuncksChunck.ContainsKey(new Vector2(c.transform.position.x, c.transform.position.z)))
-            _worldCreation._chuncksChunck.Add(new Vector2(c.transform.position.x, c.transform.position.z), c.GetComponent<Chunck>());
+            _worldCreation._chuncksChunck.Add(new Vector2(c.transform.position.x, c.transform.position.z),
+                c.GetComponent<Chunck>());
         
         if (chunckInfo.furnaceInfos != null)
         {
@@ -165,12 +169,12 @@ public class SaveManager : MonoBehaviour
     private void LoadDestroyedBlocks()
     {
         var data = SerializationManager.LoadChunckData(Application.persistentDataPath 
-                                                       + "/saves/" + _worldName + "/destroyed.blocks")as DestroyedInfo;
+                                    + "/saves/" + _worldName + "/destroyed.blocks") as DestroyedInfo;
 
         if (data == null) return;
         foreach (var destroyed in data.destroyedBlockInfos)
         {
-            _worldCreation.CreateDestroyedBlock((int) destroyed.id, destroyed.pos);
+            _playerInventory.AddDestroyedBlock(_worldCreation.CreateDestroyedBlock((int) destroyed.id, destroyed.pos));
         }
     }
     

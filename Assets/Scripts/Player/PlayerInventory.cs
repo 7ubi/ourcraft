@@ -429,7 +429,7 @@ public class PlayerInventory : MonoBehaviour
             var destroyed = _destroyedBlocks[i];
             if (Vector3.Distance(transform.position, destroyed.transform.position) > destroyedBlockReach) continue;
             AddItem(destroyed.GetComponent<DestroyedBlock>().ID, 1);
-            Destroy(destroyed);
+            Destroy(destroyed.gameObject);
             _destroyedBlocks.Remove(destroyed);
             saveManager.SaveDestroyedBlocks(_destroyedBlocks);
         }
@@ -497,6 +497,24 @@ public class PlayerInventory : MonoBehaviour
             
             _blockHandelMesh.mesh = null;
         }
+    }
+
+    public void Drop(int index)
+    {
+        if (ItemIds[index] == 0) return;
+
+        worldCreation.CreateDestroyedBlock(ItemIds[index], transform.position + transform.forward * 3f);
+        ItemCount[index] -= 1;
+
+
+        if (ItemCount[index] == 0)
+        {
+            ItemIds[index] = 0;
+            itemImages[index].sprite = null;
+            itemImages[index].color = new Color(255, 255, 255, 0);
+        }
+        
+        UpdateText(index);
     }
 
     private void OpenCrafting()

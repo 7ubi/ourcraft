@@ -19,6 +19,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private  float speedV = 2.0f;
     [SerializeField] private GameObject head;
     
+    public float Yaw { get; private set; } = 0.0f;
+
+    public float Pitch { get; private set; } = 0.0f;
+    
     [Header("Jumping")]
     [SerializeField] private float jumpForce;
     [SerializeField] private int drag;
@@ -31,10 +35,7 @@ public class PlayerController : MonoBehaviour
 
     private float _forward;
     private float _right;
-    
-    private float _yaw = 0.0f;
-    private float _pitch = 0.0f;
-    
+
     private Rigidbody _rb;
     private PlayerInventory _playerInventory;
     
@@ -55,8 +56,8 @@ public class PlayerController : MonoBehaviour
         
         if (_playerInventory.InInventory)
         {
-            transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
-            _camera.transform.eulerAngles = new Vector3(_pitch, _yaw, 0.0f);
+            transform.eulerAngles = new Vector3(0.0f, Yaw, 0.0f);
+            _camera.transform.eulerAngles = new Vector3(Pitch, Yaw, 0.0f);
             _rb.velocity = new Vector3(0, _rb.velocity.y, 0);
             _rb.constraints = RigidbodyConstraints.FreezeAll;
             animator.SetBool("IsWalking", false);
@@ -90,21 +91,21 @@ public class PlayerController : MonoBehaviour
             _right *= sprintMult;
         }
    
-        _yaw += speedH * Input.GetAxis("Mouse X");
-        _pitch -= speedV * Input.GetAxis("Mouse Y");
+        Yaw += speedH * Input.GetAxis("Mouse X");
+        Pitch -= speedV * Input.GetAxis("Mouse Y");
 
-        if (_pitch > 90)
-            _pitch = 90;
-        if (_pitch < -90)
-            _pitch = -90;
+        if (Pitch > 90)
+            Pitch = 90;
+        if (Pitch < -90)
+            Pitch = -90;
         
         var transform2 = _camera.transform;
         
         
 
-        transform.eulerAngles = new Vector3(0.0f, _yaw, 0.0f);
-        transform2.eulerAngles = new Vector3(transform2.eulerAngles.x, _yaw, 0.0f);
-        head.transform.eulerAngles = new Vector3(_pitch, head.transform.eulerAngles.y, 0);
+        transform.eulerAngles = new Vector3(0.0f, Yaw, 0.0f);
+        transform2.eulerAngles = new Vector3(transform2.eulerAngles.x, Yaw, 0.0f);
+        head.transform.eulerAngles = new Vector3(Pitch, head.transform.eulerAngles.y, 0);
         
         if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
         {
@@ -168,11 +169,11 @@ public class PlayerController : MonoBehaviour
         return Physics.Raycast(groundCheck.position, -Vector3.up, .1f);
     }
 
-    public void LoadData(Vector3 pos, Quaternion rotation)
+    public void LoadData(Vector3 pos, float yaw, float pitch)
     {
         transform.position = pos;
-        _camera.transform.rotation = rotation;
-        transform.eulerAngles = new Vector3(0, _camera.transform.eulerAngles.y, 0);
+        Yaw = yaw;
+        Pitch = pitch;
     }
 
     public void SetPos()
