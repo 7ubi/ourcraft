@@ -312,13 +312,16 @@ public class worldCreation : MonoBehaviour
     {
 
         var chunck = GetChunck(block);
-        
-        var bix = Mathf.FloorToInt(block.x) - (int)chunck.transform.position.x;
+
+        var position = chunck.transform.position;
+        var bix = Mathf.FloorToInt(block.x) - (int)position.x;
         var biy = Mathf.FloorToInt(block.y);
-        var biz = Mathf.FloorToInt(block.z) - (int)chunck.transform.position.z;
+        var biz = Mathf.FloorToInt(block.z) - (int)position.z;
         var c = chunck.GetComponent<Chunck>();
         
-        _playerInventory.AddDestroyedBlock(CreateDestroyedBlock(c.BlockIDs[bix, biy, biz], block + new Vector3(0.375f, 0.1f, 0.375f)));
+        _playerInventory.AddDestroyedBlock(
+            CreateDestroyedBlock(Blocks[c.BlockIDs[bix, biy, biz]].DropID,
+                block + new Vector3(0.375f, 0.1f, 0.375f)));
         
         c.BlockIDs[bix, biy, biz] = 0;
 
@@ -516,13 +519,14 @@ public class worldCreation : MonoBehaviour
         return height;
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public GameObject CreateDestroyedBlock(int id, Vector3 pos)
     {
-        if (Blocks[id].DropID < _playerInventory.itemIndexStart)
+        if (id < _playerInventory.itemIndexStart)
         {
             var block = Instantiate(destroyedBlock, pos, Quaternion.identity, GetChunck(pos).transform);
             
-            block.GetComponent<DestroyedBlock>().ID = Blocks[id].DropID;
+            block.GetComponent<DestroyedBlock>().ID = id;
 
             var newMesh = new Mesh();
             var vertices = new List<Vector3>();
@@ -532,7 +536,7 @@ public class worldCreation : MonoBehaviour
 
             var currentIndex = 0;
 
-            var b = Blocks[Blocks[id].DropID];
+            var b = Blocks[id];
 
             var offset = new Vector3Int(0, 0, 0);
 
@@ -563,8 +567,8 @@ public class worldCreation : MonoBehaviour
         else
         {
             var item = Instantiate(destroyedItem, pos, Quaternion.identity, GetChunck(pos).transform);
-            item.GetComponent<DestroyedBlock>().ID = Blocks[id].DropID;
-            var mesh = voxelizer.SpriteToVoxel(_playerInventory.Items[Blocks[id].DropID].texture2d,
+            item.GetComponent<DestroyedBlock>().ID = id;
+            var mesh = voxelizer.SpriteToVoxel(_playerInventory.Items[id].texture2d,
                 standardBlockShape, blockCreation);
 
             item.GetComponent<MeshFilter>().mesh = mesh;

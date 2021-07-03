@@ -11,6 +11,7 @@ public class InventoryCell : MonoBehaviour
     [SerializeField] private PlayerInventory inventory;
     [SerializeField] private Image image;
     [SerializeField] private TMP_Text text;
+    [SerializeField] private worldCreation worldCreation;
 
     public int Id { get; set; }
     public int Count { get; set; }
@@ -32,6 +33,11 @@ public class InventoryCell : MonoBehaviour
 
         _rectTransform.anchoredPosition = new Vector2(Input.mousePosition.x * _scaler.referenceResolution.x / Screen.width,
             Input.mousePosition.y * _scaler.referenceResolution.y / Screen.height);
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Drop();
+        }
     }
 
     public void SetSprite(Sprite icon, int id, int count, int lastIndex)
@@ -64,5 +70,20 @@ public class InventoryCell : MonoBehaviour
         if (Id == 0) return;
         inventory.SetItem(LastIndex, Id, Count);
         Reset();
+    }
+    
+    // ReSharper disable Unity.PerformanceAnalysis
+    private void Drop()
+    {
+        if (Id == 0) return;
+        inventory.AddDestroyedBlock(worldCreation.CreateDestroyedBlock(Id,
+            inventory.ItemHandelTransform.position + inventory.transform.forward * 2f));
+        Count -= 1;
+
+
+        if (Count == 0)
+            Reset();
+        
+        UpdateText();
     }
 }

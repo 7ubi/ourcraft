@@ -40,6 +40,8 @@ public class PlayerInventory : MonoBehaviour
 
     [Header("ItemHandel")] 
     [SerializeField] private GameObject itemHandel;
+
+    public Transform ItemHandelTransform => itemHandel.transform;
     [SerializeField] private GameObject blockHandel;
     [SerializeField] private Voxelizer voxelizer;
     private MeshFilter _itemHandelMesh;
@@ -101,7 +103,10 @@ public class PlayerInventory : MonoBehaviour
         
         selector.localPosition = new Vector2(-400 + Current * 100, selector.localPosition.y);
 
-        
+        if (!InInventory && Input.GetKeyDown(KeyCode.Q))
+        {
+            Drop();
+        }
         
         if (!Input.GetKeyDown(KeyCode.E)) return;
         cellParent.gameObject.SetActive(!cellParent.gameObject.activeInHierarchy);
@@ -499,23 +504,7 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    public void Drop(int index)
-    {
-        if (ItemIds[index] == 0) return;
-
-        worldCreation.CreateDestroyedBlock(ItemIds[index], transform.position + transform.forward * 3f);
-        ItemCount[index] -= 1;
-
-
-        if (ItemCount[index] == 0)
-        {
-            ItemIds[index] = 0;
-            itemImages[index].sprite = null;
-            itemImages[index].color = new Color(255, 255, 255, 0);
-        }
-        
-        UpdateText(index);
-    }
+    
 
     private void OpenCrafting()
     {
@@ -531,5 +520,24 @@ public class PlayerInventory : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         crafting.SetActive(false);
         furnace.SetActive(true);
+    }
+
+    private void Drop()
+    {
+        if (ItemIds[Current] == 0) return;
+        AddDestroyedBlock(worldCreation.CreateDestroyedBlock(ItemIds[Current],
+            ItemHandelTransform.position + transform.forward * 2f));
+        ItemCount[Current] -= 1;
+
+
+        if (ItemCount[Current] == 0)
+        {
+            ItemCount[Current] = 0;
+            ItemIds[Current] = 0;
+            itemImages[Current].sprite = null;
+            itemImages[Current].color = new Color(255, 255, 255, 0);
+        }
+
+        UpdateText(Current);
     }
 }
