@@ -8,6 +8,8 @@ public class PlayerSurvival : MonoBehaviour
 {
     [SerializeField] private SaveManager saveManager;
     [SerializeField] private worldCreation worldCreation;
+    private PlayerController _playerController;
+    private PlayerInventory _playerInventory;
     
     [Header("Info")]
     [SerializeField] private int maxHealth = 20;
@@ -16,10 +18,7 @@ public class PlayerSurvival : MonoBehaviour
     [SerializeField] private Transform head;
     [SerializeField] private float breathStrength;
     [SerializeField] private int maxAir = 10;
-    private int _currentAir;
-    private float _underWaterTime;
-    private int _currentHealth;
-    
+
     private Rigidbody _rb;
     private Vector3 _lastPosition;
     
@@ -30,6 +29,7 @@ public class PlayerSurvival : MonoBehaviour
     [SerializeField] private Vector2 startPos;
     [SerializeField] private int xOffset;
     [SerializeField] private int yAirOffset;
+    [SerializeField] private GameObject deathScreen;
     
     private readonly List<Image> _hearts = new List<Image>();
     private readonly List<Image> _airBubbles = new List<Image>();
@@ -40,19 +40,17 @@ public class PlayerSurvival : MonoBehaviour
     [SerializeField] private Sprite fullHeart;
     [SerializeField] private Sprite airBubble;
     
-    public int Air
-    {
-        get => _currentAir;
-        set => _currentAir = value;
-    }
+    public int Air { get; set; }
 
-    public float UnderWaterTime => _underWaterTime;
+    public float UnderWaterTime { get; private set; }
 
-    public int Health => _currentHealth;
+    public int Health { get; private set; }
 
     private void Start()
     {
         _lastPosition = transform.position;
+        _playerController = GetComponent<PlayerController>();
+        _playerInventory = GetComponent<PlayerInventory>();
         
         _rb = GetComponent<Rigidbody>();
         StartCoroutine(RegenerateHealth());
@@ -73,85 +71,84 @@ public class PlayerSurvival : MonoBehaviour
 
         if (worldCreation.GetUnderWater(head.transform.position))
         {
-            _underWaterTime += Time.deltaTime;
-            if (_currentAir >= 1)
+            UnderWaterTime += Time.deltaTime;
+            if (Air >= 1)
             {
-                if (_underWaterTime >= breathStrength)
+                if (UnderWaterTime >= breathStrength)
                 {
-                    _underWaterTime = 0f;
-                    _currentAir--;
+                    UnderWaterTime = 0f;
+                    Air--;
                     saveManager.SavePlayerData();
                 }
             }
             else
             {
-                if (_underWaterTime >= breathStrength)
+                if (UnderWaterTime >= breathStrength)
                 {
                     LoseHealth(1);
-                    _underWaterTime = 0f;
+                    UnderWaterTime = 0f;
                 }
             }
             UpdateAirBar();
         }
         else
         {
-            _currentAir = maxAir;
-            _underWaterTime = 0f;
+            Air = maxAir;
+            UnderWaterTime = 0f;
             UpdateAirBar();
-           // saveManager.SavePlayerData();
         }
     }
 
     private void LoseHealth(int amount)
     {
-        _currentHealth -= amount;
+        Health -= amount;
+
+        if (Health <= 0)
+        {
+            Death();
+            Health = 0;
+        }
+        
         UpdateHealthBar();
         saveManager.SavePlayerData();
     }
 
     private void UpdateHealthBar()
     {
-        for (var i = 0; i < _currentHealth / 2; i++)
+        for (var i = 0; i < Health / 2; i++)
         {
             _hearts[i].sprite = fullHeart;
         }
 
-        if (_currentHealth % 2 == 1)
+        if (Health % 2 == 1)
         {
-            _hearts[_currentHealth / 2].sprite = halfHeart;
-            for (var i = _currentHealth / 2 + 1; i < maxHealth / 2; i++)
+            _hearts[Health / 2].sprite = halfHeart;
+            for (var i = Health / 2 + 1; i < maxHealth / 2; i++)
             {
                 _hearts[i].sprite = emptyHeart;
             }
         }
         else
         {
-            for (var i = _currentHealth / 2; i < maxHealth / 2; i++)
+            for (var i = Health / 2; i < maxHealth / 2; i++)
             {
-                try
-                {
-                    _hearts[i].sprite = emptyHeart;
-                }
-                catch
-                {
-                    // ignored
-                }
+                _hearts[i].sprite = emptyHeart;
             }
         }
     }
 
     private void UpdateAirBar()
     {
-        airParent.gameObject.SetActive(_currentAir != maxAir);
+        airParent.gameObject.SetActive(Air != maxAir);
 
 
-        for (var i = 0; i < _currentAir; i++)
+        for (var i = 0; i < Air; i++)
         {
             _airBubbles[i].sprite = airBubble;
             _airBubbles[i].color = Color.white;
         }
 
-        for (var i = _currentAir; i < maxAir; i++)
+        for (var i = Air; i < maxAir; i++)
         {
             _airBubbles[i].sprite = null;
             _airBubbles[i].color = new Color(255, 255, 255, 0);
@@ -161,8 +158,8 @@ public class PlayerSurvival : MonoBehaviour
     private IEnumerator RegenerateHealth()
     {
         yield return new WaitForSeconds(regenerationTime);
-        if(_currentHealth < maxHealth)
-            _currentHealth += 1;
+        if(Health < maxHealth)
+            Health += 1;
         UpdateHealthBar();
         saveManager.SavePlayerData();
         StartCoroutine(RegenerateHealth());
@@ -170,9 +167,9 @@ public class PlayerSurvival : MonoBehaviour
 
     public void LoadData(int health, int air, float underWater)
     {
-        _currentHealth = health;
-        _currentAir = air;
-        _underWaterTime = underWater;
+        Health = health;
+        Air = air;
+        UnderWaterTime = underWater;
         CreateHealthBar();
         UpdateHealthBar();
         CreateAirBar();
@@ -181,7 +178,7 @@ public class PlayerSurvival : MonoBehaviour
 
     public void SetHealth()
     {
-        _currentHealth = maxHealth;
+        Health = maxHealth;
         CreateHealthBar();
         UpdateHealthBar();
         CreateAirBar();
@@ -217,5 +214,45 @@ public class PlayerSurvival : MonoBehaviour
             hImg.sprite = null;
             hImg.color = new Color(255, 255, 255, 0);
         }
+    }
+
+    private void Death()
+    {
+        
+        _playerController.enabled = false;
+        _playerInventory.enabled = false;
+        Time.timeScale = 0;
+        _playerController.InPause = true;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        deathScreen.SetActive(true);
+        
+        _playerInventory.DeathDrop();
+        ResetPlayer();
+        
+        saveManager.SavePlayerData();
+    }
+
+    private void ResetPlayer()
+    {
+        transform.position = new Vector3(0, 0, 0);
+        _playerController.SetPos();
+        worldCreation.GenerateChunck();
+    }
+
+    public void Respawn()
+    {
+        
+        Health = maxHealth;
+        _playerController.enabled = true;
+        _playerInventory.enabled = true;
+        Time.timeScale = 1;
+        _playerController.InPause = false;
+        deathScreen.SetActive(false);
+        
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        
+        UpdateHealthBar();
     }
 }

@@ -105,7 +105,7 @@ public class PlayerInventory : MonoBehaviour
 
         if (!InInventory && Input.GetKeyDown(KeyCode.Q))
         {
-            Drop();
+            Drop(Current);
         }
         
         if (!Input.GetKeyDown(KeyCode.E)) return;
@@ -217,6 +217,7 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public void AddDestroyedBlock(GameObject block)
     {
         _destroyedBlocks.Add(block.GetComponent<DestroyedBlock>());
@@ -429,6 +430,8 @@ public class PlayerInventory : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     private void DestroyedBlockInRage()
     {
+        var changed = false;
+        
         for (var i = _destroyedBlocks.Count - 1; i >= 0; i--)
         {
             var destroyed = _destroyedBlocks[i];
@@ -436,8 +439,11 @@ public class PlayerInventory : MonoBehaviour
             AddItem(destroyed.GetComponent<DestroyedBlock>().ID, 1);
             Destroy(destroyed.gameObject);
             _destroyedBlocks.Remove(destroyed);
-            saveManager.SaveDestroyedBlocks(_destroyedBlocks);
+            changed = true;
         }
+        
+        if(changed)
+            saveManager.SaveDestroyedBlocks(_destroyedBlocks);
     }
 
     private void CreateHandel()
@@ -522,22 +528,34 @@ public class PlayerInventory : MonoBehaviour
         furnace.SetActive(true);
     }
 
-    private void Drop()
+    private void Drop(int index)
     {
-        if (ItemIds[Current] == 0) return;
-        AddDestroyedBlock(worldCreation.CreateDestroyedBlock(ItemIds[Current],
+        if (ItemIds[index] == 0) return;
+        AddDestroyedBlock(worldCreation.CreateDestroyedBlock(ItemIds[index],
             ItemHandelTransform.position + transform.forward * 2f));
-        ItemCount[Current] -= 1;
+        ItemCount[index] -= 1;
 
 
-        if (ItemCount[Current] == 0)
+        if (ItemCount[index] == 0)
         {
-            ItemCount[Current] = 0;
-            ItemIds[Current] = 0;
-            itemImages[Current].sprite = null;
-            itemImages[Current].color = new Color(255, 255, 255, 0);
+            ItemCount[index] = 0;
+            ItemIds[index] = 0;
+            itemImages[index].sprite = null;
+            itemImages[index].color = new Color(255, 255, 255, 0);
         }
 
-        UpdateText(Current);
+        UpdateText(index);
+    }
+
+    public void DeathDrop()
+    {
+        for (var i = 0; i < ItemIds.Length; i++)
+        {
+            var count = ItemCount[i];
+            for (var j = 0; j < count; j++)
+            {
+                Drop(i);
+            }
+        }
     }
 }

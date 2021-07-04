@@ -113,7 +113,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (Vector3.Distance(chunk.transform.position + 
                         new Vector3(worldCreation.Size / 2f, transform2.position.y, worldCreation.Size / 2f),
-                    transform2.position) < worldCreation.Size)
+                    transform2.position) < worldCreation.Size * 2)
                 {
                     chunk.gameObject.SetActive(true);
                 }
@@ -123,8 +123,6 @@ public class PlayerController : MonoBehaviour
                      - transform2.position,
                     transform2.forward) < 90.0f);
             }
-            
-            worldCreation.GetChunck(transform2.position).gameObject.SetActive(true);
         }
         
         if (worldCreation.GetUnderWater(transform.position + new Vector3(0, -0.5f, 0)))
@@ -182,7 +180,7 @@ public class PlayerController : MonoBehaviour
         for (var y = worldCreation.MAXHeight - 1; y >= 0; y--)
         {
             if (worldCreation.GetBlock(new Vector3(position.x, y, position.z)) == 0) continue;
-            position = new Vector3(position.x, y + 4, position.z);
+            position = new Vector3(position.x, y + 3, position.z);
             transform.position = position;
             return;
         }
