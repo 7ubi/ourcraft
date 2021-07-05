@@ -134,6 +134,7 @@ MonoBehaviour:
   chunck: {fileID: 363026983547850181}
   water: {fileID: 453490869700261606}
   waterGeneration: {fileID: -6087875996157012617}
+  standardBlock: {fileID: 11400000, guid: c15c24dd7305ab64cafca4d7657f8766, type: 2}
 --- !u!114 &453490869700261606
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -70,6 +71,7 @@ public class TNT : MonoBehaviour
         var blockInt = Vector3Int.FloorToInt(transform.position);
         
         var chunksToUpdate = new List<Chunck>();
+        var chunksLoaded = new Dictionary<Vector2Int, Chunck>();
         
         for (var x = -Radius; x < Radius; x++)
         {
@@ -78,56 +80,60 @@ public class TNT : MonoBehaviour
                 for (var z = -Radius; z < Radius; z++)
                 {
                     var pos = blockInt + new Vector3Int(x, y, z);
-                    if (Vector3Int.Distance(pos, blockInt) < Radius)
+                    if (!(Vector3Int.Distance(pos, blockInt) < Radius)) continue;
+                    Chunck chunk = null;
+                    var ch = new Vector2Int(Mathf.FloorToInt(pos.x / 16f) * 16
+                        , Mathf.FloorToInt(pos.z / 16f) * 16);
+                    
+                    chunk = chunksLoaded.ContainsKey(ch) ? chunksLoaded[ch]
+                        : worldCreation.GetChunck(pos);
+
+                    var position = chunk.Pos;
+                        
+                    var bix = Mathf.FloorToInt(pos.x) - (int)position.x;
+                    var biy = Mathf.FloorToInt(pos.y);
+                    var biz = Mathf.FloorToInt(pos.z) - (int)position.z;
+                        
+                    if (chunk.BlockIDs[bix, biy, biz] == 0)
+                        continue;
+                        
+                    playerInventory.AddDestroyedBlock(worldCreation.CreateDestroyedBlock(
+                        worldCreation.Blocks[chunk.BlockIDs[bix, biy, biz]].DropID,
+                        pos + new Vector3(0.375f, 0.1f, 0.375f)));
+                        
+                    chunk.BlockIDs[bix, biy, biz] = 0;
+                        
+                        
+                        
+                    if (!chunksToUpdate.Contains(chunk))
+                        chunksToUpdate.Add(chunk);
+                        
+                    if (bix == 0)
                     {
-                        var chunk = worldCreation.GetChunck(pos);
-                        var position = chunk.transform.position;
-                        
-                        var bix = Mathf.FloorToInt(pos.x) - (int)position.x;
-                        var biy = Mathf.FloorToInt(pos.y);
-                        var biz = Mathf.FloorToInt(pos.z) - (int)position.z;
-                        
-                        if (chunk.BlockIDs[bix, biy, biz] == 0)
-                            continue;
-                        
-                        playerInventory.AddDestroyedBlock(worldCreation.CreateDestroyedBlock(
-                            worldCreation.Blocks[chunk.BlockIDs[bix, biy, biz]].DropID,
-                            pos + new Vector3(0.375f, 0.1f, 0.375f)));
-                        
-                        chunk.BlockIDs[bix, biy, biz] = 0;
-                        
-                        
-                        
-                        if (!chunksToUpdate.Contains(chunk))
-                            chunksToUpdate.Add(chunk);
-                        
-                        if (bix == 0)
-                        {
-                            var c = worldCreation.GetChunck(new Vector3(-1, 0, 0) + pos);
-                            if (!chunksToUpdate.Contains(c))
-                                chunksToUpdate.Add(c);
-                        }
+                        var c = worldCreation.GetChunck(new Vector3(-1, 0, 0) + pos);
+                        if (!chunksToUpdate.Contains(c))
+                            chunksToUpdate.Add(c);
+                    }
         
-                        if (bix == worldCreation.Size - 1)
-                        {
-                            var c = worldCreation.GetChunck(new Vector3(1, 0, 0) + pos);
-                            if (!chunksToUpdate.Contains(c))
-                                chunksToUpdate.Add(c);
-                        }
+                    if (bix == worldCreation.Size - 1)
+                    {
+                        var c = worldCreation.GetChunck(new Vector3(1, 0, 0) + pos);
+                        if (!chunksToUpdate.Contains(c))
+                            chunksToUpdate.Add(c);
+                    }
         
-                        if (biz == 0)
-                        {
-                            var c = worldCreation.GetChunck(new Vector3(0, 0, -1) + pos);
-                            if (!chunksToUpdate.Contains(c))
-                                chunksToUpdate.Add(c);
-                        }
+                    if (biz == 0)
+                    {
+                        var c = worldCreation.GetChunck(new Vector3(0, 0, -1) + pos);
+                        if (!chunksToUpdate.Contains(c))
+                            chunksToUpdate.Add(c);
+                    }
         
-                        if (biz == worldCreation.Size - 1)
-                        {
-                            var c = worldCreation.GetChunck(new Vector3(0, 0, 1) + pos);
-                            if (!chunksToUpdate.Contains(c))
-                                chunksToUpdate.Add(c);
-                        }
+                    if (biz == worldCreation.Size - 1)
+                    {
+                        var c = worldCreation.GetChunck(new Vector3(0, 0, 1) + pos);
+                        if (!chunksToUpdate.Contains(c))
+                            chunksToUpdate.Add(c);
                     }
                 }
             }

@@ -65,10 +65,7 @@ public class Chunck : MonoBehaviour
             {
                 _playerFurnace.UpdateUI();
             }
-
+            worldCreation.saveManager.SaveChunck(this);
         }
-
-        
-        worldCreation.saveManager.SaveChunck(this);
     }    
 }

@@ -158,6 +158,7 @@ public class SaveManager : MonoBehaviour
         }
 
         _chuncks.Add(c.GetComponent<MeshCreation>());
+        c.SetActive(false);
     }
 
     public void SaveDestroyedBlocks(List<DestroyedBlock> destroyedBlocks)

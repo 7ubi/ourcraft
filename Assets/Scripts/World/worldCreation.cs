@@ -32,6 +32,7 @@ public class worldCreation : MonoBehaviour
     public List<WaterGeneration> waterMeshesToUpdate = new List<WaterGeneration>();
     public List<MeshCreation> meshesToApply = new List<MeshCreation>();
     public List<WaterGeneration> waterMeshesToApply = new List<WaterGeneration>();
+    public List<GameObject> chunksToDeactivate = new List<GameObject>();
     
     [Header("Tree")]
     [SerializeField]
@@ -154,13 +155,18 @@ public class worldCreation : MonoBehaviour
             saveManager.SaveChunck(mesh.chunck);
         }
 
-        var currentChunck = (position.x - (position.x % 8) + position.z - (position.z % 8));
-        if (currentChunck != _lastChunck)
+        if (chunksToDeactivate.Count > 0)
+        {
+            chunksToDeactivate[0].SetActive(false);
+        }
+
+        var currentChunk = (position.x - (position.x % Size) + position.z - (position.z % Size));
+        if (currentChunk != _lastChunck)
             GenerateChunck();
         
         
 
-        _lastChunck = currentChunck;
+        _lastChunck = currentChunk;
     }
 
     public void LoadNearestChuncks()
@@ -300,7 +306,7 @@ public class worldCreation : MonoBehaviour
                 if (!(chunck.transform.position.x < minX) && !(chunck.transform.position.x > maxX) &&
                     !(chunck.transform.position.z < minZ) && !(chunck.transform.position.z > maxZ)) continue;
                 
-                chunck.SetActive(false);
+                chunksToDeactivate.Add(chunck);
             }
         }
         
