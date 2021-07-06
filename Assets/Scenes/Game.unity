@@ -1054,6 +1054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94afb7c8f32c924f87ce1a056afc494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInventory: {fileID: 1743702931}
   img: {fileID: 0}
 --- !u!1 &213757605
 GameObject:
@@ -1145,6 +1146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94afb7c8f32c924f87ce1a056afc494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInventory: {fileID: 1743702931}
   img: {fileID: 0}
 --- !u!1 &223096647
 GameObject:
@@ -2511,6 +2513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94afb7c8f32c924f87ce1a056afc494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInventory: {fileID: 1743702931}
   img: {fileID: 0}
 --- !u!1 &438779174
 GameObject:
@@ -2602,6 +2605,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94afb7c8f32c924f87ce1a056afc494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInventory: {fileID: 1743702931}
   img: {fileID: 0}
 --- !u!1 &446567601
 GameObject:
@@ -3193,6 +3197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94afb7c8f32c924f87ce1a056afc494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInventory: {fileID: 1743702931}
   img: {fileID: 0}
 --- !u!1 &644819138
 GameObject:
@@ -5191,6 +5196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94afb7c8f32c924f87ce1a056afc494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInventory: {fileID: 1743702931}
   img: {fileID: 0}
 --- !u!1 &986076209
 GameObject:
@@ -5449,6 +5455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94afb7c8f32c924f87ce1a056afc494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInventory: {fileID: 1743702931}
   img: {fileID: 0}
 --- !u!1 &1112700169
 GameObject:
@@ -5811,6 +5818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94afb7c8f32c924f87ce1a056afc494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInventory: {fileID: 1743702931}
   img: {fileID: 0}
 --- !u!1 &1143149480
 GameObject:
@@ -6687,6 +6695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94afb7c8f32c924f87ce1a056afc494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInventory: {fileID: 1743702931}
   img: {fileID: 0}
 --- !u!1 &1349031927
 GameObject:
@@ -8221,6 +8230,8 @@ MonoBehaviour:
   waterMeshesToUpdate: []
   meshesToApply: []
   waterMeshesToApply: []
+  destroyedBlocksToCreate: []
+  destroyedBlocksToApply: []
   treeThreshold: 0.01
   minTreeHeight: 3
   maxTreeHeight: 7
@@ -9017,6 +9028,7 @@ MonoBehaviour:
   - {fileID: 92023475}
   - {fileID: 92023475}
   destroyedBlockReach: 2
+  destroyedAliveTime: 30
   itemHandel: {fileID: 914612302}
   blockHandel: {fileID: 1400752257}
   voxelizer: {fileID: 1743702926}

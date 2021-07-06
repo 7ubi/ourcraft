@@ -176,6 +176,7 @@ public class SaveManager : MonoBehaviour
         foreach (var destroyed in data.destroyedBlockInfos)
         {
             _playerInventory.AddDestroyedBlock(_worldCreation.CreateDestroyedBlock((int) destroyed.id, destroyed.pos));
+            _playerInventory.DestroyedBlocks[_playerInventory.DestroyedBlocks.Count - 1].CurrentTime = destroyed.time;
         }
     }
     

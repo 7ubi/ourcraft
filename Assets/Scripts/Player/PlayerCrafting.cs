@@ -30,6 +30,8 @@ public class PlayerCrafting : MonoBehaviour
 
     private void Update()
     {
+        if (!_playerInventory.InInventory) return;
+        
         if (!_generated)
         {
             var index = 0;
@@ -97,7 +99,8 @@ public class PlayerCrafting : MonoBehaviour
             _playerInventory.AddItem(_resultID, craftableItems[_resultIndex].resultAmount);
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                if (count <= worldCreation.Blocks[_resultID].stackSize)
+                if (count <= (craftableItems[_resultIndex].resultID < _playerInventory.itemIndexStart
+                    ? worldCreation.Blocks[_resultID].stackSize : _playerInventory.Items[_resultID].stackSize))
                 {
                     count++;
                     continue;

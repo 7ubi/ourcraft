@@ -32,7 +32,11 @@ public class worldCreation : MonoBehaviour
     public List<WaterGeneration> waterMeshesToUpdate = new List<WaterGeneration>();
     public List<MeshCreation> meshesToApply = new List<MeshCreation>();
     public List<WaterGeneration> waterMeshesToApply = new List<WaterGeneration>();
-    public List<GameObject> chunksToDeactivate = new List<GameObject>();
+    private List<GameObject> _chunksToDeactivate = new List<GameObject>();
+    private List<GameObject> _chunksToActivate = new List<GameObject>();
+    public List<DestroyedBlock> destroyedBlocksToCreate = new List<DestroyedBlock>();
+    public List<DestroyedBlock> destroyedBlocksToApply = new List<DestroyedBlock>();
+
     
     [Header("Tree")]
     [SerializeField]
@@ -55,7 +59,7 @@ public class worldCreation : MonoBehaviour
     public BlockTypes blockTypes;
     [SerializeField] public BlockCreation blockCreation;
     [SerializeField] public SaveManager saveManager;
-    [SerializeReference] private Voxelizer voxelizer;
+    [SerializeReference] public Voxelizer voxelizer;
     
     
     [Header("Blocks and Biomes")]
@@ -124,6 +128,14 @@ public class worldCreation : MonoBehaviour
                 meshesToCreate.Remove(mesh);
             
             }
+
+            if (destroyedBlocksToCreate.Count > 0)
+            {
+                var mesh = destroyedBlocksToCreate[destroyedBlocksToCreate.Count - 1];
+                if(mesh == null) continue;                    
+                mesh.CreateBlock();
+                destroyedBlocksToCreate.Remove(mesh); 
+            }
         }
     }
 
@@ -155,9 +167,28 @@ public class worldCreation : MonoBehaviour
             saveManager.SaveChunck(mesh.chunck);
         }
 
-        if (chunksToDeactivate.Count > 0)
+        
+        
+        if (_chunksToActivate.Count > 0)
         {
-            chunksToDeactivate[0].SetActive(false);
+            _chunksToActivate[0].SetActive(true);
+            _chunksToActivate.Remove(_chunksToActivate[0]);
+        }
+        else
+        {
+            if (_chunksToDeactivate.Count > 0)
+            {
+                _chunksToDeactivate[0].SetActive(false);
+                _chunksToDeactivate.Remove(_chunksToDeactivate[0]);
+            }
+        }
+
+        if (destroyedBlocksToApply.Count > 0)
+        {
+            var d = destroyedBlocksToApply[0];
+            
+            d.ApplyBlock();
+            destroyedBlocksToApply.Remove(d);
         }
 
         var currentChunk = (position.x - (position.x % Size) + position.z - (position.z % Size));
@@ -189,7 +220,6 @@ public class worldCreation : MonoBehaviour
                 var z = _z - size / 2;
                 var c = GetChunck(new Vector3(x, 0, z));
                 
-                var target = player.transform.position - new Vector3(x, 0, z);
             
                 if (c == null)
                 {
@@ -240,6 +270,7 @@ public class worldCreation : MonoBehaviour
                 }
 
                 chunksInRange.Add(c);
+                c.gameObject.SetActive(true);
             }
         }
         _chunckTread.Start();
@@ -291,7 +322,10 @@ public class worldCreation : MonoBehaviour
                         c.GetComponent<MeshCreation>().InRange = true;
                     }
 
-                    c.gameObject.SetActive(true);
+                    if (c.gameObject.activeInHierarchy == false)
+                    {
+                        _chunksToActivate.Add(c.gameObject);
+                    }
                 }
 
                 chunksInRange.Add(c);
@@ -300,17 +334,15 @@ public class worldCreation : MonoBehaviour
         
         if (Chuncks.Count < 0) return;
         {
-            for (var i = Chuncks.Count - 1; i >= 0; i--)
+            for (var i = _chuncksChunck.Count - 1; i >= 0; i--)
             {
-                var chunck = Chuncks[i];
-                if (!(chunck.transform.position.x < minX) && !(chunck.transform.position.x > maxX) &&
-                    !(chunck.transform.position.z < minZ) && !(chunck.transform.position.z > maxZ)) continue;
+                var chunck = _chuncksChunck.ElementAt(i).Value;
+                if (chunksInRange.Contains(chunck)) continue;
+                if (!chunck.gameObject.activeInHierarchy) continue;
                 
-                chunksToDeactivate.Add(chunck);
+                _chunksToDeactivate.Add(chunck.gameObject);
             }
         }
-        
-        
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
@@ -528,60 +560,14 @@ public class worldCreation : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     public GameObject CreateDestroyedBlock(int id, Vector3 pos)
     {
-        if (id < _playerInventory.itemIndexStart)
-        {
-            var block = Instantiate(destroyedBlock, pos, Quaternion.identity, GetChunck(pos).transform);
-            
-            block.GetComponent<DestroyedBlock>().ID = id;
+        var block = id < _playerInventory.itemIndexStart ? 
+            Instantiate(destroyedBlock, pos, Quaternion.identity, GetChunck(pos).transform):
+            Instantiate(destroyedItem, pos, Quaternion.identity, GetChunck(pos).transform);
 
-            var newMesh = new Mesh();
-            var vertices = new List<Vector3>();
-            var normals = new List<Vector3>();
-            var uvs = new List<Vector2>();
-            var indices = new List<int>();
-
-            var currentIndex = 0;
-
-            var b = Blocks[id];
-
-            var offset = new Vector3Int(0, 0, 0);
-
-            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-                b.blockShape.faceData[2], b.GETRect(b.topIndex));
-            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-                b.blockShape.faceData[5], b.GETRect(b.rightIndex));
-            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-                b.blockShape.faceData[4], b.GETRect(b.leftIndex));
-            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-                b.blockShape.faceData[1], b.GETRect(b.frontIndex));
-            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-                b.blockShape.faceData[0], b.GETRect(b.backIndex));
-            blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-                b.blockShape.faceData[3], b.GETRect(b.botIndex));
-
-            newMesh.SetVertices(vertices);
-            newMesh.SetNormals(normals);
-            newMesh.SetUVs(0, uvs);
-            newMesh.SetIndices(indices, MeshTopology.Triangles, 0);
-
-            newMesh.RecalculateTangents();
-            block.GetComponent<MeshFilter>().mesh = newMesh;
-            block.GetComponent<MeshCollider>().sharedMesh = newMesh;
-            
-            return block;
-        }
-        else
-        {
-            var item = Instantiate(destroyedItem, pos, Quaternion.identity, GetChunck(pos).transform);
-            item.GetComponent<DestroyedBlock>().ID = id;
-            var mesh = voxelizer.SpriteToVoxel(_playerInventory.Items[id].texture2d,
-                standardBlockShape, blockCreation);
-
-            item.GetComponent<MeshFilter>().mesh = mesh;
-            item.GetComponent<MeshCollider>().sharedMesh = mesh;
-            
-            return item;
-        }
+        block.GetComponent<DestroyedBlock>().Init(id, id < _playerInventory.itemIndexStart,
+            this, _playerInventory);
+        
+        return block;
     }
     
     public int Seed

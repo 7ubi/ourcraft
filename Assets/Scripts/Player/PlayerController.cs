@@ -100,8 +100,8 @@ public class PlayerController : MonoBehaviour
             Pitch = -90;
         
         var transform2 = _camera.transform;
-        
-        
+
+        var headPos = head.transform.position;
 
         transform.eulerAngles = new Vector3(0.0f, Yaw, 0.0f);
         transform2.eulerAngles = new Vector3(transform2.eulerAngles.x, Yaw, 0.0f);
@@ -119,8 +119,8 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                     chunk.gameObject.SetActive(Vector3.Angle(chunk.transform.position + 
-                     new Vector3(worldCreation.Size / 2f, transform2.position.y, worldCreation.Size / 2f)
-                     - transform2.position,
+                     new Vector3(worldCreation.Size / 2f, 0, worldCreation.Size / 2f)
+                     - headPos,
                     transform2.forward) < 90.0f);
             }
         }

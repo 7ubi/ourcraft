@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = System.Random;
 
 public class TNT : MonoBehaviour
 {
@@ -72,6 +73,8 @@ public class TNT : MonoBehaviour
         
         var chunksToUpdate = new List<Chunck>();
         var chunksLoaded = new Dictionary<Vector2Int, Chunck>();
+
+        var rand = new Random((int) Time.time);
         
         for (var x = -Radius; x < Radius; x++)
         {
@@ -96,10 +99,15 @@ public class TNT : MonoBehaviour
                         
                     if (chunk.BlockIDs[bix, biy, biz] == 0)
                         continue;
-                        
-                    playerInventory.AddDestroyedBlock(worldCreation.CreateDestroyedBlock(
+
+                    Debug.Log(Time.realtimeSinceStartup);
+                    if (rand.NextDouble() < 0)
+                    {
+                        playerInventory.AddDestroyedBlock(worldCreation.CreateDestroyedBlock(
                         worldCreation.Blocks[chunk.BlockIDs[bix, biy, biz]].DropID,
                         pos + new Vector3(0.375f, 0.1f, 0.375f)));
+                        Debug.Log("Made Destroyed Block:" + Time.realtimeSinceStartup);
+                    }
                         
                     chunk.BlockIDs[bix, biy, biz] = 0;
                         
@@ -135,6 +143,8 @@ public class TNT : MonoBehaviour
                         if (!chunksToUpdate.Contains(c))
                             chunksToUpdate.Add(c);
                     }
+                    
+                    
                 }
             }
         }
@@ -143,8 +153,9 @@ public class TNT : MonoBehaviour
         {
             chunk.GetComponent<MeshCreation>().Init();
         }
-        
         Destroy(gameObject);
         Instantiate(explosion, transform.position, Quaternion.identity);
+        
+        
     }
 }

@@ -33,10 +33,12 @@ public class PlayerInventory : MonoBehaviour
 
     [Header("Const")]
     [SerializeField] private int destroyedBlockReach;
+    [SerializeField] private float destroyedAliveTime;
     private const int Rows = 9;
     private const int Cols = 4;
     public bool InInventory { get; set; } = false;
     private readonly List<DestroyedBlock> _destroyedBlocks = new List<DestroyedBlock>();
+    public List<DestroyedBlock> DestroyedBlocks => _destroyedBlocks;
 
     [Header("ItemHandel")] 
     [SerializeField] private GameObject itemHandel;
@@ -77,6 +79,7 @@ public class PlayerInventory : MonoBehaviour
                 newInv.transform.SetParent(cellParent, false);
                 newInv.GetComponent<RectTransform>().localPosition = new Vector3(xStartInventory + xDistInventory * x - 40
                     ,yStartInventory + yDistInventory * y, 0);
+                newInv.GetComponent<InventoryIndex>().playerInventory = this;
                 itemGameObjects[y * Rows + x + 8 +1] = newInv;
                 itemCountText[y * Rows + x + 8 + 1] = newInv.GetComponentInChildren<TMP_Text>();
                 itemImages[y * Rows + x + 8 + 1] = newInv.GetComponent<InventoryIndex>().img;
@@ -430,19 +433,35 @@ public class PlayerInventory : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     private void DestroyedBlockInRage()
     {
-        var changed = false;
-        
         for (var i = _destroyedBlocks.Count - 1; i >= 0; i--)
         {
             var destroyed = _destroyedBlocks[i];
-            if (Vector3.Distance(transform.position, destroyed.transform.position) > destroyedBlockReach) continue;
+            destroyed.CurrentTime += Time.deltaTime;
+
+            if (destroyed.CurrentTime >= destroyedAliveTime)
+            {
+                Destroy(destroyed.gameObject);
+                _destroyedBlocks.Remove(destroyed);
+                continue;
+            }
+            
+            if (Vector3.Distance(transform.position, destroyed.transform.position) > destroyedBlockReach) 
+                continue;
             AddItem(destroyed.GetComponent<DestroyedBlock>().ID, 1);
             Destroy(destroyed.gameObject);
             _destroyedBlocks.Remove(destroyed);
-            changed = true;
+
+            if (worldCreation.destroyedBlocksToCreate.Contains(destroyed))
+            {
+                worldCreation.destroyedBlocksToCreate.Remove(destroyed);
+            }
+            
+            if (worldCreation.destroyedBlocksToApply.Contains(destroyed))
+            {
+                worldCreation.destroyedBlocksToApply.Remove(destroyed);
+            }
         }
-        
-        if(changed)
+        if(Time.frameCount % 60 == 0)
             saveManager.SaveDestroyedBlocks(_destroyedBlocks);
     }
 
