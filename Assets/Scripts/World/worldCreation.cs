@@ -428,8 +428,9 @@ public class worldCreation : MonoBehaviour
 
         c.BlockIDs[bix, biy, biz] = id;
         c.WaterIDs[bix, biy, biz] = 0;
-        c.Orientation[bix, biy, biz] = orientation;
 
+        c.Orientation[bix, biy, biz] = Blocks[id].isRotatable ? orientation : 1;
+        
         if (id == BlockTypes.Furnace)
         {
             var pos = new Vector3Int(bix, biy, biz);

@@ -90,7 +90,7 @@ public class MeshCreation : MonoBehaviour
                     if (_blockIDs[x, y, z] == 0) continue;
                     var b = worldCreation.Blocks[_blockIDs[x, y, z]];
                     _currentOrientation = chunck.Orientation[x, y, z];
-                    if (b.isTransparent)
+                    if (b.isTransparent || b.isRotatable)
                     {
                         Block(ref currentIndex, ref currentColliderIndex, offset, b.blockShape.faceData[2], b.GETRect(b.topIndex), 2);
                         Block(ref currentIndex, ref currentColliderIndex, offset, b.blockShape.faceData[5], b.GETRect(b.rightIndex), 5);

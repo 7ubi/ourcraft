@@ -19,6 +19,7 @@ public class Blocks
     [SerializeField] public BlockShape blockShape;
     [SerializeField] public Sprite img;
     [SerializeField] public bool isTransparent;
+    [SerializeField] public bool isRotatable;
     [SerializeField] public float destroyTime = 1f;
     [SerializeField] public int stackSize = 64;
     [SerializeField] private int dropID;
