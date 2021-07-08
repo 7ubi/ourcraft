@@ -39,9 +39,9 @@ public class WaterGeneration : MonoBehaviour
                             }
 
                             worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                water. _normals, water._uvs, water._indices, shape.faceData[2]);
+                                water. _normals, water._uvs, water._indices, shape.faceData[2], 2, chunck.Orientation[x, y, z]);
                             worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                water._normals, water._uvs, water._indices, shape.faceData[6]);
+                                water._normals, water._uvs, water._indices, shape.faceData[6], 3, chunck.Orientation[x, y, z]);
                         }
                     }
                     else
@@ -52,16 +52,16 @@ public class WaterGeneration : MonoBehaviour
                         }
                         
                         worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                            water._normals, water._uvs, water._indices, shape.faceData[2]);
+                            water._normals, water._uvs, water._indices, shape.faceData[2], 2, chunck.Orientation[x, y, z]);
                         worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                            water._normals, water._uvs, water._indices, shape.faceData[6]);
+                            water._normals, water._uvs, water._indices, shape.faceData[6], 3, chunck.Orientation[x, y, z]);
                     }
 
                     if (x < worldCreation.Size - 1)
                     {
                         if (water._waterIds[x + 1, y, z] == 0)
                             worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                water._normals, water._uvs, water._indices, shape.faceData[5]);
+                                water._normals, water._uvs, water._indices, shape.faceData[5], 5, chunck.Orientation[x, y, z]);
                     }
                     else
                     {
@@ -72,13 +72,13 @@ public class WaterGeneration : MonoBehaviour
                                 z + water._position.z)) == 0)
                             {
                                 worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                    water._normals, water._uvs, water._indices, shape.faceData[5]);
+                                    water._normals, water._uvs, water._indices, shape.faceData[5], 5, chunck.Orientation[x, y, z]);
                             }
                             else if (worldCreation.Blocks[
                                     worldCreation.GetBlock(new Vector3(x + water._position.x + 1, y + water._position.y,
                                         z + water._position.z))].isTransparent)
                                 worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                    water._normals, water._uvs, water._indices, shape.faceData[5]);
+                                    water._normals, water._uvs, water._indices, shape.faceData[5], 5, chunck.Orientation[x, y, z]);
                         }
                     }
 
@@ -86,7 +86,7 @@ public class WaterGeneration : MonoBehaviour
                     {
                         if (water._waterIds[x - 1, y, z] == 0)
                             worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                water._normals, water._uvs, water._indices, shape.faceData[4]);
+                                water._normals, water._uvs, water._indices, shape.faceData[4], 4, chunck.Orientation[x, y, z]);
                     }
                     else
                     {
@@ -96,13 +96,13 @@ public class WaterGeneration : MonoBehaviour
                             if (worldCreation.GetBlock(new Vector3(x + water._position.x - 1, y + water._position.y,
                                 z + water._position.z)) == 0)
                                 worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                    water._normals, water._uvs, water._indices, shape.faceData[4]);
+                                    water._normals, water._uvs, water._indices, shape.faceData[4], 4, chunck.Orientation[x, y, z]);
                             else if (worldCreation
                                 .Blocks[
                                     worldCreation.GetBlock(new Vector3(x + water._position.x - 1, y + water._position.y,
                                         z + water._position.z))].isTransparent)
                                 worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                    water._normals, water._uvs, water._indices, shape.faceData[4]);
+                                    water._normals, water._uvs, water._indices, shape.faceData[4], 4, chunck.Orientation[x, y, z]);
                         }
                     }
 
@@ -110,7 +110,7 @@ public class WaterGeneration : MonoBehaviour
                     {
                         if (water._waterIds[x, y, z + 1] == 0)
                             worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                water._normals, water._uvs, water._indices, shape.faceData[1]);
+                                water._normals, water._uvs, water._indices, shape.faceData[1], 1, chunck.Orientation[x, y, z]);
                     }
                     else
                     {
@@ -120,13 +120,13 @@ public class WaterGeneration : MonoBehaviour
                             if (worldCreation.GetBlock(new Vector3(x + water._position.x, y + water._position.y,
                                 z + water._position.z + 1)) == 0)
                                 worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                    water._normals, water._uvs, water._indices, shape.faceData[1]);
+                                    water._normals, water._uvs, water._indices, shape.faceData[1], 1, chunck.Orientation[x, y, z]);
                             else if (worldCreation
                                 .Blocks[
                                     worldCreation.GetBlock(new Vector3(x + water._position.x, y + water._position.y,
                                         z + water._position.z + 1))].isTransparent)
                                 worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                    water._normals, water._uvs, water._indices, shape.faceData[1]);
+                                    water._normals, water._uvs, water._indices, shape.faceData[1], 1, chunck.Orientation[x, y, z]);
                         }
                     }
 
@@ -134,7 +134,7 @@ public class WaterGeneration : MonoBehaviour
                     {
                         if (water._waterIds[x, y, z - 1] == 0)
                             worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                water._normals, water._uvs, water._indices, shape.faceData[0]);
+                                water._normals, water._uvs, water._indices, shape.faceData[0], 0, chunck.Orientation[x, y, z]);
                     }
                     else
                     {
@@ -144,13 +144,13 @@ public class WaterGeneration : MonoBehaviour
                             if (worldCreation.GetBlock(new Vector3(x + water._position.x, y + water._position.y,
                                 z + water._position.z - 1)) == 0)
                                 worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                    water._normals, water._uvs, water._indices, shape.faceData[0]);
+                                    water._normals, water._uvs, water._indices, shape.faceData[0], 0, chunck.Orientation[x, y, z]);
                             else if (worldCreation
                                 .Blocks[
                                     worldCreation.GetBlock(new Vector3(x + water._position.x, y + water._position.y,
                                         z + water._position.z - 1))].isTransparent)
                                 worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                    water._normals, water._uvs, water._indices, shape.faceData[0]);
+                                    water._normals, water._uvs, water._indices, shape.faceData[0], 0, chunck.Orientation[x, y, z]);
                         }
                     }
                     
@@ -158,7 +158,7 @@ public class WaterGeneration : MonoBehaviour
                     {
                         if (water._waterIds[x, y - 1, z] == 0)
                             worldCreation.blockCreation.GenerateWaterBlock(ref currentIndex, offset, water._vertices,
-                                water._normals, water._uvs, water._indices, shape.faceData[3]);
+                                water._normals, water._uvs, water._indices, shape.faceData[3], 3, chunck.Orientation[x, y, z]);
                     }
                 }
             }

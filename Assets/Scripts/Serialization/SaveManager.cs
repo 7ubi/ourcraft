@@ -69,7 +69,7 @@ public class SaveManager : MonoBehaviour
     {
         SavePlayerData();
         var pos = chunck.transform.position;
-        var data = new ChunckInfo(pos, chunck.BlockIDs, chunck.WaterIDs, chunck.furnaces);
+        var data = new ChunckInfo(pos, chunck.BlockIDs, chunck.WaterIDs, chunck.furnaces, chunck.Orientation);
         
         SerializationManager.SaveChunckData(_worldName, new Vector2(pos.x, pos.z), data);
     }
@@ -109,6 +109,8 @@ public class SaveManager : MonoBehaviour
         var bIds = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
         var wIds = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
 
+        var or = new int[_worldCreation.Size, _worldCreation.MAXHeight, _worldCreation.Size];
+
         var count = 0; 
         for (var i = 0; i < chunckInfo.blockIDs.Length; i++)
         {
@@ -130,11 +132,28 @@ public class SaveManager : MonoBehaviour
                 count++;
             }
         }
+
+        var orCount = 0;
+        
+        for (var i = 0; i < chunckInfo.orientation.Length; i += 2)
+        {
+            for (var j = 0; j < chunckInfo.orientation[i + 1]; j++)
+            {
+                var z = orCount % _worldCreation.Size;
+                var y = (orCount / _worldCreation.Size) % _worldCreation.MAXHeight;
+                var x = orCount / (_worldCreation.Size * _worldCreation.MAXHeight);
+
+                or[x, y, z] = chunckInfo.orientation[i];
+                
+                orCount++;
+            }
+        }
         
         var cChunck = c.GetComponent<Chunck>();
         cChunck.worldCreation = _worldCreation;
         cChunck.BlockIDs = bIds;
         cChunck.WaterIDs = wIds;
+        cChunck.Orientation = or;
 
         _worldCreation.Chuncks.Add(c);
         if(!_worldCreation._chuncks.ContainsKey(new Vector2(c.transform.position.x, c.transform.position.z)))

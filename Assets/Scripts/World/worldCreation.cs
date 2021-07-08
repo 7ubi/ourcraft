@@ -224,6 +224,7 @@ public class worldCreation : MonoBehaviour
                 if (c == null)
                 {
                     var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
+                    c = newChunck.GetComponent<Chunck>();
                     var m = newChunck.GetComponent<MeshCreation>();
                     m.worldCreation = this;
                     m.Init();
@@ -360,6 +361,11 @@ public class worldCreation : MonoBehaviour
         _playerInventory.AddDestroyedBlock(
             CreateDestroyedBlock(Blocks[c.BlockIDs[bix, biy, biz]].DropID,
                 block + new Vector3(0.375f, 0.1f, 0.375f)));
+
+        if (c.BlockIDs[bix, biy, biz] == BlockTypes.Furnace)
+        {
+            c.furnaces.Remove(new Vector3Int(bix, biy, biz));
+        }
         
         c.BlockIDs[bix, biy, biz] = 0;
 
@@ -408,7 +414,7 @@ public class worldCreation : MonoBehaviour
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
-    public void PlaceBlock(Vector3 block, int id)
+    public void PlaceBlock(Vector3 block, int id, int orientation)
     {
         var chunck = GetChunck(block);
 
@@ -422,6 +428,7 @@ public class worldCreation : MonoBehaviour
 
         c.BlockIDs[bix, biy, biz] = id;
         c.WaterIDs[bix, biy, biz] = 0;
+        c.Orientation[bix, biy, biz] = orientation;
 
         if (id == BlockTypes.Furnace)
         {

@@ -49,17 +49,17 @@ public class DestroyedBlock : MonoBehaviour
         var offset = new Vector3Int(0, 0, 0);
 
         _worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            b.blockShape.faceData[2], b.GETRect(b.topIndex));
+            b.blockShape.faceData[2], b.GETRect(b.topIndex), 2, 1);
         _worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            b.blockShape.faceData[5], b.GETRect(b.rightIndex));
+            b.blockShape.faceData[5], b.GETRect(b.rightIndex), 5, 1);
         _worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            b.blockShape.faceData[4], b.GETRect(b.leftIndex));
+            b.blockShape.faceData[4], b.GETRect(b.leftIndex), 4, 1);
         _worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            b.blockShape.faceData[1], b.GETRect(b.frontIndex));
+            b.blockShape.faceData[1], b.GETRect(b.frontIndex), 1, 1);
         _worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            b.blockShape.faceData[0], b.GETRect(b.backIndex));
+            b.blockShape.faceData[0], b.GETRect(b.backIndex), 0, 1);
         _worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            b.blockShape.faceData[3], b.GETRect(b.botIndex));
+            b.blockShape.faceData[3], b.GETRect(b.botIndex), 3, 1);
         
         _worldCreation.destroyedBlocksToApply.Add(this);
     }

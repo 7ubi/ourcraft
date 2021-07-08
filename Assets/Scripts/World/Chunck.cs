@@ -10,6 +10,8 @@ public class Chunck : MonoBehaviour
 
     public int[,,] BlockIDs { get; set; }
 
+    public int[,,] Orientation { get; set; }
+    
     public Dictionary<Vector3Int, Furnace> furnaces = new Dictionary<Vector3Int, Furnace>();
 
     public worldCreation worldCreation;

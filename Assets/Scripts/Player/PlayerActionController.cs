@@ -104,7 +104,7 @@ public class PlayerActionController : MonoBehaviour
                     if (!playerController.CanPlaceBlock) return;
 
                     worldCreation.PlaceBlock(hit.point + transform.forward * -.01f,
-                        inventory.ItemIds[inventory.Current]);
+                        inventory.ItemIds[inventory.Current], playerController.Orientation);
                     inventory.RemoveItem(inventory.Current);
                 }
             }

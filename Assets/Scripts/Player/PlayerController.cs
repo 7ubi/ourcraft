@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     public float Yaw { get; private set; } = 0.0f;
 
     public float Pitch { get; private set; } = 0.0f;
+    public int Orientation { get; set; }
     
     [Header("Jumping")]
     [SerializeField] private float jumpForce;
@@ -98,6 +99,18 @@ public class PlayerController : MonoBehaviour
             Pitch = 90;
         if (Pitch < -90)
             Pitch = -90;
+
+        var XZDirection = transform.forward;
+        XZDirection.y = 0;
+        
+        if (Vector3.Angle(XZDirection, Vector3.forward) <= 45)
+            Orientation = 0;
+        else if (Vector3.Angle(XZDirection, Vector3.right) <= 45)
+            Orientation = 5;
+        else if (Vector3.Angle(XZDirection, Vector3.back) <= 45)
+            Orientation = 1;
+        else
+            Orientation = 4;
         
         var transform2 = _camera.transform;
 
@@ -120,8 +133,7 @@ public class PlayerController : MonoBehaviour
                 else
                     chunk.gameObject.SetActive(Vector3.Angle(chunk.transform.position + 
                      new Vector3(worldCreation.Size / 2f, 0, worldCreation.Size / 2f)
-                     - headPos,
-                    transform2.forward) < 90.0f);
+                     - headPos, transform2.forward) < 90.0f);
             }
         }
         

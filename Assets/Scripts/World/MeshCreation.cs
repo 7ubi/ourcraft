@@ -9,6 +9,7 @@ public class MeshCreation : MonoBehaviour
 {
     public worldCreation worldCreation; 
     private int[,,] _blockIDs;
+    private int[,,] _orienation;
     private Mesh _newMesh;
     private Mesh _colliderMesh;
     private List<Vector3> _vertices;
@@ -30,7 +31,8 @@ public class MeshCreation : MonoBehaviour
     [SerializeField] private BlockShape standardBlock;
     public bool CanGenerateMesh { get; set; } = true;
     public bool InRange { get; set; } = true;
-    
+
+    private int _currentOrientation;
     
     // ReSharper disable Unity.PerformanceAnalysis
     public void Init()
@@ -87,6 +89,7 @@ public class MeshCreation : MonoBehaviour
                     var offset = new Vector3Int(x, y, z);
                     if (_blockIDs[x, y, z] == 0) continue;
                     var b = worldCreation.Blocks[_blockIDs[x, y, z]];
+                    _currentOrientation = chunck.Orientation[x, y, z];
                     if (b.isTransparent)
                     {
                         Block(ref currentIndex, ref currentColliderIndex, offset, b.blockShape.faceData[2], b.GETRect(b.topIndex), 2);
@@ -192,6 +195,7 @@ public class MeshCreation : MonoBehaviour
     public void GenerateBlocks()
     {
         _blockIDs = new int[worldCreation.Size, worldCreation.MAXHeight, worldCreation.Size];
+        _orienation = new int[worldCreation.Size, worldCreation.MAXHeight, worldCreation.Size];
         var treeGen = new System.Random((int)(_offset.x * 1000 + _offset.y));
 
         for (var x = 0; x < worldCreation.Size; x++)
@@ -210,9 +214,11 @@ public class MeshCreation : MonoBehaviour
                 if (height + worldCreation.minHeight < water.Height)
                 {
                     _blockIDs[x, height + worldCreation.minHeight, z] = biome.secondaryBlock;
+                    _orienation[x, height + worldCreation.minHeight, z] = 1;
                     for (var y = water.Height; y >= height + worldCreation.minHeight + 1; y--)
                     {
                         water.AddWater(x, y, z);
+                        _orienation[x, y, z] = 1;
                     }
                 }
                 else
@@ -221,6 +227,7 @@ public class MeshCreation : MonoBehaviour
                         (z + _offset.y) * 0.05f + worldCreation.Seed) >= worldCreation.noiseThreshold)
                     {
                         _blockIDs[x, height + worldCreation.minHeight, z] = biome.topBlock;
+                        _orienation[x, height + worldCreation.minHeight, z] = 1;
                         if (biome.hasTree || biome.hasCactus)
                         {
                             if (x > 1 && x < worldCreation.Size - 2 && z > 1 && z < worldCreation.Size - 2)
@@ -235,6 +242,7 @@ public class MeshCreation : MonoBehaviour
                                         {
                                             _blockIDs[x, height + worldCreation.minHeight + y, z] =
                                                 BlockTypes.Log;
+                                            _orienation[x, height + worldCreation.minHeight + y, z] = 1;
                                             if (y <= h - 2) continue;
                                             for (var i = -1; i <= 1; i++)
                                             {
@@ -243,12 +251,14 @@ public class MeshCreation : MonoBehaviour
                                                     if (i == 0 && j == 0) continue;
                                                     _blockIDs[x + i, height + worldCreation.minHeight + y, z + j] =
                                                         BlockTypes.Leave;
+                                                    _orienation[x + i, height + worldCreation.minHeight + y, z + j] = 1;
                                                 }
                                             }
                                         }
 
                                         _blockIDs[x, height + worldCreation.minHeight + h + 1, z] =
                                             BlockTypes.Leave;
+                                        _orienation[x, height + worldCreation.minHeight + h + 1, z] = 1;
                                     }
                                     else if (biome.hasCactus)
                                     {
@@ -257,6 +267,7 @@ public class MeshCreation : MonoBehaviour
                                         {
                                             _blockIDs[x, height + worldCreation.minHeight + y, z] =
                                                 BlockTypes.Cactus;
+                                            _orienation[x, height + worldCreation.minHeight + y, z] = 1;
                                         }
                                     }
                                 }
@@ -306,11 +317,15 @@ public class MeshCreation : MonoBehaviour
                             _blockIDs[x, y, z] = biome.secondaryBlock;
                         
                     }
+
+                    _orienation[x, y, z] = 1;
                 }
                 _blockIDs[x, 0, z] = BlockTypes.Bedrock;
+                _orienation[x, 0, z] = 1;
             }
         }
         chunck.BlockIDs = _blockIDs;
+        chunck.Orientation = _orienation;
         
         if (!worldCreation.meshesToUpdate.Contains(this))
             worldCreation.meshesToUpdate.Add(this);
@@ -319,9 +334,10 @@ public class MeshCreation : MonoBehaviour
     private void Block(ref int currentIndex, ref int currentColliderIndex, Vector3Int offset, FaceData face, Vector2 rect, int faceIndex)
     {
         worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
-            face, rect);
+            face, rect, faceIndex, _currentOrientation);
         worldCreation.blockCreation.GenerateBlock(ref currentColliderIndex, offset, _verticesCollider,
-            _normalsCollider, _uvsCollider, _indicesCollider, standardBlock.faceData[faceIndex], rect);
+            _normalsCollider, _uvsCollider, _indicesCollider, standardBlock.faceData[faceIndex], rect,
+            faceIndex, _currentOrientation);
     }
 
     public void ApplyMesh()

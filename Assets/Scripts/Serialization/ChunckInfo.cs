@@ -7,17 +7,20 @@ public class ChunckInfo
 {
     public Vector3 pos;
     public byte[] blockIDs;
+    public int[] orientation;
     public int[] blockCount;
     public FurnaceInfo[] furnaceInfos;
     private int _size = 16;
     private int _maxHeight = 256;
     
-    public ChunckInfo(Vector3 pos, int[,,] blockIDsChunck, int[,,] waterIDsChunck, Dictionary<Vector3Int, Furnace> furnaces)
+    public ChunckInfo(Vector3 pos, int[,,] blockIDsChunck, int[,,] waterIDsChunck,
+        Dictionary<Vector3Int, Furnace> furnaces, int[,,] orientation)
     {
         this.pos = pos;
 
         var blockIdsList = new List<byte>();
         var blockCountList = new List<int>();
+        var orientationList = new List<int>();
 
         for (var x = 0; x < _size; x++)
         {
@@ -86,12 +89,31 @@ public class ChunckInfo
                             blockCountList.Add(1);
                         }
                     }
+
+                    if (orientationList.Count > 2)
+                    {
+                        if (orientationList[orientationList.Count - 2] == orientation[x, y, z])
+                        {
+                            orientationList[orientationList.Count - 1] += 1;
+                        }
+                        else
+                        {
+                            orientationList.Add(orientation[x, y, z]);
+                            orientationList.Add(1);
+                        }
+                    }
+                    else
+                    {
+                        orientationList.Add(orientation[x, y, z]);
+                        orientationList.Add(1);
+                    }
                 }
             }
         }
         
         blockIDs = blockIdsList.ToArray();
         blockCount = blockCountList.ToArray();
+        this.orientation = orientationList.ToArray();
         
         furnaceInfos = new FurnaceInfo[furnaces.Count];
         var furn = furnaces.ToArray();

@@ -14,7 +14,7 @@ public class TNT : MonoBehaviour
     private float _time;
     public worldCreation worldCreation;
     public PlayerInventory playerInventory;
-
+    public int Orientation { get; set; }
 
     private void Start()
     {
@@ -31,17 +31,17 @@ public class TNT : MonoBehaviour
         var offset = new Vector3Int(0, 0, 0);
 
         worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            b.blockShape.faceData[2], b.GETRect(b.topIndex));
+            b.blockShape.faceData[2], b.GETRect(b.topIndex), 2, Orientation);
         worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            b.blockShape.faceData[5], b.GETRect(b.rightIndex));
+            b.blockShape.faceData[5], b.GETRect(b.rightIndex), 5, Orientation);
         worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            b.blockShape.faceData[4], b.GETRect(b.leftIndex));
+            b.blockShape.faceData[4], b.GETRect(b.leftIndex), 4, Orientation);
         worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            b.blockShape.faceData[1], b.GETRect(b.frontIndex));
+            b.blockShape.faceData[1], b.GETRect(b.frontIndex), 1, Orientation);
         worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            b.blockShape.faceData[0], b.GETRect(b.backIndex));
+            b.blockShape.faceData[0], b.GETRect(b.backIndex), 0, Orientation);
         worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            b.blockShape.faceData[3], b.GETRect(b.botIndex));
+            b.blockShape.faceData[3], b.GETRect(b.botIndex), 3, Orientation);
 
         newMesh.SetVertices(vertices);
         newMesh.SetNormals(normals);

@@ -27,17 +27,17 @@ public class Voxelizer : MonoBehaviour
                     continue;
                 
                 blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors, 
-                    color, uvs, indices,shape.faceData[2]);
+                    color, uvs, indices,shape.faceData[2], 2);
                 blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors,
-                    color, uvs, indices, shape.faceData[5]);
+                    color, uvs, indices, shape.faceData[5], 5);
                 blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors,
-                    color, uvs, indices, shape.faceData[4]);
+                    color, uvs, indices, shape.faceData[4], 4);
                 blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors,
-                    color, uvs, indices, shape.faceData[1]);
+                    color, uvs, indices, shape.faceData[1], 1);
                 blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors,
-                    color, uvs, indices, shape.faceData[0]);
+                    color, uvs, indices, shape.faceData[0], 0);
                 blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors,
-                    color, uvs, indices, shape.faceData[3]);
+                    color, uvs, indices, shape.faceData[3], 3);
             }
         }
         

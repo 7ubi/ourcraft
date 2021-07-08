@@ -74,17 +74,17 @@ public class DestroyBlock : MonoBehaviour
         var shape = worldCreation.Blocks[_blockId].blockShape;
         
         blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            shape.faceData[2], b.GETRect(b.topIndex));
+            shape.faceData[2], b.GETRect(b.topIndex), 2, 1);
         blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            shape.faceData[5], b.GETRect(b.topIndex));
+            shape.faceData[5], b.GETRect(b.topIndex), 5, 1);
         blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            shape.faceData[4], b.GETRect(b.topIndex));
+            shape.faceData[4], b.GETRect(b.topIndex), 4, 1);
         blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            shape.faceData[1], b.GETRect(b.topIndex));
+            shape.faceData[1], b.GETRect(b.topIndex), 1, 1);
         blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            shape.faceData[0], b.GETRect(b.topIndex));
+            shape.faceData[0], b.GETRect(b.topIndex), 0, 1);
         blockCreation.GenerateBlock(ref currentIndex, offset, vertices, normals, uvs, indices,
-            shape.faceData[3], b.GETRect(b.topIndex));
+            shape.faceData[3], b.GETRect(b.topIndex), 3, 1);
         
         newMesh.SetVertices(vertices);
         newMesh.SetNormals(normals);
