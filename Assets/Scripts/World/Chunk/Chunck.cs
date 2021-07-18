@@ -8,7 +8,7 @@ public class Chunck : MonoBehaviour
     public Vector3 Pos { get; set; }
     public int[,,] WaterIDs { get; set; }
 
-    public int[,,] BlockIDs { get; set; }
+    public int[,,] BlockIDs { get; set; } = null;
 
     public int[,,] Orientation { get; set; }
     

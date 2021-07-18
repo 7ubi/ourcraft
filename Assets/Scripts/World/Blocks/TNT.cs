@@ -100,13 +100,11 @@ public class TNT : MonoBehaviour
                     if (chunk.BlockIDs[bix, biy, biz] == 0)
                         continue;
 
-                    Debug.Log(Time.realtimeSinceStartup);
                     if (rand.NextDouble() < 0)
                     {
                         playerInventory.AddDestroyedBlock(worldCreation.CreateDestroyedBlock(
                         worldCreation.Blocks[chunk.BlockIDs[bix, biy, biz]].DropID,
                         pos + new Vector3(0.375f, 0.1f, 0.375f)));
-                        Debug.Log("Made Destroyed Block:" + Time.realtimeSinceStartup);
                     }
                         
                     chunk.BlockIDs[bix, biy, biz] = 0;

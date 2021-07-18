@@ -32,17 +32,10 @@ public class worldCreation : MonoBehaviour
     public List<WaterGeneration> waterMeshesToUpdate = new List<WaterGeneration>();
     public List<MeshCreation> meshesToApply = new List<MeshCreation>();
     public List<WaterGeneration> waterMeshesToApply = new List<WaterGeneration>();
-    private List<GameObject> _chunksToDeactivate = new List<GameObject>();
-    private List<GameObject> _chunksToActivate = new List<GameObject>();
+    private readonly List<GameObject> _chunksToDeactivate = new List<GameObject>();
+    private readonly List<GameObject> _chunksToActivate = new List<GameObject>();
     public List<DestroyedBlock> destroyedBlocksToCreate = new List<DestroyedBlock>();
     public List<DestroyedBlock> destroyedBlocksToApply = new List<DestroyedBlock>();
-
-    
-    [Header("Tree")]
-    [SerializeField]
-    public float treeThreshold;
-    [SerializeField] public int minTreeHeight;
-    [SerializeField] public int maxTreeHeight;
 
     [Header("Ores")]
     [SerializeField] public Vector3 ironNoiseOffset;
@@ -82,7 +75,6 @@ public class worldCreation : MonoBehaviour
         }
         
         _chunckTread = new Thread(UpdateChunck);
-        
     }
 
     
@@ -148,7 +140,6 @@ public class worldCreation : MonoBehaviour
     {
         var position = Vector3Int.FloorToInt(player.transform.position);
         
-        
         if (meshesToApply.Count > 0)
         {
             var mesh = meshesToApply[0];
@@ -202,6 +193,8 @@ public class worldCreation : MonoBehaviour
 
     public void LoadNearestChuncks()
     {
+        renderDistance = PlayerPrefs.GetFloat("RenderDist");
+        
         var position = Vector3Int.FloorToInt(player.transform.position);
         
         var playerX = position.x - (position.x % 16);
@@ -220,8 +213,7 @@ public class worldCreation : MonoBehaviour
                 var z = _z - size / 2;
                 var c = GetChunck(new Vector3(x, 0, z));
                 
-            
-                if (c == null)
+                if (c == null || c.BlockIDs == null)
                 {
                     var newChunck = Instantiate(chunckGameObject, new Vector3(x, 0, z), Quaternion.identity);
                     c = newChunck.GetComponent<Chunck>();
@@ -234,6 +226,7 @@ public class worldCreation : MonoBehaviour
                     _chuncksChunck.Add(new Vector2(position1.x, position1.z), newChunck.GetComponent<Chunck>());
 
                     newChunck.GetComponent<Chunck>().worldCreation = this;
+                    c.GetComponent<MeshCreation>().InRange = true;
 
                     var water = newChunck.GetComponent<WaterGeneration>();
 
@@ -256,6 +249,7 @@ public class worldCreation : MonoBehaviour
                 {
                     var mesh = c.GetComponent<MeshCreation>();
                     var water = c.GetComponent<WaterGeneration>();
+                    c.GetComponent<MeshCreation>().InRange = true;
 
                     mesh.GenerateMesh();
                     water.GenerateWater();
@@ -267,7 +261,6 @@ public class worldCreation : MonoBehaviour
                     waterMeshesToApply.Remove(water);
                     meshesToUpdate.Remove(mesh);
                     meshesToApply.Remove(mesh);
-                    saveManager.SaveChunck(mesh.chunck);
                 }
 
                 chunksInRange.Add(c);
@@ -275,6 +268,7 @@ public class worldCreation : MonoBehaviour
             }
         }
         _chunckTread.Start();
+        _lastChunck = (position.x - (position.x % Size) + position.z - (position.z % Size));
     }
     
 
@@ -495,7 +489,11 @@ public class worldCreation : MonoBehaviour
             {
                 return chunck.WaterIDs[bix, biy, biz];
             }
-        }catch{}
+        }
+        catch
+        {
+            // ignored
+        }
 
         return 1;
     }
@@ -590,7 +588,11 @@ public class worldCreation : MonoBehaviour
 
     public int Size => size;
 
-    public float RenderDistance => renderDistance;
+    public float RenderDistance
+    {
+        get => renderDistance;
+        set => renderDistance = value;
+    }
 
     public Dictionary<int, Blocks> Blocks { get; } = new Dictionary<int, Blocks>();
 }

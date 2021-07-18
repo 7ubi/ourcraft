@@ -27,6 +27,14 @@ public class SaveManager : MonoBehaviour
         _worldCreation = GetComponent<worldCreation>();
         _dayNight = GetComponent<DayNightCycle>();
         _worldName = PlayerPrefs.GetString("world");
+        _worldCreation._chuncksChunck.Clear();
+        _worldCreation._chuncks.Clear();
+        _worldCreation.meshesToCreate.Clear();
+        _worldCreation.meshesToUpdate.Clear();
+        _worldCreation.waterMeshesToUpdate.Clear();
+        _worldCreation.meshesToApply.Clear();
+        _worldCreation.waterMeshesToApply.Clear();
+        
         if (Directory.Exists(Application.persistentDataPath + "/saves/" + _worldName))
         {
             LoadPlayerData();
@@ -82,9 +90,9 @@ public class SaveManager : MonoBehaviour
             LoadChunck(file);
         }
 
-        foreach (var chunck in _chuncks)
+        foreach (var chunk in _chuncks)
         {
-            chunck.Init();
+            chunk.Init();
         }
         
         _worldCreation.LoadNearestChuncks();

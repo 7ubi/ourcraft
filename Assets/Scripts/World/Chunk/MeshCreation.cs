@@ -187,7 +187,7 @@ public class MeshCreation : MonoBehaviour
         if (!worldCreation.meshesToApply.Contains(this))
             worldCreation.meshesToApply.Add(this);
         
-        
+
         if(!worldCreation.waterMeshesToUpdate.Contains(waterGeneration))
             worldCreation.waterMeshesToUpdate.Add(waterGeneration);
     }
