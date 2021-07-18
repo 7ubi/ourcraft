@@ -34,7 +34,7 @@ public class SaveManager : MonoBehaviour
         _worldCreation.waterMeshesToUpdate.Clear();
         _worldCreation.meshesToApply.Clear();
         _worldCreation.waterMeshesToApply.Clear();
-        
+        _playerInventory.ItemDict();
         if (Directory.Exists(Application.persistentDataPath + "/saves/" + _worldName))
         {
             LoadPlayerData();

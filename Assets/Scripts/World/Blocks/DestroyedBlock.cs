@@ -15,6 +15,8 @@ public class DestroyedBlock : MonoBehaviour
     private List<Vector2> _uvs;
     private List<int> _indices;
 
+    [SerializeField] private MeshFilter meshFilter;
+
     public void Init(int id, bool isBlock, worldCreation worldCreation, PlayerInventory playerInventory)
     {
         ID = id;
@@ -32,11 +34,12 @@ public class DestroyedBlock : MonoBehaviour
         }
         else
         {
+            Debug.Log(playerInventory.Items.Count);
             var mesh = _worldCreation.voxelizer.SpriteToVoxel(playerInventory.Items[id].texture2d,
-                _worldCreation.standardBlockShape, _worldCreation.blockCreation);
+                _worldCreation.standardBlockShape, _worldCreation.blockCreation,
+                new Vector3(-8f, -8f, 0));
 
-            GetComponent<MeshFilter>().mesh = mesh;
-            GetComponent<MeshCollider>().sharedMesh = mesh;
+            meshFilter.mesh = mesh;
         }
     }
 
@@ -46,7 +49,7 @@ public class DestroyedBlock : MonoBehaviour
         
         var b = _worldCreation.Blocks[ID];
 
-        var offset = new Vector3Int(0, 0, 0);
+        var offset = new Vector3(-.5f, -.5f, -.5f);
 
         _worldCreation.blockCreation.GenerateBlock(ref currentIndex, offset, _vertices, _normals, _uvs, _indices,
             b.blockShape.faceData[2], b.GETRect(b.topIndex), 2, 1);
@@ -72,8 +75,7 @@ public class DestroyedBlock : MonoBehaviour
         _newMesh.SetIndices(_indices, MeshTopology.Triangles, 0);
 
         _newMesh.RecalculateTangents();
-        GetComponent<MeshFilter>().mesh = _newMesh;
-        GetComponent<MeshCollider>().sharedMesh = _newMesh;
+        meshFilter.mesh = _newMesh;
     }
     
 }

@@ -45,7 +45,7 @@ public class worldCreation : MonoBehaviour
     
     [Header("Player")]
     [SerializeField] private GameObject player;
-    private PlayerInventory _playerInventory;
+    [SerializeField] private PlayerInventory playerInventory;
     
     [Header("Scripts")]
     [SerializeField]
@@ -67,8 +67,6 @@ public class worldCreation : MonoBehaviour
 
     private void Start()
     {
-        _playerInventory = player.GetComponent<PlayerInventory>();
-
         foreach (var b in blocks)
         {
             Blocks.Add(b.id, b);    
@@ -352,7 +350,7 @@ public class worldCreation : MonoBehaviour
         var biz = Mathf.FloorToInt(block.z) - (int)position.z;
         var c = chunck.GetComponent<Chunck>();
         
-        _playerInventory.AddDestroyedBlock(
+        playerInventory.AddDestroyedBlock(
             CreateDestroyedBlock(Blocks[c.BlockIDs[bix, biy, biz]].DropID,
                 block + new Vector3(0.375f, 0.1f, 0.375f)));
 
@@ -566,12 +564,12 @@ public class worldCreation : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     public GameObject CreateDestroyedBlock(int id, Vector3 pos)
     {
-        var block = id < _playerInventory.itemIndexStart ? 
+        var block = id < playerInventory.itemIndexStart ? 
             Instantiate(destroyedBlock, pos, Quaternion.identity, GetChunck(pos).transform):
             Instantiate(destroyedItem, pos, Quaternion.identity, GetChunck(pos).transform);
 
-        block.GetComponent<DestroyedBlock>().Init(id, id < _playerInventory.itemIndexStart,
-            this, _playerInventory);
+        block.GetComponent<DestroyedBlock>().Init(id, id < playerInventory.itemIndexStart,
+            this, playerInventory);
         
         return block;
     }

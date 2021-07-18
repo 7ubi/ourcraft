@@ -5,7 +5,8 @@ using UnityEngine.AI;
 
 public class Voxelizer : MonoBehaviour
 {
-    public Mesh SpriteToVoxel(Texture2D texture2D, BlockShape shape, BlockCreation blockCreation)
+    public Mesh SpriteToVoxel(Texture2D texture2D, BlockShape shape,
+        BlockCreation blockCreation, Vector3 offset)
     {
         var currentIndex = 0;
         var mesh = new Mesh();
@@ -20,23 +21,23 @@ public class Voxelizer : MonoBehaviour
         {
             for (var y = 0; y < texture2D.height; y++)
             {
-                var offset = new Vector3Int(x, y, 0);
+                var off = new Vector3(x, y, 0);
                 var color = texture2D.GetPixel(x, y);
                 
                 if (color.a == 0)
                     continue;
                 
-                blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors, 
+                blockCreation.GenerateSpriteToVoxel(ref currentIndex, off + offset, vertices, normals, colors, 
                     color, uvs, indices,shape.faceData[2], 2);
-                blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors,
+                blockCreation.GenerateSpriteToVoxel(ref currentIndex, off + offset, vertices, normals, colors,
                     color, uvs, indices, shape.faceData[5], 5);
-                blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors,
+                blockCreation.GenerateSpriteToVoxel(ref currentIndex, off + offset, vertices, normals, colors,
                     color, uvs, indices, shape.faceData[4], 4);
-                blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors,
+                blockCreation.GenerateSpriteToVoxel(ref currentIndex, off + offset, vertices, normals, colors,
                     color, uvs, indices, shape.faceData[1], 1);
-                blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors,
+                blockCreation.GenerateSpriteToVoxel(ref currentIndex, off + offset, vertices, normals, colors,
                     color, uvs, indices, shape.faceData[0], 0);
-                blockCreation.GenerateSpriteToVoxel(ref currentIndex, offset, vertices, normals, colors,
+                blockCreation.GenerateSpriteToVoxel(ref currentIndex, off + offset, vertices, normals, colors,
                     color, uvs, indices, shape.faceData[3], 3);
             }
         }

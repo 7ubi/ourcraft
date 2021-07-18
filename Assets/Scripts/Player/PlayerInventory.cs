@@ -65,10 +65,7 @@ public class PlayerInventory : MonoBehaviour
         _itemHandelMesh = itemHandel.GetComponent<MeshFilter>();
         _blockHandelMesh = blockHandel.GetComponent<MeshFilter>();
         
-        foreach (var item in itemsArr)
-        {
-            Items.Add(item.id, item);
-        }
+        
         
         for (var x = 0; x < Rows; x++)
         {
@@ -521,7 +518,7 @@ public class PlayerInventory : MonoBehaviour
         {
             
             var mesh = voxelizer.SpriteToVoxel(Items[ItemIds[Current]].texture2d,
-                worldCreation.standardBlockShape, worldCreation.blockCreation);
+                worldCreation.standardBlockShape, worldCreation.blockCreation, new Vector3(0, 0, 0));
 
             _itemHandelMesh.mesh = mesh;
             
@@ -575,6 +572,14 @@ public class PlayerInventory : MonoBehaviour
             {
                 Drop(i);
             }
+        }
+    }
+
+    public void ItemDict()
+    {
+        foreach (var item in itemsArr)
+        {
+            Items.Add(item.id, item);
         }
     }
 }

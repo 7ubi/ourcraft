@@ -4025,7 +4025,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 2e-44, z: 0, w: 1e-45}
+  m_BoundingSphereOverride: {x: 4.5904e-41, y: 3.924762e-22, z: 4.5904e-41, w: 9.403955e-38}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -8299,6 +8299,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1743702928}
     m_Modifications:
+    - target: {fileID: -8916963600120686287, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.0069848276
+      objectReference: {fileID: 0}
+    - target: {fileID: -8916963600120686287, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.00010471453
+      objectReference: {fileID: 0}
+    - target: {fileID: -8916963600120686287, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.014932367
+      objectReference: {fileID: 0}
+    - target: {fileID: -8916963600120686287, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.9998641
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
         type: 3}
       propertyPath: m_RootOrder
@@ -8354,6 +8374,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8632631915127852665, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.006972463
+      objectReference: {fileID: 0}
+    - target: {fileID: -8632631915127852665, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.00032565158
+      objectReference: {fileID: 0}
+    - target: {fileID: -8632631915127852665, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.04678476
+      objectReference: {fileID: 0}
+    - target: {fileID: -8632631915127852665, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.9988806
+      objectReference: {fileID: 0}
     - target: {fileID: -981740190389237172, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
         type: 3}
       propertyPath: m_LocalRotation.w
@@ -8393,6 +8433,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 5511998481995041611, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.0069773374
+      objectReference: {fileID: 0}
+    - target: {fileID: 5511998481995041611, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000030584055
+      objectReference: {fileID: 0}
+    - target: {fileID: 5511998481995041611, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.004006551
+      objectReference: {fileID: 0}
+    - target: {fileID: 5511998481995041611, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.99996763
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: b5e89465f1cb48b4f8a747bbc0e96f41,
         type: 3}
@@ -9120,6 +9180,7 @@ MonoBehaviour:
   coalNoiseOffset: {x: 1231, y: 324324, z: 234}
   coalNoiseThreshold: 0.35
   player: {fileID: 1743702924}
+  playerInventory: {fileID: 1743702931}
   blockTypes: {fileID: 1731320885}
   blockCreation: {fileID: 1731320884}
   saveManager: {fileID: 1731320886}
