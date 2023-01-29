@@ -34,7 +34,6 @@ public class DestroyedBlock : MonoBehaviour
         }
         else
         {
-            Debug.Log(playerInventory.Items.Count);
             var mesh = _worldCreation.voxelizer.SpriteToVoxel(playerInventory.Items[id].texture2d,
                 _worldCreation.standardBlockShape, _worldCreation.blockCreation,
                 new Vector3(-8f, -8f, 0));
